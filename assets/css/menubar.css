@@ -1,0 +1,282 @@
+/* 메뉴 아이콘 클릭시 보여지는 메뉴바 */
+#menu-bar {
+    position: absolute;
+    /* .close 버튼의 위치를 위한 position*/
+    left: 0;
+    top: 0;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-color: white;
+}
+
+.menu-container {
+    display: flex;
+    width: 40%;
+    height: 100%;
+    background-color: var(--blue2);
+    box-sizing: border-container;
+    align-items: center;
+    transition-duration: 500ms;
+}
+
+.menu-container .text {
+    width: 100%;
+    height: 50px;
+    color: white;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-top: -25px;
+}
+
+.menu-container .text span {
+    cursor: pointer;
+    transition-duration: 1.5s;
+}
+
+.close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-top: 10px;
+    color: white;
+    font-size: 25px;
+}
+
+.menu-compare-container {
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+
+.menu-compare-container:hover {
+    border-left: 1px solid var(--blue2);
+    border-right: 1px solid var(--blue2);
+}
+
+/* 지도 메뉴의 애니메이션 */
+.menu-map-container {
+    position: relative;
+    z-index: 2;
+}
+.menu-map-container .text {
+    z-index: 2;
+}
+.menu-map-container .menu-svg-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.menu-map-container .svg-line {
+    position: absolute;
+}
+.menu-map-container .svg-line line {
+    stroke: rgba(128, 128, 128, 0.459);
+}
+.menu-map-container .svg-mark {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.menu-map-container .svg-line path{
+    fill: none;
+    stroke-width: 1;
+    stroke: var(--blue2);
+    stroke-dasharray: 160;    
+    stroke-dashoffset: 160;
+    opacity: 0;
+}
+.menu-map-container:hover .svg-line path{
+    opacity: 1;
+    animation: path 700ms 400ms forwards linear;
+}
+.menu-map-container:hover .svg-line circle{
+    opacity: 1;
+    animation: mark2 600ms ;
+}
+.menu-map-container .svg-mark {
+    fill: var(--blue2);
+    opacity: 0;
+}
+.menu-map-container:hover .svg-mark {
+    animation: mark 600ms ;
+}
+.menu-map-container:hover .svg-mark {
+    opacity: 1;
+}
+
+@keyframes path {
+    0% {
+        stroke-dashoffset: 160;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+@keyframes mark {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+@keyframes mark2 {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+
+/* 비교 메뉴의 애니메이션 */
+.menu-compare-container {
+    position: relative;
+}
+
+.menu-compare-container .arrow-container {
+    position: absolute;
+    display: flex;
+    opacity: 0;
+    width: 100%;
+    height: 45px;
+    align-items: center;
+
+}
+
+.menu-compare-container .arrow-container .stick {
+    width: 0px;
+    height: 40%;
+    background-color: var(--blue2);
+    transition-duration: 900ms;
+    transition-delay: 400ms;
+}
+
+.menu-compare-container .arrow-container .triangle {
+    width: 0px;
+    height: 0px;
+    border-left: 45px solid var(--blue2);
+    border-bottom: 22.5px solid transparent;
+    border-top: 22.5px solid transparent;
+}
+
+.arrow-top {
+    left: 0;
+    top: 25%;
+}
+
+.arrow-bot {
+    left: 0;
+    bottom: 25%;
+}
+
+.menu-compare-container:hover .arrow-container {
+    opacity: 1;
+    transition-delay: 300ms;
+    transition-duration: 300ms;
+}
+
+.menu-compare-container:hover .arrow-top .stick {
+    animation: arrow-w-top 900ms 400ms forwards;
+}
+
+.menu-compare-container:hover .arrow-bot .stick {
+    animation: arrow-w-bot 900ms 400ms forwards ease-out;
+}
+
+
+@keyframes arrow-w-top {
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 50%;
+    }
+}
+
+@keyframes arrow-w-bot {
+    0% {
+        width: 0%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+/* 날씨 메뉴의 애니메이션 */
+.menu-weather-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-weather-container .weather-icon-container {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    opacity: 0;
+}
+
+.menu-weather-container:hover .weather-icon-top {
+    animation: weatherIconTop 5s infinite linear;
+}
+
+.menu-weather-container:hover .weather-icon-bot {
+    animation: weatherIconBot 5s infinite linear;
+}
+
+.weather-icon-top {
+    left: 0;
+    top: 25%;
+}
+
+.weather-icon-bot {
+    right: 0;
+    bottom: 25%;
+}
+
+.cloud1 {
+    fill: #57c1eb;
+}
+
+.cloud2 {
+    fill: #81d6f7;
+}
+
+.sun {
+    fill: #FFEB3B
+}
+
+@keyframes weatherIconTop {
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(30vw);
+    }
+}
+
+@keyframes weatherIconBot {
+    30% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-30vw);
+    }
+}
