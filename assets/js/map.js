@@ -765,15 +765,29 @@ function init() {
             createMarkerByCoords(lat, lng);
             getWeather(lat, lng)
              // 주소->좌표 변환 객체를 생성합니다
-            var geocoder = new naver.maps.services.Geocoder();
 
-            let callback = (data) => {
-                let currentLocation = data[0].road_address.address_name;
-                if(currentLocation === null) currentLocation = data[0].address.address_name;
-                currentLocationName.innerText = currentLocation;
-            }
-            // 좌표로 주소 찾기
-            geocoder.coord2Address(lng, lat, callback);
+             naver.maps.Service.reverseGeocode({
+                coords: new naver.maps.LatLng(lat, lng),
+            }, function(status, response) {
+                if (status !== naver.maps.Service.Status.OK) {
+                    return alert('Something wrong!');
+                }
+                var result = response.v2, // 검색 결과의 컨테이너
+                    items = result.results, // 검색 결과의 배열
+                    address = result.address; // 검색 결과로 만든 주소
+                let currentLocation = address.roadAddress;
+                if(currentLocation === '') currentLocation = address.jibunAddress;
+                    currentLocationName.innerText = currentLocation;
+            });
+            // var geocoder = new naver.maps.services.Geocoder();
+
+            // let callback = (data) => {
+            //     let currentLocation = data[0].road_address.address_name;
+            //     if(currentLocation === null) currentLocation = data[0].address.address_name;
+            //     currentLocationName.innerText = currentLocation;
+            // }
+            // // 좌표로 주소 찾기
+            // geocoder.coord2Address(lng, lat, callback);
         })
 }
 //* css를 조작하는 함수들은 여기에 정리 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
