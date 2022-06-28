@@ -251,43 +251,39 @@ function aroundSearch(e) {
 }
 
 function displayMap(address) {
-    console.log(address);
     console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
-    naver.maps.Service.geocode({
-        query: address
-    }, function(status, response) {
+
+    // 주소로 좌표를 찾은 후 결과를 활용하는 함수
+    let callback = (status, response) => {
         if (status !== naver.maps.Service.Status.OK) {
             return alert('Something wrong!');
         }
-        console.log(response);
         let jibunAddress = response.v2.addresses[0].jibunAddress, // 지번주소
             roadAddress = response.v2.addresses[0].roadAddress,
             engAddress = response.v2.addresses[0].englishAddress,
             lat = response.v2.addresses[0].y,
             lng = response.v2.addresses[0].x;
-
-        console.log(jibunAddress);
-        console.log(roadAddress);
-        console.log(engAddress);
-
         const mapContainer = document.getElementById('map'); // 지도를 표시할 div 
-    let mapOption = {
-        center: new naver.maps.LatLng( lat , lng ), // 지도의 중심좌표
-        zoom: 17, // 지도의 확대정도
-    };
-    map = new naver.maps.Map(mapContainer, mapOption);
+        let mapOption = {
+            center: new naver.maps.LatLng( lat , lng ), // 지도의 중심좌표
+            zoom: 17, // 지도의 확대정도
+        };
 
-    naver.maps.Event.addListener(map, 'click', () => {
-        removeOverlay();
-    });
+        map = new naver.maps.Map(mapContainer, mapOption);
 
-    naver.maps.Event.addListener(map, 'rightclick', (e) => {
-        
-        createMarkerByCoords(e.coord._lat, e.coord._lng);
-        // marker.setPosition(e.coord._lat, e.coord._lng);
-        // marker.setPosition(new naver.maps.position(e.coord._lat, e.coord._lng));
-    });
-    });
+        naver.maps.Event.addListener(map, 'click', () => {
+            removeOverlay();
+        });
+
+        naver.maps.Event.addListener(map, 'rightclick', (e) => {
+            
+            createMarkerByCoords(e.coord._lat, e.coord._lng);
+            // marker.setPosition(e.coord._lat, e.coord._lng);
+            // marker.setPosition(new naver.maps.position(e.coord._lat, e.coord._lng));
+        });
+    }
+
+    naver.maps.Service.geocode({query: address}, callback);
 }
 
 // * 마커와 오버레이 관련 함수들
@@ -866,9 +862,6 @@ function init() {
         .then(data => {
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
-            console.log(lat, lng);
-            // let coord = new naver.maps.LatLng(lat, lng);
-            // displayMap(coord);
             getWeather(lat, lng)
             // createMarkerByCoords(lat, lng);
              
@@ -877,19 +870,20 @@ function init() {
                 coords: new naver.maps.LatLng(lat, lng),
             }, function(status, response) {
                 if (status !== naver.maps.Service.Status.OK) {
-                    return alert('Something wrong!');
+                    return alert('에러 : 좌표 => 주소 변환에 실패하였습니다.');
                 }
-
-                let address = response.v2.address; // 검색 결과로 만든 주소
-                let currentLocation = address.roadAddress; // 현재 위치
-
-                if(currentLocation === '') currentLocation = address.jibunAddress; // 도로명주소가 없으면 지번주소로
-
-                currentLocationName.innerText = currentLocation;
-                console.log(currentLocation);
-                displayMap(currentLocation);
+                console.log(response.v2.address);
+                let currentLocation = response.v2.address.roadAddress; // 현재 위치
+                if(currentLocation === '') currentLocation = response.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
+                
+                setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
+                displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
             });
         })
+}
+
+function setCurrentLocation(address) {
+    currentLocationName.innerText = address;
 }
 
 
