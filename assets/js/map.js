@@ -272,13 +272,11 @@ function displayMap(address) {
         map = new naver.maps.Map(mapContainer, mapOption);
 
         naver.maps.Event.addListener(map, 'click', () => {
-            removeOverlay();
+            if(overlay !== undefined) removeOverlay();
         });
 
         naver.maps.Event.addListener(map, 'rightclick', (e) => {
             createMarkerByCoords(e.coord._lat, e.coord._lng);
-            // marker.setPosition(e.coord._lat, e.coord._lng);
-            // marker.setPosition(new naver.maps.position(e.coord._lat, e.coord._lng));
         });
     }
 
@@ -464,8 +462,6 @@ function removeNumberMarker() {
 }
 
 function removeOverlay() {
-    console.log(overlay);
-    console.log("오버레이 삭제 실행");
     overlay.close();
 }
 
@@ -483,8 +479,8 @@ function error() {
 // 검색 api를 사용하여 검색후 장소의 이름들을 promise형태 및 배열로 return 하는 함수
 function getAddrList(keyword) {
     console.log("주소 데이터로부터 연관검색어를 찾습니다. 검색어 : " , keyword );
-    let result =  fetch(`https://dapi.naver.com/v2/local/search/address.json?query=${keyword}&size=5`, {
-        headers: { Authorization: `naverAK 621a24687f9ad83f695acc0438558af2` }
+    let result =  fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${keyword}&size=5`, {
+        headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
     })
         .then(res => res.json())
         .then(data => {
