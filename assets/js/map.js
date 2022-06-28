@@ -20,7 +20,7 @@ const aroundTitle = document.querySelector('.around-title > span');
 
 let map;
 let historyList = [];
-let markerList = [];
+let marker;
 let numberMarkerList = [];
 let overlay;
 let searchbarIsOpen = false;
@@ -35,7 +35,6 @@ function getWeather(lat,lng) {
     let weatherData = fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=${units}&appid=${apiKey}`)
     .then(response => response.json())
     .then(data => {
-        console.log(data);
         let weather;
         let temp = Math.round(data.main.temp*10)/10;
         switch(data.weather[0].main) {
@@ -251,33 +250,54 @@ function aroundSearch(e) {
     });
 }
 
-function displayMap(lat, lng) {
-    console.log("현재 위치를 중심으로 맵을 띄웁니다.", lat, lng);
-    const mapContainer = document.getElementById('map'); // 지도를 표시할 div 
+function displayMap(address) {
+    console.log(address);
+    console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
+    naver.maps.Service.geocode({
+        query: address
+    }, function(status, response) {
+        if (status !== naver.maps.Service.Status.OK) {
+            return alert('Something wrong!');
+        }
+        console.log(response);
+        let jibunAddress = response.v2.addresses[0].jibunAddress, // 지번주소
+            roadAddress = response.v2.addresses[0].roadAddress,
+            engAddress = response.v2.addresses[0].englishAddress,
+            lat = response.v2.addresses[0].y,
+            lng = response.v2.addresses[0].x;
+
+        console.log(jibunAddress);
+        console.log(roadAddress);
+        console.log(engAddress);
+
+        const mapContainer = document.getElementById('map'); // 지도를 표시할 div 
     let mapOption = {
-        center: new naver.maps.LatLng(lat, lng), // 지도의 중심좌표
-        level: 3, // 지도의 확대 레벨
+        center: new naver.maps.LatLng( lat , lng ), // 지도의 중심좌표
+        zoom: 17, // 지도의 확대정도
     };
     map = new naver.maps.Map(mapContainer, mapOption);
 
     naver.maps.Event.addListener(map, 'click', () => {
-        if (overlay !== undefined) removeOverlay();
+        removeOverlay();
     });
 
-    naver.maps.Event.addListener(map, 'rightclick', (mouseEvent) => {
-        var latlng = mouseEvent.latLng;
-        console.log(latlng);
+    naver.maps.Event.addListener(map, 'rightclick', (e) => {
+        
+        createMarkerByCoords(e.coord._lat, e.coord._lng);
+        // marker.setPosition(e.coord._lat, e.coord._lng);
+        // marker.setPosition(new naver.maps.position(e.coord._lat, e.coord._lng));
     });
-
-
+    });
 }
 
 // * 마커와 오버레이 관련 함수들
 //좌표 정보만으로 마커를 한개만 생성한다. (내 좌표로 마커띄울때, 주변탐색시 중앙좌표에 마커띄울때 사용)
 function createMarkerByCoords(lat, lng) { // createMarker로 이름 바꿔도 될듯
+    removeMarker();
+    removeOverlay();
     console.log("좌표로 마커 생성 실행");
     let position = new naver.maps.LatLng(lat, lng);
-    let marker = new naver.maps.Marker({
+    marker = new naver.maps.Marker({
         map: map,
         position: position,
     });
@@ -285,11 +305,6 @@ function createMarkerByCoords(lat, lng) { // createMarker로 이름 바꿔도 �
     // 마커에 클릭 이벤트를 적용합니다.
     naver.maps.Event.addListener(marker, 'click', () => createOverlay(marker));
 
-    removeMarker();
-    removeOverlay();
-
-    // 생성한 마커를 마커 배열에 넣습니다.
-    markerList.push(marker);
 }
 
 // 검색, 주변탐색에 사용되는 숫자 마커를 생성하는 함수
@@ -328,58 +343,40 @@ function createOverlay(marker) {
 
     let lat = marker.position.y,
         lng = marker.position.x;
-    console.log(lat);
     
     console.log("기본 오버레이 생성");
-    console.log(marker);
+
     // 주소->좌표 변환 객체를 생성합니다
     naver.maps.Service.reverseGeocode({
         coords: new naver.maps.LatLng(lat, lng),
+        orders: [ // 상세주소를 찾기위한 옵션
+            naver.maps.Service.OrderType.ADDR,
+            naver.maps.Service.OrderType.ROAD_ADDR
+          ].join(',')
     }, function(status, response) {
         if (status !== naver.maps.Service.Status.OK) {
             return alert('Something wrong!');
         }
+        console.log(response);
         var result = response.v2, // 검색 결과의 컨테이너
             items = result.results, // 검색 결과의 배열
             address = result.address; // 검색 결과로 만든 주소
-            console.log(address);
         let addr = address.jibunAddress;
         let roadAddr = address.roadAddress;
-        let position = marker.getPosition();
         let content;
 
-        content = `<div class="overlay overlay-region">
-                        <div class="title">${addr}</div>
-                    </div>`;
+        console.log(addr);
+        console.log(roadAddr);
 
-        console.log(content);
+       
 
-        let infowindow = new naver.maps.InfoWindow({
-            content: content,
-            maxWidth: 280,
-            backgroundColor: "white",
-            borderColor: "#258fff",
-            borderWidth: 2,
-            anchorSize: new naver.maps.Size(20, 10),
-            anchorSkew: true,
-            anchorColor: "white",
-            pixelOffset: new naver.maps.Point(0, -10)
-        });
 
-        naver.maps.Event.addListener(marker, "click", function(e) {
-            if (infowindow.getMap()) {
-                console.log(infowindow.getMap());
-                infowindow.close();
-            } else {
-                console.log(infowindow.getMap());
-                infowindow.open(map, marker);
-            }
-        });
         
-        infowindow.open(map, marker);
 
         if (roadAddr === '') { // 지번 데이터만 존재할 경우
-            
+            content = `<div class="overlay overlay-region">
+                            <div class="title">${addr}</div>
+                        </div>`;
             
             // content = `<div class="overlay overlay-region">
             //                     <div class="title">${addr}</div>
@@ -395,6 +392,11 @@ function createOverlay(marker) {
             // });
         }
         else { // 도로명 데이터가 존재할 경우
+            console.log("도로명 데이터가 존재");
+            content = `<div class="overlay overlay-road">
+                            <div class="title">${roadAddr}</div>
+                            <div class="region">(지번) ${addr}</div>
+                        </div>`;
             // content = `<div class="overlay overlay-road">
             //                 <div class="title">${roadAddr}</div>
             //                 <div class="region">(지번) ${addr}</div>
@@ -409,6 +411,28 @@ function createOverlay(marker) {
             //     zIndex: 1
             // });
         }
+        
+        let infowindow = new naver.maps.InfoWindow({
+            content: content,
+            maxWidth: 280,
+            backgroundColor: "white",
+            borderColor: "#258fff",
+            borderWidth: 2,
+            anchorSize: new naver.maps.Size(20, 10),
+            anchorSkew: true,
+            anchorColor: "white",
+            pixelOffset: new naver.maps.Point(0, -10)
+        });
+
+        naver.maps.Event.addListener(marker, "click", function(e) {
+            if (infowindow.getMap()) {
+                infowindow.close();
+            } else {
+                infowindow.open(map, marker);
+            }
+        });
+        
+        infowindow.open(map, marker);
     });
 
     // //geocoder.coord2Address 에 사용될 콜백함수 정의
@@ -516,10 +540,7 @@ function createNumberOverlay(place) {
 
 
 function removeMarker() {
-    markerList.forEach(marker => {
-        marker.setMap(null);
-    })
-    markerList = [];
+    if (marker !== undefined) marker.setMap(null);
 }
 
 function removeNumberMarker() {
@@ -539,7 +560,6 @@ function removeOverlay() {
 function getUserLocation() {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject); // succes, error
-
     });
 }
 
@@ -846,26 +866,33 @@ function init() {
         .then(data => {
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
-            displayMap(lat, lng);
-            createMarkerByCoords(lat, lng);
+            console.log(lat, lng);
+            // let coord = new naver.maps.LatLng(lat, lng);
+            // displayMap(coord);
             getWeather(lat, lng)
+            // createMarkerByCoords(lat, lng);
              
-            // 주소->좌표 변환 객체를 생성합니다
+            // '좌표 => 주소' 변환 객체를 생성합니다
             naver.maps.Service.reverseGeocode({
                 coords: new naver.maps.LatLng(lat, lng),
             }, function(status, response) {
                 if (status !== naver.maps.Service.Status.OK) {
                     return alert('Something wrong!');
                 }
-                let result = response.v2, // 검색 결과의 컨테이너
-                    items = result.results, // 검색 결과의 배열
-                    address = result.address; // 검색 결과로 만든 주소
+
+                let address = response.v2.address; // 검색 결과로 만든 주소
                 let currentLocation = address.roadAddress; // 현재 위치
-                if(currentLocation === '') currentLocation = address.jibunAddress;
-                    currentLocationName.innerText = currentLocation;
+
+                if(currentLocation === '') currentLocation = address.jibunAddress; // 도로명주소가 없으면 지번주소로
+
+                currentLocationName.innerText = currentLocation;
+                console.log(currentLocation);
+                displayMap(currentLocation);
             });
         })
 }
+
+
 
 //* css를 조작하는 함수들은 여기에 정리 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 function closeSearchBar() {
