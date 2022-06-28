@@ -274,7 +274,7 @@ function displayMap(lat, lng) {
 
 // * 마커와 오버레이 관련 함수들
 //좌표 정보만으로 마커를 한개만 생성한다. (내 좌표로 마커띄울때, 주변탐색시 중앙좌표에 마커띄울때 사용)
-function createMarkerByCoords(lat, lng) {
+function createMarkerByCoords(lat, lng) { // createMarker로 이름 바꿔도 될듯
     console.log("좌표로 마커 생성 실행");
     let position = new naver.maps.LatLng(lat, lng);
     let marker = new naver.maps.Marker({
@@ -325,47 +325,13 @@ function createNumberMarker(placeList) {
 // 기본 마커에 적용되는 커스텀 오버레이를 만드는 함수 입니다.
 function createOverlay(marker) {
     removeOverlay();
+
+    let lat = marker.position.y,
+        lng = marker.position.x;
+    console.log(lat);
+    
     console.log("기본 오버레이 생성");
-
-    //geocoder.coord2Address 에 사용될 콜백함수 정의
-    let callback = (data) => {
-        let title ;
-        let addr = data[0].address.address_name;
-        let position = marker.getPosition();
-        let content;
-
-        if (data[0].road_address === null) { // 지번 데이터만 존재할 경우
-            title = addr;
-            content = `<div class="overlay overlay-region">
-                                <div class="title">${title}</div>
-                            </div>`;
-            overlay = new naver.maps.CustomOverlay({
-                map: map,
-                clickable: true,
-                content: content,
-                position: position,
-                xAnchor: 0.5,
-                yAnchor: 2.2, // 높을수록 위로 올라감
-                zIndex: 1
-            });
-        }
-        else { // 도로명 데이터가 존재할 경우
-            title = data[0].road_address.address_name;
-            content = `<div class="overlay overlay-road">
-                            <div class="title">${title}</div>
-                            <div class="region">(지번) ${addr}</div>
-                        </div>`;
-            overlay = new naver.maps.CustomOverlay({
-                map: map,
-                clickable: true,
-                content: content,
-                position: position,
-                xAnchor: 0.5,
-                yAnchor: 1.8,
-                zIndex: 1
-            });
-        }
-    }
+    console.log(marker);
     // 주소->좌표 변환 객체를 생성합니다
     naver.maps.Service.reverseGeocode({
         coords: new naver.maps.LatLng(lat, lng),
@@ -376,16 +342,120 @@ function createOverlay(marker) {
         var result = response.v2, // 검색 결과의 컨테이너
             items = result.results, // 검색 결과의 배열
             address = result.address; // 검색 결과로 만든 주소
-        let currentLocation = address.roadAddress;
-        if(currentLocation === '') currentLocation = address.jibunAddress;
-            currentLocationName.innerText = currentLocation;
+            console.log(address);
+        let addr = address.jibunAddress;
+        let roadAddr = address.roadAddress;
+        let position = marker.getPosition();
+        let content;
+
+        content = `<div class="overlay overlay-region">
+                        <div class="title">${addr}</div>
+                    </div>`;
+
+        console.log(content);
+
+        let infowindow = new naver.maps.InfoWindow({
+            content: content,
+            maxWidth: 280,
+            backgroundColor: "white",
+            borderColor: "#258fff",
+            borderWidth: 2,
+            anchorSize: new naver.maps.Size(20, 10),
+            anchorSkew: true,
+            anchorColor: "white",
+            pixelOffset: new naver.maps.Point(0, -10)
+        });
+
+        naver.maps.Event.addListener(marker, "click", function(e) {
+            if (infowindow.getMap()) {
+                console.log(infowindow.getMap());
+                infowindow.close();
+            } else {
+                console.log(infowindow.getMap());
+                infowindow.open(map, marker);
+            }
+        });
+        
+        infowindow.open(map, marker);
+
+        if (roadAddr === '') { // 지번 데이터만 존재할 경우
+            
+            
+            // content = `<div class="overlay overlay-region">
+            //                     <div class="title">${addr}</div>
+            //                 </div>`;
+            // overlay = new naver.maps.CustomOverlay({
+            //     map: map,
+            //     clickable: true,
+            //     content: content,
+            //     position: position,
+            //     xAnchor: 0.5,
+            //     yAnchor: 2.2, // 높을수록 위로 올라감
+            //     zIndex: 1
+            // });
+        }
+        else { // 도로명 데이터가 존재할 경우
+            // content = `<div class="overlay overlay-road">
+            //                 <div class="title">${roadAddr}</div>
+            //                 <div class="region">(지번) ${addr}</div>
+            //             </div>`;
+            // overlay = new naver.maps.CustomOverlay({
+            //     map: map,
+            //     clickable: true,
+            //     content: content,
+            //     position: position,
+            //     xAnchor: 0.5,
+            //     yAnchor: 1.8,
+            //     zIndex: 1
+            // });
+        }
     });
 
-    
-    var geocoder = new naver.maps.services.Geocoder();
+    // //geocoder.coord2Address 에 사용될 콜백함수 정의
+    // let callback = (data) => {
+    //     let title ;
+    //     let addr = data[0].address.address_name;
+    //     let position = marker.getPosition();
+    //     let content;
 
-    // 좌표로 법정동 상세 주소 정보를 요청합니다
-    geocoder.coord2Address(marker.getPosition().La, marker.getPosition().Ma, callback);
+    //     if (data[0].road_address === null) { // 지번 데이터만 존재할 경우
+    //         title = addr;
+    //         content = `<div class="overlay overlay-region">
+    //                             <div class="title">${title}</div>
+    //                         </div>`;
+    //         overlay = new naver.maps.CustomOverlay({
+    //             map: map,
+    //             clickable: true,
+    //             content: content,
+    //             position: position,
+    //             xAnchor: 0.5,
+    //             yAnchor: 2.2, // 높을수록 위로 올라감
+    //             zIndex: 1
+    //         });
+    //     }
+    //     else { // 도로명 데이터가 존재할 경우
+    //         title = data[0].road_address.address_name;
+    //         content = `<div class="overlay overlay-road">
+    //                         <div class="title">${title}</div>
+    //                         <div class="region">(지번) ${addr}</div>
+    //                     </div>`;
+    //         overlay = new naver.maps.CustomOverlay({
+    //             map: map,
+    //             clickable: true,
+    //             content: content,
+    //             position: position,
+    //             xAnchor: 0.5,
+    //             yAnchor: 1.8,
+    //             zIndex: 1
+    //         });
+    //     }
+    // }
+
+
+    // var geocoder = new naver.maps.services.Geocoder();
+
+    // // 좌표로 법정동 상세 주소 정보를 요청합니다
+    // geocoder.coord2Address(marker.getPosition().La, marker.getPosition().Ma, callback);
 }
 
 

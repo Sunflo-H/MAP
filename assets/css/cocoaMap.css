@@ -284,16 +284,15 @@
     border-radius: 20px;
 }
 
-.overlay {
+/* .overlay {
 	position: relative;
-    
 	background: white;
     border: 1px solid var(--blue2);
 	border-radius: .2em;
     box-shadow: -1px 1px 4px #333;
-}
+} */
 
-.overlay:after {
+/* .overlay:after {
 	content: '';
 	position: absolute;
 	bottom: 0;
@@ -305,11 +304,11 @@
 	border-bottom: 0;
 	margin-left: -12px;
 	margin-bottom: -12px;
-}
+} */
 
 .overlay-region {
-    width: 280px;
-    height: 37px;
+    /* width: 280px; */
+    /* height: 37px; */
     text-align: center;
 }
 
