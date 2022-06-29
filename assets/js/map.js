@@ -150,12 +150,8 @@ function displaySearchList(placeList) {
             
         });
 
-        // 장소를 맵의 중앙으로 놓는다.
-        panTo(place.y, place.x);
-
-        // 장소의 오버레이를 생성한다.
-        if(place.place_name !== undefined) createNumberOverlay(place);
-        else if(place.address_name !== undefined) createNumberOverlay(place); 
+        panTo(place.y, place.x); // 장소를 맵의 중앙으로 '부드럽게' 이동한다.
+        createNumberOverlay(place); // 장소의 오버레이를 생성한다.
     }
 
     placeList.forEach((place, i) => {
@@ -206,6 +202,7 @@ function displaySearchList(placeList) {
     })
     const names = document.querySelectorAll('.nameAndAddress .name');
 
+    //장소 이름를 클릭시 상세페이지로 이동
     names.forEach(name => {
         name.addEventListener('click', placeNameClick);
     })
@@ -240,7 +237,7 @@ function aroundSearch(e) {
     let callback = function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
             console.log(result);
-            createMarkerByCoords(map.getCenter().Ma, map.getCenter().La);
+            // createMarkerByCoords(lat, lng);
             createNumberMarker(result);
             displaySearchList(result);
             // polylineList.forEach(polyline => polyline.setMap(null));
@@ -297,7 +294,7 @@ function displayMap(address) {
 
 // * 마커와 오버레이 관련 함수들
 //좌표 정보만으로 마커를 한개만 생성한다. (내 좌표로 마커띄울때, 주변탐색시 중앙좌표에 마커띄울때 사용)
-function createMarkerByCoords(lat, lng) { // createMarker로 이름 바꿔도 될듯
+function createMarkerByCoords(lat, lng) { 
     removeMarker();
     removeOverlay();
     console.log("좌표로 마커 생성 실행");
@@ -305,6 +302,20 @@ function createMarkerByCoords(lat, lng) { // createMarker로 이름 바꿔도 �
     marker = new naver.maps.Marker({
         map: map,
         position: position,
+    });
+
+    naver.maps.Service.reverseGeocode({
+        coords: new naver.maps.LatLng(lat, lng),
+        orders: [ // 상세주소를 찾기위한 옵션
+            naver.maps.Service.OrderType.ADDR,
+            naver.maps.Service.OrderType.ROAD_ADDR
+          ].join(',')
+    }, function(status, response) {
+        if (status !== naver.maps.Service.Status.OK) {
+            return alert('Something wrong!');
+        }
+        let result = response.v2; // 검색 결과의 컨테이너
+        marker.set('addressData', result);
     });
 
     // 마커에 클릭 이벤트를 적용합니다.
@@ -334,25 +345,29 @@ function createNumberMarker(placeList) {
 
         numberMarker.set('index', i);
         numberMarker.set('isActive', false);
+        numberMarker.set('placeData', place);
         numberMarkerList.push(numberMarker);
+        console.log(numberMarker);
+
 
         naver.maps.Event.addListener(numberMarker, 'click', (e) => {
-            let marker = e.overlay;
-            onMouseClick(e);
+            let marker = e.overlay; //클릭한 마커정보
+            changeMarkerState(e); // 마커를 활성화, 비활성화 하는 함수
             if ( marker.get('isActive') ) createNumberOverlay(place, e);
             else removeOverlay();
         });
-        naver.maps.Event.addListener(numberMarker, 'mouseover', blueMarker);
-        naver.maps.Event.addListener(numberMarker, 'mouseout', whiteMarker);        
+
+        naver.maps.Event.addListener(numberMarker, 'mouseover', changeBlueMarker);
+        naver.maps.Event.addListener(numberMarker, 'mouseout', changeWhiteMarker);        
     })
 }
 
-function onMouseClick(e) {
+function changeMarkerState(e) {
     let marker = e.overlay, // 이벤트 대상이 된 마커를 의미한다.
         index = marker.get('index'),
         isActive = marker.get('isActive');
 
-    // 다른 마커를 클릭한 경우
+    // 클릭한 마커를 제외한 모든 마커를 비활성화한다.
     numberMarkerList.forEach((marker, i) => {
         if(marker.get('index') !== index) { // 대상이 된 마커 외의 모든 마커를 비활성화
             marker.set('isActive', false);
@@ -363,9 +378,9 @@ function onMouseClick(e) {
                 origin: new naver.maps.Point(i * 29, 50)
             });
         };
-    })
+    });
 
-    // 대상 마커의 활성화 상태 체크 후 변경
+    // 클릭한 마커만 'isActive'를 확인하여 상태를 바꿔준다.
     if ( isActive === true ) {
         marker.set('isActive', false);
     }
@@ -374,7 +389,7 @@ function onMouseClick(e) {
     }
 }
 
-function blueMarker(e) {
+function changeBlueMarker(e) {
     let marker = e.overlay, // 이벤트 대상이 된 마커를 의미한다.
         index = marker.get('index');
     marker.setIcon({
@@ -385,7 +400,7 @@ function blueMarker(e) {
     });
 }
 
-function whiteMarker(e) {
+function changeWhiteMarker(e) {
     let marker = e.overlay, // 이벤트 대상이 된 마커를 의미한다.
         index = marker.get('index');
 
@@ -401,77 +416,71 @@ function whiteMarker(e) {
 
 // 기본 마커에 적용되는 커스텀 오버레이를 만드는 함수 입니다.
 function createOverlay(marker) {
-    removeOverlay();
-
-    let lat = marker.position.y,
-        lng = marker.position.x;
-    
     console.log("기본 오버레이 생성");
 
-    // 주소->좌표 변환 객체를 생성합니다
-    naver.maps.Service.reverseGeocode({
-        coords: new naver.maps.LatLng(lat, lng),
-        orders: [ // 상세주소를 찾기위한 옵션
-            naver.maps.Service.OrderType.ADDR,
-            naver.maps.Service.OrderType.ROAD_ADDR
-          ].join(',')
-    }, function(status, response) {
-        if (status !== naver.maps.Service.Status.OK) {
-            return alert('Something wrong!');
-        }
-        var result = response.v2, // 검색 결과의 컨테이너
-            address = result.address; // 검색 결과로 만든 주소
-        let addr = address.jibunAddress;
-        let roadAddr = address.roadAddress;
-        let content;
+    removeOverlay();
+    
+    let address = marker.get('addressData').address;
+    let addr = address.jibunAddress;
+    let roadAddr = address.roadAddress;
+    let content;
 
-        if (roadAddr === '') { // 지번 데이터만 존재할 경우
-            content = `<div class="overlay overlay-region">
-                            <div class="title">${addr}</div>
-                        </div>`;
-        }
-        else { // 도로명 데이터가 존재할 경우
-            console.log("도로명 데이터가 존재");
-            content = `<div class="overlay overlay-road">
-                            <div class="title">${roadAddr}</div>
-                            <div class="region">(지번) ${addr}</div>
-                        </div>`;
-        }
-        
-        overlay = new naver.maps.InfoWindow({
-            content: content,
-            maxWidth: 280,
-            backgroundColor: "white",
-            borderColor: "#258fff",
-            borderWidth: 2,
-            anchorSize: new naver.maps.Size(20, 10),
-            anchorSkew: true,
-            anchorColor: "white",
-            pixelOffset: new naver.maps.Point(0, -10)
-        });
-
-        naver.maps.Event.addListener(marker, "click", function(e) {
-            if (overlay.getMap()) {
-                overlay.close();
-            } else {
-                overlay.open(map, marker);
-            }
-        });
-        
-        overlay.open(map, marker);
+    if (roadAddr === '') { // 지번 데이터만 존재할 경우
+        content = `<div class="overlay overlay-region">
+                        <div class="title">${addr}</div>
+                    </div>`;
+    }
+    else { // 도로명 데이터가 존재할 경우
+        content = `<div class="overlay overlay-road">
+                        <div class="title">${roadAddr}</div>
+                        <div class="region">(지번) ${addr}</div>
+                    </div>`;
+    }
+    
+    overlay = new naver.maps.InfoWindow({
+        content: content,
+        maxWidth: 280,
+        backgroundColor: "white",
+        borderColor: "#258fff",
+        borderWidth: 2,
+        anchorSize: new naver.maps.Size(20, 10),
+        anchorSkew: true,
+        anchorColor: "white",
+        pixelOffset: new naver.maps.Point(0, -10)
     });
+
+    naver.maps.Event.addListener(marker, "click", function(e) {
+        if (overlay.getMap()) {
+            overlay.close();
+        } else {
+            overlay.open(map, marker);
+        }
+    });
+    
+    overlay.open(map, marker);
 }
 
 
 //숫자 마커에 적용되는 오버레이입니다.
 function createNumberOverlay(place, e) {
+    /**
+     * 마커 클릭 => overlay.open(map, marker); 지도와 마커정보필요
+     * marker = e.overlay
+     * 마커를 클릭하여 얻은 e의 값
+     * 
+     * 
+     * 검색리스트클릭 => overlay.open(map, marker) 마커정보를 어떻게 가져오지?
+     * 장소이름을 클릭하여 얻은 e의 값으로는 만들수 없어 e.overlay불가능
+     * 
+     * 마커를 만들때 set('placeData', place) 이렇게 만들고
+     * 마커 리스트 순회하면서 get('placeData') === place 인거를 찾자
+     */
+    console.log(e);
     removeOverlay();
     let { place_name, road_address_name, address_name, phone, place_url, distance } = place;
     let marker = e.overlay;
 
-
-    // 주소->좌표 변환 객체를 생성합니다
-
+    // 장소명이 없는 오버레이, 장소명이 존재하는 오버레이 생성
     if(place_name === undefined) {
         content = `<div class="overlay overlay-region">
                                 <div class="title">${address_name}</div>
@@ -504,12 +513,8 @@ function createNumberOverlay(place, e) {
     title.forEach(title => {
         title.addEventListener('click', titleClick);
     })
-    
-
-    
     overlay.open(map, marker);
 }
-
 
 function removeMarker() {
     if (marker !== undefined) marker.setMap(null);
