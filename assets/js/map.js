@@ -273,7 +273,16 @@ function displayMap(address) {
         map = new naver.maps.Map(mapContainer, mapOption);
 
         naver.maps.Event.addListener(map, 'click', () => {
-            if(overlay !== undefined) removeOverlay();
+            numberMarkerList.forEach((marker, i) => {
+                marker.set('isActive', false);
+                marker.setIcon({
+                    url: 'assets/img/sp_pins_spot_v3.png',
+                    size: new naver.maps.Size(24, 37),
+                    anchor: new naver.maps.Point(12, 37),
+                    origin: new naver.maps.Point(i * 29, 50)
+                });
+            })
+            removeOverlay();
         });
 
         naver.maps.Event.addListener(map, 'rightclick', (e) => {
@@ -287,8 +296,8 @@ function displayMap(address) {
 // * 마커와 오버레이 관련 함수들
 //좌표 정보만으로 마커를 한개만 생성한다. (내 좌표로 마커띄울때, 주변탐색시 중앙좌표에 마커띄울때 사용)
 function createMarkerByCoords(lat, lng) { // createMarker로 이름 바꿔도 될듯
-    if(marker !== undefined) removeMarker();
-    if(overlay !== undefined) removeOverlay();
+    removeMarker();
+    removeOverlay();
     console.log("좌표로 마커 생성 실행");
     let position = new naver.maps.LatLng(lat, lng);
     marker = new naver.maps.Marker({
@@ -313,19 +322,23 @@ function createNumberMarker(placeList) {
                 url:'/assets/img/sp_pins_spot_v3.png',
                 size: new naver.maps.Size(24, 37),
                 anchor: new naver.maps.Point(12, 37),
-                origin: new naver.maps.Point(i * 29, 0)
+                origin: new naver.maps.Point(i * 29, 50)
             },
             numberMarker = new naver.maps.Marker({
                 position: position,
                 map: map,
                 icon: icon
             });
+
         numberMarker.set('index', i);
         numberMarker.set('isActive', false);
         numberMarkerList.push(numberMarker);
+
         naver.maps.Event.addListener(numberMarker, 'click', (e) => {
+            let marker = e.overlay;
             onMouseClick(e);
-            // createNumberOverlay(place);
+            if ( marker.get('isActive') ) createNumberOverlay(place, e);
+            else removeOverlay();
         });
         naver.maps.Event.addListener(numberMarker, 'mouseover', blueMarker);
         naver.maps.Event.addListener(numberMarker, 'mouseout', whiteMarker);        
@@ -357,7 +370,6 @@ function onMouseClick(e) {
     else {
         marker.set('isActive', true);
     }
-    console.log(marker.get('isActive'));
 }
 
 function blueMarker(e) {
@@ -387,7 +399,7 @@ function whiteMarker(e) {
 
 // 기본 마커에 적용되는 커스텀 오버레이를 만드는 함수 입니다.
 function createOverlay(marker) {
-    if(overlay !== undefined) removeOverlay();
+    removeOverlay();
 
     let lat = marker.position.y,
         lng = marker.position.x;
@@ -450,25 +462,18 @@ function createOverlay(marker) {
 
 
 //숫자 마커에 적용되는 오버레이입니다.
-function createNumberOverlay(place) {
+function createNumberOverlay(place, e) {
     removeOverlay();
-    console.log(place);
     let { place_name, road_address_name, address_name, phone, place_url, distance } = place;
-    let position = new naver.maps.LatLng(place.y, place.x);
+    let marker = e.overlay;
+
+
+    // 주소->좌표 변환 객체를 생성합니다
 
     if(place_name === undefined) {
         content = `<div class="overlay overlay-region">
                                 <div class="title">${address_name}</div>
                             </div>`;
-            overlay = new naver.maps.CustomOverlay({
-                map: map,
-                clickable: true,
-                content: content,
-                position: position,
-                xAnchor: 0.5,
-                yAnchor: 2.2, // 높을수록 위로 올라감
-                zIndex: 1
-            });
     }
     else {
         content = `<div class="overlay overlay-number">
@@ -476,25 +481,20 @@ function createNumberOverlay(place) {
                         <div class="roadName">${road_address_name}</div>
                         <div class="region">(지번) ${address_name}</div>
                         </div>`;
-        // <div class="phoneAndDetailPage">
-        //     <div class="phone">${phone}</div>
-        // </div>
-        // <div class="pathfinder">길찾기</div>
-    
-        //오버레이 생성
-        overlay = new naver.maps.CustomOverlay({
-            map: map,
-            clickable: true,
-            content: content,
-            position: position,
-            xAnchor: 0.5,
-            yAnchor: 1.32,
-            zIndex: 1
-        });
     }
+    overlay = new naver.maps.InfoWindow({
+        content: content,
+        maxWidth: 280,
+        backgroundColor: "white",
+        borderColor: "#258fff",
+        borderWidth: 2,
+        anchorSize: new naver.maps.Size(20, 10),
+        anchorSkew: true,
+        anchorColor: "white",
+        pixelOffset: new naver.maps.Point(0, -10)
+    });
 
     //class detailPage 또는 title을 클릭하면 상세 페이지로 이동
-    // naver.maps.Event.addListener(numberMarker, 'click', () => createNumberOverlay(place));
     const title = document.querySelectorAll('.overlay-number .title');
     let titleClick = (e) => {
         location.href = place_url;
@@ -502,6 +502,10 @@ function createNumberOverlay(place) {
     title.forEach(title => {
         title.addEventListener('click', titleClick);
     })
+    
+
+    
+    overlay.open(map, marker);
 }
 
 
@@ -517,7 +521,10 @@ function removeNumberMarker() {
 }
 
 function removeOverlay() {
-    overlay.close();
+    if(overlay !== undefined) {
+        overlay.close();
+        overlay = undefined;
+    }
 }
 
 // 앱의 초기단계에서 사용자의 위치를 받는 함수
