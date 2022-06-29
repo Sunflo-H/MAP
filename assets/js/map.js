@@ -305,25 +305,19 @@ function createNumberMarker(placeList) {
     removeNumberMarker();
     console.log("숫자 마커 생성");
 
-    placeList.forEach((place, index) => {
+    placeList.forEach((place, i) => {
         let position = new naver.maps.LatLng(place.y, place.x);
-        let imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png' // 마커 이미지 url, 스프라이트 이미지
-        let imageSize = new naver.maps.Size(36, 37)  // 마커 이미지의 크기
-
-        let imgOptions = {
-            spriteSize: new naver.maps.Size(36, 691), // 스프라이트 이미지의 크기
-            spriteOrigin: new naver.maps.Point(0, (index * 46) + 10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
-            offset: new naver.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
-        }
-
-        let markerImage = new naver.maps.MarkerImage(imageSrc, imageSize, imgOptions)
-
-        let numberMarker = new naver.maps.Marker({
-            map: map,
-            position: position, // 마커의 위치
-            image: markerImage
-        });
-
+        let icon = {
+                url:'/assets/img/sp_pins_spot_v3.png',
+                size: new naver.maps.Size(24, 37),
+                anchor: new naver.maps.Point(12, 37),
+                origin: new naver.maps.Point(i * 29, 0)
+            },
+            numberMarker = new naver.maps.Marker({
+                position: position,
+                map: map,
+                icon: icon
+            });
         numberMarkerList.push(numberMarker);
         naver.maps.Event.addListener(numberMarker, 'click', () => createNumberOverlay(place));
     })
