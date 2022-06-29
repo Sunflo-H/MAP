@@ -230,7 +230,8 @@ function aroundSearch(e) {
     };
     // 공공기관 코드 검색, 찾은 placeList는 callback으로 전달한다.
     places.categorySearch(category, callback, {
-        location: location
+        location: location,
+        size: SEARCH_DATA_LENGTH
     });
 }
 
@@ -313,7 +314,6 @@ function createNumberMarker(placeList) {
     console.log("숫자 마커 생성");
 
     placeList.forEach((place, i) => {
-        if ( i >= SEARCH_DATA_LENGTH ) return;
         let position = new naver.maps.LatLng(place.y, place.x);
         let icon = {
                 url:'/assets/img/sp_pins_spot_v3.png',
@@ -637,6 +637,8 @@ function searchByAddr(searchInput) {
                 console.log("검색 실패 주소가 아닙니다. reulst는 공백입니다.");
                 resolve(result);
             }
+        }, {
+            size: 10
         });
     })
     return placeList;
@@ -647,7 +649,7 @@ function searchByKeyword(searchInput) {
     const lat = map.getCenter()._lat;
     const lng = map.getCenter()._lng;
 
-    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${searchInput}`, {
+    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${searchInput}&size=${SEARCH_DATA_LENGTH}`, {
         headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
     })
         .then((response) => response.json())
@@ -836,7 +838,7 @@ function init() {
                 if (status !== naver.maps.Service.Status.OK) {
                     return alert('에러 : 좌표 => 주소 변환에 실패하였습니다.');
                 }
-                
+
                 let currentLocation = response.v2.address.roadAddress; // 현재 위치
                 if(currentLocation === '') currentLocation = response.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
                 
