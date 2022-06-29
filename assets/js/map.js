@@ -229,13 +229,16 @@ function categoryIsActive() {
 
 function aroundSearch(e) {
     console.log("카테고리를 눌렀습니다. 해당 카테고리로 주변 탐색을 실행합니다.");
-    let places = new naver.maps.services.Places();
+    let places = new kakao.maps.services.Places();
     let category = e.currentTarget.parentNode.getAttribute('data-category');
-
+    let lat = map.getCenter()._lat;
+    let lng = map.getCenter()._lng;
+    let location = new kakao.maps.LatLng(lat, lng);
+    
 
     // 카테고리 검색 결과를 받을 콜백 함수
     let callback = function (result, status) {
-        if (status === naver.maps.services.Status.OK) {
+        if (status === kakao.maps.services.Status.OK) {
             console.log(result);
             createMarkerByCoords(map.getCenter().Ma, map.getCenter().La);
             createNumberMarker(result);
@@ -244,10 +247,9 @@ function aroundSearch(e) {
             // addDistanceData(result, '#FF00FF');
         }
     };
-
     // 공공기관 코드 검색, 찾은 placeList는 callback으로 전달한다.
     places.categorySearch(category, callback, {
-        location: map.getCenter()
+        location: location
     });
 }
 
