@@ -208,22 +208,6 @@ function displaySearchList(placeList) {
     })
 }
 
-function categoryIsActive() { 
-    let result = {
-        state: false,
-        index: ''
-    };
-
-    categoryCircles.forEach((circle, i) => {
-        if (circle.lastElementChild.classList.contains('category-active')) {
-            result.state = true;
-            result.index = i;
-        }
-    })
-
-    return result;
-}
-
 function aroundSearch(e) {
     console.log("카테고리를 눌렀습니다. 해당 카테고리로 주변 탐색을 실행합니다.");
     let places = new kakao.maps.services.Places();
@@ -347,8 +331,6 @@ function createNumberMarker(placeList) {
         numberMarker.set('isActive', false);
         numberMarker.set('placeData', place);
         numberMarkerList.push(numberMarker);
-        console.log(numberMarker);
-
 
         naver.maps.Event.addListener(numberMarker, 'click', (e) => {
             let marker = e.overlay; //클릭한 마커정보
@@ -810,29 +792,32 @@ function search(keyword) {
 }
 
 function categoryClick(e, index) {
-    let isActive = categoryIsActive(); // return {활성화된게 있는지 여부, 활성화된 인덱스}
-
     removeNumberMarker();
     removeOverlay();
 
-    if (isActive.state === true) {
-        console.log("활성화 된 카테고리가 있습니다. 비활성화 합니다.");
+    // 활성화 = category-hover + category-active class가 같이 있는 상태이다.    
+    // 1. 클릭한 카테고리를 제외한 모든 카테고리 비활성화
+    categoryCircles.forEach(circle => {
+        if ( e.currentTarget !== circle ) {
+            circle.lastElementChild.classList.remove('category-active');
+            circle.lastElementChild.classList.remove('category-hover');
+            circle.style.color = 'black';
+        }
+    });
 
-        // 활성화된 카테고리가 존재하고, 클릭한 카테고리는 활성화가 아니라면 연다.
-        if (e.currentTarget.lastElementChild.classList.contains('category-active') === false) {
-            openCateogry(e.currentTarget);
-            aroundSearch(e);
-        }
-        // 원래 활성화 되어있던 index의 카테고리는 닫는다.
-        closeCategory(isActive.index);
+    // 2. 클릭한 카테고리의 상태를 확인하여 true나 false로 바꿔준다.
+    if ( e.currentTarget.lastElementChild.classList.contains('category-active') ) {
+        console.log("active가 있어 => active 제거");
+        e.currentTarget.lastElementChild.classList.remove('category-active');
+        e.currentTarget.lastElementChild.classList.remove('category-hover');
+        e.currentTarget.style.color = 'black';
     }
-    else if (isActive.state === false) {
-        console.log("활성화된 카테고리가 없습니다. 클릭한 카테고리를 활성화 합니다.");
+    else {
+        console.log("active 없어 => active 추가");
         e.currentTarget.lastElementChild.classList.add('category-active');
+        e.currentTarget.lastElementChild.classList.add('category-hover');
+        e.currentTarget.style.color = 'white';
         aroundSearch(e);
-        if (e.currentTarget.lastElementChild.classList.contains('category-hover') === false) {
-            openCateogry(e.currentTarget);
-        }
     }
 }
 
@@ -851,7 +836,7 @@ function init() {
                 if (status !== naver.maps.Service.Status.OK) {
                     return alert('에러 : 좌표 => 주소 변환에 실패하였습니다.');
                 }
-                console.log(response.v2.address);
+                
                 let currentLocation = response.v2.address.roadAddress; // 현재 위치
                 if(currentLocation === '') currentLocation = response.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
                 
@@ -911,27 +896,18 @@ function aroundOpenAndClose() {
 }
 
 function categoryMouseEnter(e) {
+    // e.target = 카테고리 서클
     e.target.lastElementChild.classList.add('category-hover');
     e.target.style.color = 'white';
 }
 
 function categoryMouseLeave(e) {
+    // e.target = 카테고리 서클
     if (e.target.lastElementChild.classList.contains('category-active') === false) {
         e.target.lastElementChild.classList.remove('category-hover');
         e.target.style.color = 'black';
     }
 
-}
-
-function openCateogry(target) {
-    target.lastElementChild.classList.add('category-hover');
-    target.style.color = "white";
-}
-
-function closeCategory(i) {
-    categoryCircles[i].lastElementChild.classList.remove('category-active');
-    categoryCircles[i].lastElementChild.classList.remove('category-hover');
-    categoryCircles[i].style.color = 'black';
 }
 
 //* 이벤트 리스너들 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
