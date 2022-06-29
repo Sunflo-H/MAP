@@ -557,8 +557,6 @@ function clickHistory(e) {
     currentLocation.innerText = history;
 }
 
-
-
 function setHtmlHistoryList(history) {
     // 값이 중복이 아닐 경우 push , 배열이 이미 최대크기면 shift
     if (historyList.find(_history => history === _history) === undefined) {
@@ -572,19 +570,19 @@ function setHtmlHistoryList(history) {
 
 // 주소를 입력하여 검색하는 함수입니다.
 function searchByAddr(searchInput) {
-    console.log("주소로 검색 실행");
-    console.log("검색어 :", searchInput);
+    console.log("주소로 검색 실행 , 검색어 :", searchInput);
+
+    // 카카오 검색
     // 주소-좌표 변환 객체를 생성합니다
-    var geocoder = new naver.maps.services.Geocoder();
+    var geocoder = new kakao.maps.services.Geocoder();
 
     // 주소로 좌표를 검색합니다
     let placeList = new Promise((resolve, reject) => {
         geocoder.addressSearch(searchInput, (result, status) => {
             // 정상적으로 검색이 완료됐으면 
-            if (status === naver.maps.services.Status.OK) {
+            if (status === kakao.maps.services.Status.OK) {
                 console.log("주소로 검색 결과 : ", result);
                 resolve(result);
-
             } else {
                 console.log("검색 실패 주소가 아닙니다. reulst는 공백입니다.");
                 resolve(result);
@@ -595,12 +593,12 @@ function searchByAddr(searchInput) {
 }
 
 function searchByKeyword(searchInput) {
-    console.log("키워드로 검색 실행합니다.");
-    const lat = map.getCenter().Ma;
-    const lng = map.getCenter().La;
+    console.log("키워드로 검색 실행 , 검색어 :", searchInput);
+    const lat = map.getCenter()._lat;
+    const lng = map.getCenter()._lng;
 
-    let placeList = fetch(`https://dapi.naver.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${searchInput}`, {
-        headers: { Authorization: `naverAK 621a24687f9ad83f695acc0438558af2` }
+    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${searchInput}`, {
+        headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
     })
         .then((response) => response.json())
         .then((data) => {
