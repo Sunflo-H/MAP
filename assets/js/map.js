@@ -353,7 +353,7 @@ function createNumberMarker(placeList) {
         naver.maps.Event.addListener(numberMarker, 'click', (e) => {
             let marker = e.overlay; //클릭한 마커정보
             changeMarkerState(e); // 마커를 활성화, 비활성화 하는 함수
-            if ( marker.get('isActive') ) createNumberOverlay(place, e);
+            if ( marker.get('isActive') ) createNumberOverlay(place);
             else removeOverlay();
         });
 
@@ -462,7 +462,7 @@ function createOverlay(marker) {
 
 
 //숫자 마커에 적용되는 오버레이입니다.
-function createNumberOverlay(place, e) {
+function createNumberOverlay(place) {
     /**
      * 마커 클릭 => overlay.open(map, marker); 지도와 마커정보필요
      * marker = e.overlay
@@ -475,10 +475,9 @@ function createNumberOverlay(place, e) {
      * 마커를 만들때 set('placeData', place) 이렇게 만들고
      * 마커 리스트 순회하면서 get('placeData') === place 인거를 찾자
      */
-    console.log(e);
     removeOverlay();
     let { place_name, road_address_name, address_name, phone, place_url, distance } = place;
-    let marker = e.overlay;
+    let marker = numberMarkerList.find(marker => marker.get('placeData') === place);
 
     // 장소명이 없는 오버레이, 장소명이 존재하는 오버레이 생성
     if(place_name === undefined) {
