@@ -5,6 +5,7 @@ const RADIUS = {
     LV3: 15000,
     LV4: 20000
 }
+const SEARCH_DATA_LENGTH = 10;
 
 const currentLocationName = document.querySelector('.current-location');
 const searchInput = document.querySelector('.search-bar input[type=text]');
@@ -306,6 +307,7 @@ function createNumberMarker(placeList) {
     console.log("숫자 마커 생성");
 
     placeList.forEach((place, i) => {
+        if ( i >= SEARCH_DATA_LENGTH ) return;
         let position = new naver.maps.LatLng(place.y, place.x);
         let icon = {
                 url:'/assets/img/sp_pins_spot_v3.png',
@@ -318,11 +320,70 @@ function createNumberMarker(placeList) {
                 map: map,
                 icon: icon
             });
+        numberMarker.set('index', i);
+        numberMarker.set('isActive', false);
         numberMarkerList.push(numberMarker);
-        naver.maps.Event.addListener(numberMarker, 'click', () => createNumberOverlay(place));
+        naver.maps.Event.addListener(numberMarker, 'click', (e) => {
+            onMouseClick(e);
+            // createNumberOverlay(place);
+        });
+        naver.maps.Event.addListener(numberMarker, 'mouseover', blueMarker);
+        naver.maps.Event.addListener(numberMarker, 'mouseout', whiteMarker);        
     })
 }
 
+function onMouseClick(e) {
+    let marker = e.overlay, // 이벤트 대상이 된 마커를 의미한다.
+        index = marker.get('index'),
+        isActive = marker.get('isActive');
+
+    // 다른 마커를 클릭한 경우
+    numberMarkerList.forEach((marker, i) => {
+        if(marker.get('index') !== index) { // 대상이 된 마커 외의 모든 마커를 비활성화
+            marker.set('isActive', false);
+            marker.setIcon({
+                url: 'assets/img/sp_pins_spot_v3.png',
+                size: new naver.maps.Size(24, 37),
+                anchor: new naver.maps.Point(12, 37),
+                origin: new naver.maps.Point(i * 29, 50)
+            });
+        };
+    })
+
+    // 대상 마커의 활성화 상태 체크 후 변경
+    if ( isActive === true ) {
+        marker.set('isActive', false);
+    }
+    else {
+        marker.set('isActive', true);
+    }
+    console.log(marker.get('isActive'));
+}
+
+function blueMarker(e) {
+    let marker = e.overlay, // 이벤트 대상이 된 마커를 의미한다.
+        index = marker.get('index');
+    marker.setIcon({
+        url: 'assets/img/sp_pins_spot_v3_over.png',
+        size: new naver.maps.Size(24, 37),
+        anchor: new naver.maps.Point(12, 37),
+        origin: new naver.maps.Point(index * 29, 50)
+    });
+}
+
+function whiteMarker(e) {
+    let marker = e.overlay, // 이벤트 대상이 된 마커를 의미한다.
+        index = marker.get('index');
+
+    if(marker.get('isActive') === true) return; //마커가 활성화된 상태라면 이미지를 바꾸지 않는다.
+
+    marker.setIcon({
+        url: 'assets/img/sp_pins_spot_v3.png',
+        size: new naver.maps.Size(24, 37),
+        anchor: new naver.maps.Point(12, 37),
+        origin: new naver.maps.Point(index * 29, 50)
+    });
+}
 
 // 기본 마커에 적용되는 커스텀 오버레이를 만드는 함수 입니다.
 function createOverlay(marker) {
