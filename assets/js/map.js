@@ -255,6 +255,7 @@ function displayMap(address) {
         };
 
         map = new naver.maps.Map(mapContainer, mapOption);
+        var drawingManager = new naver.maps.drawing.DrawingManager({map: map});
 
         naver.maps.Event.addListener(map, 'click', () => {
             numberMarkerList.forEach((marker, i) => {
