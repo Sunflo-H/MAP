@@ -829,6 +829,7 @@ function init() {
         .then(data => {
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
+            console.log(lat, lng);
             getWeather(lat, lng)
             // createMarkerByCoords(lat, lng);
              
