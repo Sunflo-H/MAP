@@ -14,9 +14,16 @@
         
     <!-- 네이버 map : 기본적인 지도 기능을 제공 -->
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju"></script>
+
     <!-- NAVER 지도 API v3은 지도의 기능을 확장하는 서브 모듈 시스템을 지원합니다.-->
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju_ID&submodules=geocoder"></script>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju_ID&submodules=drawing"></script>
+
+    <!-- T map -->
+    <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx68845a4aa2724d0ebbead38642364a0f"></script>
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
     <script defer src="assets/js/map.js"></script>
     <script defer src="assets/js/menubar.js"></script>
@@ -274,32 +281,32 @@
     </div>
 </body>
 
-<?php
-  $client_id = "es0epxrzju";
-  $client_secret = "lNKSzmkBdielGL26PjmWaKhpaCgz9wBVXMhyy0Ou";
-  $url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=127.1058342,37.359708&goal=129.075986,35.179470&option=trafast";
-  $is_post = false;
-  $ch = curl_init();
-  $headers = ["X-NCP-APIGW-API-KEY-ID: ".$client_id, "X-NCP-APIGW-API-KEY: ".$client_secret];
+ <?php
+//   $client_id = "es0epxrzju";
+//   $client_secret = "lNKSzmkBdielGL26PjmWaKhpaCgz9wBVXMhyy0Ou";
+//   $url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=127.1058342,37.359708&goal=129.075986,35.179470&option=trafast";
+//   $is_post = false;
+//   $ch = curl_init();
+//   $headers = ["X-NCP-APIGW-API-KEY-ID: ".$client_id, "X-NCP-APIGW-API-KEY: ".$client_secret];
 
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_POST, $is_post);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-  $response = curl_exec ($ch);
-  $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//   curl_setopt($ch, CURLOPT_URL, $url);
+//   curl_setopt($ch, CURLOPT_POST, $is_post);
+//   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//   curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+//   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+//   $response = curl_exec ($ch);
+//   $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
   
-  echo "status_code:".$status_code;
+//   echo "status_code:".$status_code;
   
-  echo "<br>";
+//   echo "<br>";
 
-  curl_close ($ch);
-  if($status_code == 200) {
-    echo $response."<br>";
-    // echo json_encode($response);
-  } else {
-    echo "Error 내용:".$response;
-  }
+//   curl_close ($ch);
+//   if($status_code == 200) {
+//     echo $response."<br>";
+//     // echo json_encode($response);
+//   } else {
+//     echo "Error 내용:".$response;
+//   }
 ?>
 </html>

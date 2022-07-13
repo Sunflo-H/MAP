@@ -27,72 +27,230 @@ let overlay;
 let searchbarIsOpen = false;
 let polylineList = [];
 
-function getWeather(lat,lng) {
+// var marker_s, marker_e, marker_p1, marker_p2;
+// var totalMarkerArr = [];
+// var drawInfoArr = [];
+// var resultdrawArr = [];
+
+// $.ajax({
+//     method: "POST",
+//     url: "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json&callback=result",
+//     async: false,
+//     data: {
+//         "appKey": "l7xx68845a4aa2724d0ebbead38642364a0f",
+//         "startX": "127.090688",
+//         "startY": "37.552128",
+//         "endX": "127.08534387836",
+//         "endY": "37.5453966002957",
+//         "reqCoordType": "WGS84GEO",
+//         "resCoordType": "EPSG3857",
+//         "startName": "출발지",
+//         "endName": "도착지"
+//     },
+//     success: function (response) {
+//         var resultData = response.features;
+//         console.log(resultData);
+
+//         //결과 출력
+//         var tDistance = "총 거리 : "
+//             + ((resultData[0].properties.totalDistance) / 1000)
+//                 .toFixed(1) + "km,";
+//         var tTime = " 총 시간 : "
+//             + ((resultData[0].properties.totalTime) / 60)
+//                 .toFixed(0) + "분";
+
+//         $("#result").text(tDistance + tTime);
+
+//         //기존 그려진 라인 & 마커가 있다면 초기화
+//         if (resultdrawArr.length > 0) {
+//             for (var i in resultdrawArr) {
+//                 resultdrawArr[i]
+//                     .setMap(null);
+//             }
+//             resultdrawArr = [];
+//         }
+
+//         drawInfoArr = [];
+
+//         for (var i in resultData) { //for문 [S]
+//             var geometry = resultData[i].geometry;
+//             var properties = resultData[i].properties;
+//             var polyline_;
+
+
+//             if (geometry.type == "LineString") { // 길
+//                 for (var j in geometry.coordinates) {
+//                     // console.log(geometry);
+//                     // console.log(properties);
+//                     // 경로들의 결과값(구간)들을 포인트 객체로 변환 
+//                     // 스크린 좌표값을 x, y 객체 형태로 변환하는 거구나.
+//                     // coordinates = [1111, 2222] => {x: 1111, y: 2222} 이런 형태로 변환
+//                     var latlng = new Tmapv2.Point(
+//                         geometry.coordinates[j][0],
+//                         geometry.coordinates[j][1]);
+//                     // console.log(latlng);
+//                     // 포인트 객체를 받아 좌표값으로 변환 
+//                     // "Projection" 은 '둥근 지구를 평면으로 전개'
+//                     // 즉 위도 경도의 좌표를 평면지도상의 좌표로 변환한다.
+//                     // convertEPSG3857ToWGS84GEO 이거는 어떤 규칙의 좌표로 할것인지 설정하는 함수, 지금 사용하는거는 지도에서 일반적으로 사용하는 규칙
+//                     // {x: 1111, y: 2222} => {_lat: 37.123, _lng: 127.123} 이런 형태로 변환
+//                     var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(
+//                         latlng);
+//                     // console.log(convertPoint);
+//                     // 포인트객체의 정보로 좌표값 변환 객체로 저장
+//                     // {_lat: 37.123, _lng: 127.123} 여기서 바뀌는건 없는듯한데 무슨 코드지?
+//                     var convertChange = new Tmapv2.LatLng(
+//                         convertPoint._lat,
+//                         convertPoint._lng);
+//                     // console.log(convertChange);
+
+//                     // 배열에 담기
+//                     drawInfoArr.push(convertChange);
+//                     // console.log(drawInfoArr);
+//                 }
+//             } else { // 특정 지점
+//                 var markerImg = "";
+//                 var pType = "";
+//                 var size;
+//                 console.log(geometry);
+//                 console.log(properties);
+//                 if (properties.pointType == "S") { //출발지 마커
+//                     markerImg = "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png";
+//                     pType = "S";
+//                     size = new Tmapv2.Size(24, 38);
+//                 } else if (properties.pointType == "E") { //도착지 마커
+//                     markerImg = "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png";
+//                     pType = "E";
+//                     size = new Tmapv2.Size(24, 38);
+//                 } else { //각 포인트 마커
+//                     markerImg = "http://topopen.tmap.co.kr/imgs/point.png";
+//                     pType = "P";
+//                     size = new Tmapv2.Size(8, 8);
+//                 }
+
+//                 // 경로들의 결과값들을 포인트 객체로 변환 
+//                 var latlon = new Tmapv2.Point(
+//                     geometry.coordinates[0],
+//                     geometry.coordinates[1]);
+
+//                 // 포인트 객체를 받아 좌표값으로 다시 변환
+//                 var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(
+//                     latlon);
+
+//                 var routeInfoObj = {
+//                     markerImage: markerImg,
+//                     lng: convertPoint._lng,
+//                     lat: convertPoint._lat,
+//                     pointType: pType
+//                 };
+
+//                 // Marker 추가
+//                 marker_p = new Tmapv2.Marker(
+//                     {
+//                         position: new Tmapv2.LatLng(
+//                             routeInfoObj.lat,
+//                             routeInfoObj.lng),
+//                         icon: routeInfoObj.markerImage,
+//                         iconSize: size,
+//                         map: map
+//                     });
+//             }
+//         }//for문 [E]
+//         drawLine(drawInfoArr);
+//     },
+//     error: function (request, status, error) {
+//         console.log("code:" + request.status + "\n"
+//             + "message:" + request.responseText + "\n"
+//             + "error:" + error);
+//     }
+// });
+
+
+// function addComma(num) {
+//     var regexp = /\B(?=(\d{3})+(?!\d))/g;
+//     return num.toString().replace(regexp, ',');
+// }
+
+// function drawLine(arrPoint) {
+//     var polyline_;
+
+//     polyline_ = new Tmapv2.Polyline({
+//         path: arrPoint,
+//         strokeColor: "#DD0000",
+//         strokeWeight: 6,
+//         map: map
+//     });
+//     resultdrawArr.push(polyline_); 
+//     console.log(resultdrawArr);
+// }
+
+
+function getWeather(lat, lng) {
     console.log("현재 좌표의 날씨정보를 받아옵니다.");
     const weatherContainer = document.querySelector('.weather-container');
 
     let apiKey = '2bd8aa9e0a77682baadc650722225f4d',
         units = 'metric' // 섭씨 적용
     let weatherData = fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=${units}&appid=${apiKey}`)
-    .then(response => response.json())
-    .then(data => {
-        let weather;
-        let temp = Math.round(data.main.temp*10)/10;
-        switch(data.weather[0].main) {
-                case 'Clouds' : weather = '구름'
-                case 'Clear' : weather = '맑음'; break;
-                case 'Rain' : weather = '비'; break;
-                case 'Thunderstorm' : weather = '뇌우'; break;
-                case 'Snow' : weather = '눈'; break;
-                case 'Smoke' : 
-                case 'Haze' :
-                case 'Fog' :
-                case 'Dust' :
-                case 'Sand' :
-                case 'Ash' :
-                case 'Mist' : weather = '안개'; break;
-                case 'Drizzle' : weather = '이슬비'; break;
-                case 'Squall' : weather = '스콜'; break;
-                case 'Tornado' : weather = '폭풍'; break;
-        }
+        .then(response => response.json())
+        .then(data => {
+            let weather;
+            let temp = Math.round(data.main.temp * 10) / 10;
+            switch (data.weather[0].main) {
+                case 'Clouds': weather = '구름'
+                case 'Clear': weather = '맑음'; break;
+                case 'Rain': weather = '비'; break;
+                case 'Thunderstorm': weather = '뇌우'; break;
+                case 'Snow': weather = '눈'; break;
+                case 'Smoke':
+                case 'Haze':
+                case 'Fog':
+                case 'Dust':
+                case 'Sand':
+                case 'Ash':
+                case 'Mist': weather = '안개'; break;
+                case 'Drizzle': weather = '이슬비'; break;
+                case 'Squall': weather = '스콜'; break;
+                case 'Tornado': weather = '폭풍'; break;
+            }
 
-        let result = {weather : weather, temp : temp};
+            let result = { weather: weather, temp: temp };
 
-        return result;
-    });
+            return result;
+        });
 
     let dustData = fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lng}&appid=${apiKey}`)
-    .then(response => response.json())
-    .then(data => {
-        let result = {fineDust : '', yellowDust : ''};
-        let pm2_5 = data.list[0].components.pm2_5; // 초미세먼지 ===> 미세먼지
-        let pm10 = data.list[0].components.pm10; // 미세먼지 ===> 황사
+        .then(response => response.json())
+        .then(data => {
+            let result = { fineDust: '', yellowDust: '' };
+            let pm2_5 = data.list[0].components.pm2_5; // 초미세먼지 ===> 미세먼지
+            let pm10 = data.list[0].components.pm10; // 미세먼지 ===> 황사
 
-        if(0<=pm2_5 && pm2_5<16) result.fineDust = '좋음';
-        else if (16<=pm2_5 && pm2_5<36) result.fineDust = '보통';
-        else if (36<=pm2_5 && pm2_5<76) result.fineDust = '나쁨';
-        else if (76<=pm2_5) result.fineDust = '매우나쁨';
-        
-        if(0<=pm10 && pm10<31) result.yellowDust = '좋음';
-        else if(31<=pm10 && pm10<81) result.yellowDust = '보통';
-        else if(81<=pm10 && pm10<151) result.yellowDust = '나쁨';
-        else if(151<=pm10) result.yellowDust = '매우나쁨';
+            if (0 <= pm2_5 && pm2_5 < 16) result.fineDust = '좋음';
+            else if (16 <= pm2_5 && pm2_5 < 36) result.fineDust = '보통';
+            else if (36 <= pm2_5 && pm2_5 < 76) result.fineDust = '나쁨';
+            else if (76 <= pm2_5) result.fineDust = '매우나쁨';
 
-        return result;
-    });
+            if (0 <= pm10 && pm10 < 31) result.yellowDust = '좋음';
+            else if (31 <= pm10 && pm10 < 81) result.yellowDust = '보통';
+            else if (81 <= pm10 && pm10 < 151) result.yellowDust = '나쁨';
+            else if (151 <= pm10) result.yellowDust = '매우나쁨';
+
+            return result;
+        });
 
     Promise.all([weatherData, dustData])
-    .then(data => {
-        let temp = data[0].temp,
-            weather= data[0].weather,
-            fineDust = data[1].fineDust,
-            yellowDust = data[1].yellowDust;
+        .then(data => {
+            let temp = data[0].temp,
+                weather = data[0].weather,
+                fineDust = data[1].fineDust,
+                yellowDust = data[1].yellowDust;
 
-        weatherContainer.innerHTML = `<span class="weather">${weather}</span>
+            weatherContainer.innerHTML = `<span class="weather">${weather}</span>
                                       <span class="temp">${temp}°C</span>
                                       미세<span class="fineDust">${fineDust}</span>
                                       황사<span class="yellowDust">${yellowDust}</span>`
-    })
+        })
 }
 
 function panTo(lat, lng) {
@@ -145,9 +303,9 @@ function displaySearchList(placeList) {
     // 검색 리스트 데이터의 이름을 클릭하면 실행되는 이벤트함수
     let placeNameClick = (e) => {
         let place = placeList.find(place => {
-            if(place.place_name !== undefined) return place.place_name === e.target.innerText;
-            else if(place.address_name !== undefined) return place.address_name === e.target.innerText
-            
+            if (place.place_name !== undefined) return place.place_name === e.target.innerText;
+            else if (place.address_name !== undefined) return place.address_name === e.target.innerText
+
         });
 
         panTo(place.y, place.x); // 장소를 맵의 중앙으로 '부드럽게' 이동한다.
@@ -215,7 +373,7 @@ function aroundSearch(e) {
     let lat = map.getCenter()._lat;
     let lng = map.getCenter()._lng;
     let location = new kakao.maps.LatLng(lat, lng);
-    
+
 
     // 카테고리 검색 결과를 받을 콜백 함수
     let callback = function (result, status) {
@@ -250,12 +408,12 @@ function displayMap(address) {
             lng = response.v2.addresses[0].x;
         const mapContainer = document.getElementById('map'); // 지도를 표시할 div 
         let mapOption = {
-            center: new naver.maps.LatLng( lat , lng ), // 지도의 중심좌표
+            center: new naver.maps.LatLng(lat, lng), // 지도의 중심좌표
             zoom: 17, // 지도의 확대정도
         };
 
         map = new naver.maps.Map(mapContainer, mapOption);
-        var drawingManager = new naver.maps.drawing.DrawingManager({map: map});
+        var drawingManager = new naver.maps.drawing.DrawingManager({ map: map });
 
         naver.maps.Event.addListener(map, 'click', () => {
             numberMarkerList.forEach((marker, i) => {
@@ -275,12 +433,12 @@ function displayMap(address) {
         });
     }
 
-    naver.maps.Service.geocode({query: address}, callback);
+    naver.maps.Service.geocode({ query: address }, callback);
 }
 
 // * 마커와 오버레이 관련 함수들
 //좌표 정보만으로 마커를 한개만 생성한다. (내 좌표로 마커띄울때, 주변탐색시 중앙좌표에 마커띄울때 사용)
-function createMarkerByCoords(lat, lng) { 
+function createMarkerByCoords(lat, lng) {
     removeMarker();
     removeOverlay();
     console.log("좌표로 마커 생성 실행");
@@ -295,8 +453,8 @@ function createMarkerByCoords(lat, lng) {
         orders: [ // 상세주소를 찾기위한 옵션
             naver.maps.Service.OrderType.ADDR,
             naver.maps.Service.OrderType.ROAD_ADDR
-          ].join(',')
-    }, function(status, response) {
+        ].join(',')
+    }, function (status, response) {
         if (status !== naver.maps.Service.Status.OK) {
             return alert('Something wrong!');
         }
@@ -317,11 +475,11 @@ function createNumberMarker(placeList) {
     placeList.forEach((place, i) => {
         let position = new naver.maps.LatLng(place.y, place.x);
         let icon = {
-                url:'/assets/img/sp_pins_spot_v3.png',
-                size: new naver.maps.Size(24, 37),
-                anchor: new naver.maps.Point(12, 37),
-                origin: new naver.maps.Point(i * 29, 50)
-            },
+            url: '/assets/img/sp_pins_spot_v3.png',
+            size: new naver.maps.Size(24, 37),
+            anchor: new naver.maps.Point(12, 37),
+            origin: new naver.maps.Point(i * 29, 50)
+        },
             numberMarker = new naver.maps.Marker({
                 position: position,
                 map: map,
@@ -336,12 +494,12 @@ function createNumberMarker(placeList) {
         naver.maps.Event.addListener(numberMarker, 'click', (e) => {
             let marker = e.overlay; //클릭한 마커정보
             changeMarkerState(e); // 마커를 활성화, 비활성화 하는 함수
-            if ( marker.get('isActive') ) createNumberOverlay(place);
+            if (marker.get('isActive')) createNumberOverlay(place);
             else removeOverlay();
         });
 
         naver.maps.Event.addListener(numberMarker, 'mouseover', changeBlueMarker);
-        naver.maps.Event.addListener(numberMarker, 'mouseout', changeWhiteMarker);        
+        naver.maps.Event.addListener(numberMarker, 'mouseout', changeWhiteMarker);
     })
 }
 
@@ -352,7 +510,7 @@ function changeMarkerState(e) {
 
     // 클릭한 마커를 제외한 모든 마커를 비활성화한다.
     numberMarkerList.forEach((marker, i) => {
-        if(marker.get('index') !== index) { // 대상이 된 마커 외의 모든 마커를 비활성화
+        if (marker.get('index') !== index) { // 대상이 된 마커 외의 모든 마커를 비활성화
             marker.set('isActive', false);
             marker.setIcon({
                 url: 'assets/img/sp_pins_spot_v3.png',
@@ -364,7 +522,7 @@ function changeMarkerState(e) {
     });
 
     // 클릭한 마커만 'isActive'를 확인하여 상태를 바꿔준다.
-    if ( isActive === true ) {
+    if (isActive === true) {
         marker.set('isActive', false);
     }
     else {
@@ -387,7 +545,7 @@ function changeWhiteMarker(e) {
     let marker = e.overlay, // 이벤트 대상이 된 마커를 의미한다.
         index = marker.get('index');
 
-    if(marker.get('isActive') === true) return; //마커가 활성화된 상태라면 이미지를 바꾸지 않는다.
+    if (marker.get('isActive') === true) return; //마커가 활성화된 상태라면 이미지를 바꾸지 않는다.
 
     marker.setIcon({
         url: 'assets/img/sp_pins_spot_v3.png',
@@ -402,7 +560,7 @@ function createOverlay(marker) {
     console.log("기본 오버레이 생성");
 
     removeOverlay();
-    
+
     let address = marker.get('addressData').address;
     let addr = address.jibunAddress;
     let roadAddr = address.roadAddress;
@@ -419,7 +577,7 @@ function createOverlay(marker) {
                         <div class="region">(지번) ${addr}</div>
                     </div>`;
     }
-    
+
     overlay = new naver.maps.InfoWindow({
         content: content,
         maxWidth: 280,
@@ -432,14 +590,14 @@ function createOverlay(marker) {
         pixelOffset: new naver.maps.Point(0, -10)
     });
 
-    naver.maps.Event.addListener(marker, "click", function(e) {
+    naver.maps.Event.addListener(marker, "click", function (e) {
         if (overlay.getMap()) {
             overlay.close();
         } else {
             overlay.open(map, marker);
         }
     });
-    
+
     overlay.open(map, marker);
 }
 
@@ -463,7 +621,7 @@ function createNumberOverlay(place) {
     let marker = numberMarkerList.find(marker => marker.get('placeData') === place);
 
     // 장소명이 없는 오버레이, 장소명이 존재하는 오버레이 생성
-    if(place_name === undefined) {
+    if (place_name === undefined) {
         content = `<div class="overlay overlay-region">
                                 <div class="title">${address_name}</div>
                             </div>`;
@@ -510,7 +668,7 @@ function removeNumberMarker() {
 }
 
 function removeOverlay() {
-    if(overlay !== undefined) {
+    if (overlay !== undefined) {
         overlay.close();
         overlay = undefined;
     }
@@ -529,8 +687,8 @@ function error() {
 
 // 검색 api를 사용하여 검색후 장소의 이름들을 promise형태 및 배열로 return 하는 함수
 function getAddrList(keyword) {
-    console.log("주소 데이터로부터 연관검색어를 찾습니다. 검색어 : " , keyword );
-    let result =  fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${keyword}&size=5`, {
+    console.log("주소 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
+    let result = fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${keyword}&size=5`, {
         headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
     })
         .then(res => res.json())
@@ -546,7 +704,7 @@ function getAddrList(keyword) {
 
 //직접 만든 restaurant.json 으로부터 검색어와 일치하는 값을 찾아 promise형태 및 배열로 return 하는 함수
 function getRestList(keyword) {
-    console.log("레스토랑 데이터로부터 연관검색어를 찾습니다. 검색어 : " , keyword);
+    console.log("레스토랑 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
     let result = fetch('/data/restaurant.json')
         .then(res => res.json())
         .then(data => {
@@ -779,16 +937,16 @@ function search(keyword) {
                 removeMarker();
                 createNumberMarker(data[1]);
                 displaySearchList(data[1]);
-                if(categoryIsActive().state === true) closeCategory(categoryIsActive().index);
+                if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
             }
             else if (data[0].length !== 0) { // 주소 데이터가 있다면
                 panTo(data[0][0].y, data[0][0].x);
                 removeMarker();
                 createNumberMarker(data[0]);
                 displaySearchList(data[0]);
-                if(categoryIsActive().state === true) closeCategory(categoryIsActive().index);
+                if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
             }
-            else if(data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
+            else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
                 noPlaceError();
             }
         })
@@ -801,7 +959,7 @@ function categoryClick(e, index) {
     // 활성화 = category-hover + category-active class가 같이 있는 상태이다.    
     // 1. 클릭한 카테고리를 제외한 모든 카테고리 비활성화
     categoryCircles.forEach(circle => {
-        if ( e.currentTarget !== circle ) {
+        if (e.currentTarget !== circle) {
             circle.lastElementChild.classList.remove('category-active');
             circle.lastElementChild.classList.remove('category-hover');
             circle.style.color = 'black';
@@ -809,7 +967,7 @@ function categoryClick(e, index) {
     });
 
     // 2. 클릭한 카테고리의 상태를 확인하여 true나 false로 바꿔준다.
-    if ( e.currentTarget.lastElementChild.classList.contains('category-active') ) {
+    if (e.currentTarget.lastElementChild.classList.contains('category-active')) {
         console.log("active가 있어 => active 제거");
         e.currentTarget.lastElementChild.classList.remove('category-active');
         e.currentTarget.lastElementChild.classList.remove('category-hover');
@@ -832,22 +990,65 @@ function init() {
             console.log(lat, lng);
             getWeather(lat, lng)
             // createMarkerByCoords(lat, lng);
-             
+
             // '좌표 => 주소' 변환 객체를 생성합니다
             naver.maps.Service.reverseGeocode({
                 coords: new naver.maps.LatLng(lat, lng),
-            }, function(status, response) {
+            }, function (status, response) {
                 if (status !== naver.maps.Service.Status.OK) {
                     return alert('에러 : 좌표 => 주소 변환에 실패하였습니다.');
                 }
 
                 let currentLocation = response.v2.address.roadAddress; // 현재 위치
-                if(currentLocation === '') currentLocation = response.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
-                
+                if (currentLocation === '') currentLocation = response.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
+
                 setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
                 displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
             });
         })
+}
+
+//리버스 지오코딩 요청 함수
+function loadGetLonLatFromAddress() {
+    // TData 객체 생성
+    var tData = new Tmapv2.extension.TData();
+
+    var optionObj = {
+        coordType: "WGS84GEO",       //응답좌표 타입 옵션 설정 입니다.
+        addressType: "A04"           //주소타입 옵션 설정 입니다.
+    };
+
+    var params = {
+        onComplete:onComplete,      //데이터 로드가 성공적으로 완료 되었을때 실행하는 함수 입니다.
+        onProgress:onProgress,      //데이터 로드 중에 실행하는 함수 입니다.
+        onError:onError             //데이터 로드가 실패했을때 실행하는 함수 입니다.
+    };
+    // TData 객체의 리버스지오코딩 함수
+    tData.getAddressFromGeoJson("37.29062","127.051755", optionObj, params);
+}
+
+//리버스 지오코딩 성공시 실행하는 함수
+function onComplete() {
+    console.log(this._responseData); //json으로 데이터를 받은 정보들을 콘솔창에서 확인할 수 있습니다.
+    var result ='현재 지도의 중심 좌표주소 : ' + this._responseData.addressInfo.fullAddress; //출력될 결과 주소 정보 입니다.
+
+    var marker = new Tmapv2.Marker({
+        position: new Tmapv2.LatLng(37.29062,127.051755),
+        label:result
+    });
+
+    marker.setMap(map);
+    map.setCenter(new Tmapv2.LatLng(37.29062,127.051755));
+}
+
+//데이터 로드중 실행하는 함수입니다.
+function onProgress(){
+    //alert("onComplete");
+}
+
+//데이터 로드 중 에러가 발생시 실행하는 함수입니다.
+function onError(){
+    alert("onError");
 }
 
 function setCurrentLocation(address) {
@@ -886,7 +1087,7 @@ function aroundOpenAndClose() {
     const aroundTitle = document.querySelector('.around-title');
     const arrow = aroundTitle.querySelector('.fa-solid');
     const ul = document.querySelector('.searchList-container ul');
-    
+
     if (categoryContainer.style.height === '0px') {
         categoryContainer.style.height = '210px';
         arrow.style.transform = 'rotate(0deg)'
@@ -950,7 +1151,7 @@ searchInput.addEventListener('keyup', e => {
 
             if (relationList.length === 0) {
                 closeSearchBar();
-            } 
+            }
             else {
                 openSearchBar();
                 openSearchBar_relation();
@@ -977,7 +1178,7 @@ searchInput.addEventListener('click', e => {
             let relationList = data[0].concat(data[1]).slice(0, 10); // 찾은 데이터를 합쳐, 리스트로 보여준다.
             if (relationList.length === 0) {
                 closeSearchBar();
-            } 
+            }
             else {
                 openSearchBar();
                 openSearchBar_relation();
