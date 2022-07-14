@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="assets/css/index.css">
-    <link rel="stylesheet" href="assets/css/cocoaMap.css">
+    <link rel="stylesheet" href="assets/css/map.css">
     <link rel="stylesheet" href="assets/css/menubar.css">
 
 

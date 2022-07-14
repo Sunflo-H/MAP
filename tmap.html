@@ -3,265 +3,146 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>simpleMap</title>
+    <title>tmap</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=l7xx68845a4aa2724d0ebbead38642364a0f"></script>
-    <script type="text/javascript">
-        var map;
-        var marker_s, marker_e, marker_p1, marker_p2;
-        var totalMarkerArr = [];
-        var drawInfoArr = [];
-        var resultdrawArr = [];
-        function addMarker(status, lon, lat, tag) {
-            //출도착경유구분
-            //이미지 파일 변경.
-            var markerLayer;
-            switch (status) {
-                case "llStart":
-                    imgURL = 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png';
-                    break;
-                case "llPass":
-                    imgURL = 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_p.png';
-                    break;
-                case "llEnd":
-                    imgURL = 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png';
-                    break;
-                default:
-            };
-            var marker = new Tmapv2.Marker({
-                position: new Tmapv2.LatLng(lat, lon),
-                icon: imgURL,
-                map: map
-            });
-            // 마커 드래그 설정
-            marker.tag = tag;
-            marker.addListener("dragend", function (evt) {
-                markerListenerEvent(evt);
-            });
-            marker.addListener("drag", function (evt) {
-                markerObject = markerList[tag];
-            });
-            markerList[tag] = marker;
-            return marker;
-        }
-        
-        function initTmap() {
-            // 1. 지도 띄우기
-            map = new Tmapv2.Map("map_div", {
-                center: new Tmapv2.LatLng(37.552128, 127.090688),
-                width: "100%",
-                height: "400px",
-                zoom: 15,
-                zoomControl: true,
-                scrollwheel: true
-            });
-
-            // 2. 시작, 도착 심볼찍기
-            // 시작
-            marker_s = new Tmapv2.Marker(
-                {
-                    position: new Tmapv2.LatLng(37.552128, 127.090688),
-                    icon: "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png",
-                    iconSize: new Tmapv2.Size(24, 38),
-                    map: map
-                });
-            addMarker('llPass', )
-            // 도착
-            marker_e = new Tmapv2.Marker(
-                {
-                    position: new Tmapv2.LatLng(37.5453966002957,127.08534387836),
-                    icon: "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
-                    iconSize: new Tmapv2.Size(24, 38),
-                    map: map
-                });
-
-            // 3. 경로탐색 API 사용요청
-            // let url = "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json&callback=result";
-            // let body = {
-            //             "appKey": "l7xx68845a4aa2724d0ebbead38642364a0f",
-            //             "startX": "126.97871544",
-            //             "startY": "37.56689860",
-            //             "endX": "127.00160213",
-            //             "endY": "37.57081522",
-            //             "reqCoordType": "WGS84GEO",
-            //             "resCoordType": "EPSG3857",
-            //             "startName": "출발지",
-            //             "endName": "도착지"
-            //         };
-            // fetch(url, {
-            //     method: "POST",
-            //     headers: {
-            //         "appKey": "l7xx68845a4aa2724d0ebbead38642364a0f",
-            //     },
-            //     body: JSON.stringify(body)
-            // })
-            // .then(res => res.json())
-            // .then(data => console.log(data));
-
-            $.ajax({
-                    method: "POST",
-                    url: "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&format=json&callback=result",
-                    async: false,
-                    data: {
-                        "appKey": "l7xx68845a4aa2724d0ebbead38642364a0f",
-                        "startX": "127.090688",
-                        "startY": "37.552128",
-                        "endX": "127.08534387836",
-                        "endY": "37.5453966002957",
-                        "reqCoordType": "WGS84GEO",
-                        "resCoordType": "EPSG3857",
-                        "startName": "출발지",
-                        "endName": "도착지"
-                    },
-                    success: function (response) {
-                        var resultData = response.features;
-                        console.log(resultData);
-
-                        //결과 출력
-                        var tDistance = "총 거리 : "
-                            + ((resultData[0].properties.totalDistance) / 1000)
-                                .toFixed(1) + "km,";
-                        var tTime = " 총 시간 : "
-                            + ((resultData[0].properties.totalTime) / 60)
-                                .toFixed(0) + "분";
-
-                        $("#result").text(tDistance + tTime);
-
-                        //기존 그려진 라인 & 마커가 있다면 초기화
-                        if (resultdrawArr.length > 0) {
-                            for (var i in resultdrawArr) {
-                                resultdrawArr[i]
-                                    .setMap(null);
-                            }
-                            resultdrawArr = [];
-                        }
-
-                        drawInfoArr = [];
-
-                        for (var i in resultData) { //for문 [S]
-                            var geometry = resultData[i].geometry;
-                            var properties = resultData[i].properties;
-                            var polyline_;
-
-
-                            if (geometry.type == "LineString") { // 길
-                                for (var j in geometry.coordinates) {
-                                    // console.log(geometry);
-                                    // console.log(properties);
-                                    // 경로들의 결과값(구간)들을 포인트 객체로 변환 
-                                    // 스크린 좌표값을 x, y 객체 형태로 변환하는 거구나.
-                                    // coordinates = [1111, 2222] => {x: 1111, y: 2222} 이런 형태로 변환
-                                    var latlng = new Tmapv2.Point(
-                                        geometry.coordinates[j][0],
-                                        geometry.coordinates[j][1]);
-                                        // console.log(latlng);
-                                    // 포인트 객체를 받아 좌표값으로 변환 
-                                    // "Projection" 은 '둥근 지구를 평면으로 전개'
-                                    // 즉 위도 경도의 좌표를 평면지도상의 좌표로 변환한다.
-                                    // convertEPSG3857ToWGS84GEO 이거는 어떤 규칙의 좌표로 할것인지 설정하는 함수, 지금 사용하는거는 지도에서 일반적으로 사용하는 규칙
-                                    // {x: 1111, y: 2222} => {_lat: 37.123, _lng: 127.123} 이런 형태로 변환
-                                    var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(
-                                        latlng);
-                                    // console.log(convertPoint);
-                                    // 포인트객체의 정보로 좌표값 변환 객체로 저장
-                                    // {_lat: 37.123, _lng: 127.123} 여기서 바뀌는건 없는듯한데 무슨 코드지?
-                                    var convertChange = new Tmapv2.LatLng(
-                                        convertPoint._lat,
-                                        convertPoint._lng);
-                                    // console.log(convertChange);
-                                    
-                                    // 배열에 담기
-                                    drawInfoArr.push(convertChange);
-                                    // console.log(drawInfoArr);
-                                }
-                            } else { // 특정 지점
-                                var markerImg = "";
-                                var pType = "";
-                                var size;
-                                console.log(geometry);
-                                    console.log(properties);
-                                if (properties.pointType == "S") { //출발지 마커
-                                    markerImg = "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png";
-                                    pType = "S";
-                                    size = new Tmapv2.Size(24, 38);
-                                } else if (properties.pointType == "E") { //도착지 마커
-                                    markerImg = "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png";
-                                    pType = "E";
-                                    size = new Tmapv2.Size(24, 38);
-                                } else { //각 포인트 마커
-                                    markerImg = "http://topopen.tmap.co.kr/imgs/point.png";
-                                    pType = "P";
-                                    size = new Tmapv2.Size(8, 8);
-                                }
-
-                                // 경로들의 결과값들을 포인트 객체로 변환 
-                                var latlon = new Tmapv2.Point(
-                                    geometry.coordinates[0],
-                                    geometry.coordinates[1]);
-
-                                // 포인트 객체를 받아 좌표값으로 다시 변환
-                                var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(
-                                    latlon);
-
-                                var routeInfoObj = {
-                                    markerImage: markerImg,
-                                    lng: convertPoint._lng,
-                                    lat: convertPoint._lat,
-                                    pointType: pType
-                                };
-
-                                // Marker 추가
-                                marker_p = new Tmapv2.Marker(
-                                    {
-                                        position: new Tmapv2.LatLng(
-                                            routeInfoObj.lat,
-                                            routeInfoObj.lng),
-                                        icon: routeInfoObj.markerImage,
-                                        iconSize: size,
-                                        map: map
-                                    });
-                            }
-                        }//for문 [E]
-                        drawLine(drawInfoArr);
-                    },
-                    error: function (request, status, error) {
-                        console.log("code:" + request.status + "\n"
-                            + "message:" + request.responseText + "\n"
-                            + "error:" + error);
-                    }
-                });
-        }
-
-        function addComma(num) {
-            var regexp = /\B(?=(\d{3})+(?!\d))/g;
-            return num.toString().replace(regexp, ',');
-        }
-
-        function drawLine(arrPoint) {
-            var polyline_;
-
-            polyline_ = new Tmapv2.Polyline({
-                path: arrPoint,
-                strokeColor: "#DD0000",
-                strokeWeight: 6,
-                map: map
-            });
-            resultdrawArr.push(polyline_);
-            console.log(resultdrawArr);
-        }
-    </script>
+    
 </head>
 
-<body onload="initTmap();">
-
-    <!-- 190430 기존 지도를 모두 이미지 처리 위해 주석 처리 S -->
-    <div id="map_wrap" class="map_wrap3">
-        <div id="map_div"></div>
-    </div>
-    <div class="map_act_btn_wrap clear_box"></div>
-    <p id="result"></p>
-
-
+<body onload="initTmap()"><!-- 맵 생성 실행 -->
+	<div id="map_div">
+	</div>
+<button id="btn">리버스지오코딩 실행</button>
 </body>
+<script>
+    var map;
+    let lat;
+    let lng;
+    const btn = document.querySelector('#btn');
 
+    btn.addEventListener('click', (event) => {
+        // console.log(loadGetLonLatFromAddress());
+        // console.log(a());
+        console.log("b함수 : ", reverseGeo(lat, lng));
+    })
+// 페이지가 로딩이 된 후 호출하는 함수입니다.
+function initTmap(){
+    
+    // map 생성
+    // Tmap.map을 이용하여, 지도가 들어갈 div, 넓이, 높이를 설정합니다.
+    map = new Tmapv2.Map("map_div", {
+        center : new Tmapv2.LatLng(37.552128,127.090688), // 지도 초기 좌표
+        width : "100%", // map의 width 설정
+        height : "400px" // map의 height 설정	
+    });
+
+    map.addListener("click", function onClick(event){
+        // console.log(event.latLng);
+        lat = event.latLng._lat;
+        lng = event.latLng._lng;
+    });
+
+    /**
+     * "서울특별시 광진구 구의2동, 서울특별시 광진구 구의동 52-19, 서울특별시 광진구 자양로43길 36 하우스청"
+     * 
+     * city_do :    "서울특별시"
+     * gu_gun :     "광진구"
+     * 
+     * legalDong :  "구의동"
+     * adminDong :  "구의2동"
+     * bunji :      "52-19"
+     * 
+     * roadName :   "자양로43길"
+     * buildingIndex : "36"
+     * buildingName : "하우스청"
+     *  
+     */
+};
+
+//리버스 지오코딩 요청 함수
+function loadGetLonLatFromAddress() {
+    // TData 객체 생성
+    var tData = new Tmapv2.extension.TData();
+
+    var optionObj = {
+    	coordType: "WGS84GEO",       //응답좌표 타입 옵션 설정 입니다.
+    	addressType: "A10"           //주소타입 옵션 설정 입니다.
+    };
+
+    var params = {
+    	onComplete:onComplete,      //데이터 로드가 성공적으로 완료 되었을때 실행하는 함수 입니다.
+    	onProgress:onProgress,      //데이터 로드 중에 실행하는 함수 입니다.
+    	onError:onError             //데이터 로드가 실패했을때 실행하는 함수 입니다.
+    };
+    // TData 객체의 리버스지오코딩 함수
+    tData.getAddressFromGeoJson(lat,lng, optionObj, params);
+}
+
+function a() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject); // succes, error
+
+        // TData 객체 생성
+        var tData = new Tmapv2.extension.TData();
+
+        var optionObj = {
+            coordType: "WGS84GEO",       //응답좌표 타입 옵션 설정 입니다.
+            addressType: "A10"           //주소타입 옵션 설정 입니다.
+        };
+
+        var params = {
+            onComplete:resolve,      //데이터 로드가 성공적으로 완료 되었을때 실행하는 함수 입니다.
+            onProgress:onProgress,      //데이터 로드 중에 실행하는 함수 입니다.
+            onError:onError             //데이터 로드가 실패했을때 실행하는 함수 입니다.
+        };
+        // TData 객체의 리버스지오코딩 함수
+        tData.getAddressFromGeoJson(lat,lng, optionObj, params);
+    });
+}
+
+function reverseGeo(lat, lng) {
+    
+    let	coordType = "WGS84GEO",       //응답좌표 타입 옵션 설정 입니다.
+        addressType = "A10" ;          //주소타입 옵션 설정 입니다.
+    var params = {
+        onComplete:onComplete,      //데이터 로드가 성공적으로 완료 되었을때 실행하는 함수 입니다.
+        onProgress:onProgress,      //데이터 로드 중에 실행하는 함수 입니다.
+        onError:onError             //데이터 로드가 실패했을때 실행하는 함수 입니다.
+    };
+    let appKey = "l7xx68845a4aa2724d0ebbead38642364a0f";
+    
+    // let url = "https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&format=json&callback=result";
+    let url = `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&lat=${lat}&lon=${lng}&coordType=${coordType}&addressType=${addressType}&appKey=${appKey}`;
+    console.log("fetch 실행");
+    fetch(url)
+    .then(res => res.json())
+    .then(data=> console.log(data))
+}
+
+//리버스 지오코딩
+function onComplete() {
+    // console.log(this._responseData); //json으로 데이터를 받은 정보들을 콘솔창에서 확인할 수 있습니다.
+    console.log(this);
+    var result ='현재 지도의 중심 좌표주소 : ' + this._responseData.addressInfo.fullAddress; //출력될 결과 주소 정보 입니다.
+
+    var marker = new Tmapv2.Marker({
+        position: new Tmapv2.LatLng(lat,lng),
+        label:result
+    });
+
+    marker.setMap(map);
+    map.setCenter(new Tmapv2.LatLng(lat,lng));
+}
+
+//데이터 로드중 실행하는 함수입니다.
+function onProgress(){
+    //alert("onComplete");
+}
+
+  //데이터 로드 중 에러가 발생시 실행하는 함수입니다.
+function onError(){
+    alert("onError");
+}
+</script>
 </html>
+

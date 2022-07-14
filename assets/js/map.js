@@ -396,7 +396,6 @@ function aroundSearch(e) {
 function displayMap(address) {
     
     console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
-
     // 주소로 좌표를 찾은 후 결과를 활용하는 함수
     let callback = (status, response) => {
         if (status !== naver.maps.Service.Status.OK) {
@@ -993,23 +992,16 @@ function init() {
         .then(data => {
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
-            console.log(lat, lng);
+
             getWeather(lat, lng)
             // createMarkerByCoords(lat, lng);
 
-
-
-            // 좌표 => 주소 변환 함수
+            // 좌표 => 주소 변환
             reverseGeocoding(lat, lng)
                 .then(address => {
-                    addressStringSort(address);
-                    let currentLocation = addressStringSort(address).roadAddr;
-                    if (currentLocation === '') currentLocation = addressStringSort(address).jibunAddr;
-
-                    setCurrentLocation(currentLocation);
-                    displayMap(currentLocation);
+                    setCurrentLocation(addressStringSort(address).dongAddr);
+                    displayMap(address);
                 })
-
         })
 }
 
@@ -1025,27 +1017,65 @@ function reverseGeocoding(lat, lng) {
 }
 
 function geocoding(address) {
-    let coordType = "WGS84GEO",       //응답좌표 타입 옵션 설정 입니다.
-        addressType = "A10",           //주소타입 옵션 설정 입니다.
-        appKey = "l7xx68845a4aa2724d0ebbead38642364a0f",
-        url = `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&lat=${lat}&lon=${lng}&coordType=${coordType}&addressType=${addressType}&appKey=${appKey}`;
-        url : "https://apis.openapi.sk.com/tmap/geo/geocoding?version=1&format=json&",
-        "coordType" : "WGS84GEO",
-        "city_do" : city_do,
-        "gu_gun" : gu_gun,
-        "dong" : dong,
-        "bunji" : bunji
-    return fetch(url)
-        .then(res => res.json())
-        .then(data => data);
+    $
+    .ajax({
+       method : "GET",
+       url : "https://apis.openapi.sk.com/tmap/geo/geocoding?version=1&format=json&callback=result",
+       async : false,
+       data : {
+          "appKey" : "발급AppKey",
+          "coordType" : "WGS84GEO",
+          "city_do" : city_do,
+          "gu_gun" : gu_gun,
+          "dong" : dong,
+          "bunji" : bunji
+       },
+       success : function(response) {
+          var resultData = response.coordinateInfo;
+          var lon, lat;
+
+          if (resultData.lon.length > 0) {
+             lon = resultData.lon;
+             lat = resultData.lat;
+          } else {
+             lon = resultData.newLon;
+             lat = resultData.newLat;
+          }
+
+          //기존 마커 삭제
+          marker1.setMap(null);
+
+          var markerPosition = new Tmapv2.LatLng(
+                Number(lat), Number(lon));
+          //마커 올리기
+          marker1 = new Tmapv2.Marker(
+                {
+                   position : markerPosition,
+                   icon : "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png",
+                   iconSize : new Tmapv2.Size(
+                         24, 38),
+                   map : map
+                });
+          map.setCenter(markerPosition);
+
+       },
+       error : function(request, status, error) {
+          console.log("code:"
+                + request.status + "\n"
+                + "message:"
+                + request.responseText
+                + "\n" + "error:" + error);
+       }
+    });
 }
 
-function addressStringSort(address, range) {
+function addressStringSort(address) {
     
     var arrResult = address.addressInfo;
     //법정동 마지막 문자 
     var lastLegal = arrResult.legalDong
         .charAt(arrResult.legalDong.length - 1);
+        
 
     // 새주소
     roadAddr = arrResult.city_do + ' '
@@ -1057,7 +1087,7 @@ function addressStringSort(address, range) {
     } else {
         roadAddr += arrResult.eup_myun;
     }
-    roadAddr += ' ' + arrResult.roadName + ' '
+    roadAddr += '' + arrResult.roadName + ' '
         + arrResult.buildingIndex;
 
     // 새주소 법정동& 건물명 체크
@@ -1078,14 +1108,23 @@ function addressStringSort(address, range) {
     jibunAddr = arrResult.city_do + ' '
         + arrResult.gu_gun + ' '
         + arrResult.legalDong + ' ' + arrResult.ri
-        + ' ' + arrResult.bunji;
+        + '' + arrResult.bunji;
+
+        console.log("jibunAddr:",jibunAddr);
     //구주소 빌딩명 존재
     if (arrResult.buildingName != '') {//빌딩명만 존재하는 경우
         jibunAddr += (' ' + arrResult.buildingName);
     }
+
+    // 자세한 '동' 주소까지만 (서울 ~구 ~1동)
+    dongAddr = arrResult.city_do + ' '
+        + arrResult.gu_gun + ' '
+        + arrResult.adminDong 
+
     let result = {
         roadAddr: roadAddr,
-        jibunAddr: jibunAddr
+        jibunAddr: jibunAddr,
+        dongAddr: dongAddr
     }
     console.log(result);
     return result;
