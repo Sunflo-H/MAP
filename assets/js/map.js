@@ -411,6 +411,20 @@ function displayMap(address) {
             let lat = event.latLng._lat;
             let lng = event.latLng._lng;
     });
+        map = new naver.maps.Map(mapContainer, mapOption);
+
+        naver.maps.Event.addListener(map, 'click', () => {
+            numberMarkerList.forEach((marker, i) => {
+                marker.set('isActive', false);
+                marker.setIcon({
+                    url: 'assets/img/sp_pins_spot_v3.png',
+                    size: new naver.maps.Size(24, 37),
+                    anchor: new naver.maps.Point(12, 37),
+                    origin: new naver.maps.Point(i * 29, 50)
+                });
+            })
+            removeOverlay();
+        });
 
     // console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
     // // 주소로 좌표를 찾은 후 결과를 활용하는 함수

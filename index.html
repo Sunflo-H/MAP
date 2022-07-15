@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+<<<<<<<< HEAD:index.html
+=======
+>>>>>>> parent of 26ec74b (지도에 그리기)
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,6 +18,7 @@
         
     <!-- 네이버 map : 기본적인 지도 기능을 제공 -->
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju"></script>
+<<<<<<< HEAD
 
     <!-- NAVER 지도 API v3은 지도의 기능을 확장하는 서브 모듈 시스템을 지원합니다.-->
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju_ID&submodules=geocoder"></script>
@@ -24,6 +29,15 @@
 
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+=======
+    <!-- 
+    NAVER 지도 API v3은 지도의 기능을 확장하는 서브 모듈 시스템을 지원합니다.
+    panorama - 거리뷰/항공뷰를 사용할 수 있는 panorama 모듈입니다.
+    geocoder - 좌표 체계간 변환 메서드와 특정 좌표계를 지원하는 확장된 투영 객체들을 제공하는 geocoder 모듈입니다.
+    drawing - 지도 위에 도형, 마커를 그릴 수 있는 컨트롤을 배치하고, 이용할 수 있도록 제공하는 drawing 모듈입니다.
+    visualization - 지리 정보를 가지고 있는 데이터를 쉽게 이해할 수 있도록 열지도, 점지도를 제공하는 visualization 모듈입니다. -->
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju_ID&submodules=geocoder"></script>
+>>>>>>> parent of 26ec74b (지도에 그리기)
 
     <script defer src="assets/js/map.js"></script>
     <script defer src="assets/js/menubar.js"></script>
@@ -31,7 +45,11 @@
 
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="assets/css/index.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="assets/css/map.css">
+=======
+    <link rel="stylesheet" href="assets/css/cocoaMap.css">
+>>>>>>> parent of 26ec74b (지도에 그리기)
     <link rel="stylesheet" href="assets/css/menubar.css">
 
 
@@ -281,6 +299,7 @@
     </div>
 </body>
 
+<<<<<<< HEAD
  <?php
 //   $client_id = "es0epxrzju";
 //   $client_secret = "lNKSzmkBdielGL26PjmWaKhpaCgz9wBVXMhyy0Ou";
@@ -288,6 +307,25 @@
 //   $is_post = false;
 //   $ch = curl_init();
 //   $headers = ["X-NCP-APIGW-API-KEY-ID: ".$client_id, "X-NCP-APIGW-API-KEY: ".$client_secret];
+========
+<?php
+echo "hi";
+?>
+
+<?php
+  $client_id = "bZA4grjuBMgjKsG04Hm8";
+  $client_secret = "aziZGF4Q1W";
+  $encText = urlencode("네이버오픈API");
+  $chulbal = "아차산빌라";
+  $dochac = "롯데리아";
+//   $url = "https://openapi.naver.com/v1/search/blog.xml?query=".$encText; // json 결과
+  $url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=".$chulbal."&goal=".$dochac;
+  $is_post = false;
+  $ch = curl_init();
+  $headers = array();
+  $headers[] = "X-NCP-APIGW-API-KEY-ID: ".$client_id;
+  $headers[] = "X-NCP-APIGW-API-KEY: ".$client_secret;
+>>>>>>>> parent of 26ec74b (지도에 그리기):index.php
 
 //   curl_setopt($ch, CURLOPT_URL, $url);
 //   curl_setopt($ch, CURLOPT_POST, $is_post);
@@ -301,6 +339,7 @@
   
 //   echo "<br>";
 
+<<<<<<<< HEAD:index.html
 //   curl_close ($ch);
 //   if($status_code == 200) {
 //     echo $response."<br>";
@@ -308,5 +347,19 @@
 //   } else {
 //     echo "Error 내용:".$response;
 //   }
+========
+  curl_close ($ch);
+  if($status_code == 200) {
+    echo $response."<br>";
+  } else {
+    echo "Error 내용:".$response;
+  }
+>>>>>>>> parent of 26ec74b (지도에 그리기):index.php
+?>
+
+=======
+<?php
+
 ?>
 </html>
+>>>>>>> parent of 26ec74b (지도에 그리기)
