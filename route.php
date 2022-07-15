@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD:route.php
   $client_id = "es0epxrzju";
   $client_secret = "lNKSzmkBdielGL26PjmWaKhpaCgz9wBVXMhyy0Ou";
   $url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=127.090688,37.552128&goal=127.08534387836,37.5453966002957&option=trafast";
@@ -26,3 +27,7 @@
   }
 ?>
 
+=======
+echo "hi";
+?>
+>>>>>>> parent of 9ec8c12 (길찾기 첫 호출):index.php
