@@ -394,51 +394,56 @@ function aroundSearch(e) {
 }
 
 function displayMap(address) {
-    
-    console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
-    // 주소로 좌표를 찾은 후 결과를 활용하는 함수
-    let callback = (status, response) => {
-        if (status !== naver.maps.Service.Status.OK) {
-            return alert('Something wrong!');
-        }
-        let jibunAddress = response.v2.addresses[0].jibunAddress, // 지번주소
-            roadAddress = response.v2.addresses[0].roadAddress,
-            engAddress = response.v2.addresses[0].englishAddress,
-            lat = response.v2.addresses[0].y,
-            lng = response.v2.addresses[0].x;
-        const mapContainer = document.getElementById('map'); // 지도를 표시할 div 
-        let mapOption = {
-            center : new Tmapv2.LatLng(37.552128,127.090688), // 지도 초기 좌표
-            width : "100%", // map의 width 설정
-            height : "400px", // map의 height 설정	
-            zoom : 17
-        };
-        map = new Tmapv2.Map(mapContainer, mapOption);
-        map.addListener("click", function onClick(event){
-                // console.log(event.latLng);
-                lat = event.latLng._lat;
-                lng = event.latLng._lng;
-        });
+    const mapContainer = document.getElementById('map'); // 지도를 표시할 div
+    let lat = geocoding(address,"dong").responseJSON.coordinateInfo.lat;
+    let lng = geocoding(address,"dong").responseJSON.coordinateInfo.lon;
+    let mapOption = {
+        center : new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
+        width : "100%", // map의 width 설정
+        height : "100%", // map의 height 설정	
+        zoom : 17
+    };
+    map = new Tmapv2.Map(mapContainer, mapOption);
 
-        // naver.maps.Event.addListener(map, 'click', () => {
-        //     numberMarkerList.forEach((marker, i) => {
-        //         marker.set('isActive', false);
-        //         marker.setIcon({
-        //             url: 'assets/img/sp_pins_spot_v3.png',
-        //             size: new naver.maps.Size(24, 37),
-        //             anchor: new naver.maps.Point(12, 37),
-        //             origin: new naver.maps.Point(i * 29, 50)
-        //         });
-        //     })
-        //     removeOverlay();
-        // });
+    //tmap 클릭 이벤트
+    map.addListener("click", function onClick(event){
+            console.log(event.latLng);
+            let lat = event.latLng._lat;
+            let lng = event.latLng._lng;
+    });
 
-        // naver.maps.Event.addListener(map, 'rightclick', (e) => {
-        //     createMarkerByCoords(e.coord._lat, e.coord._lng);
-        // });
-    }
+    // console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
+    // // 주소로 좌표를 찾은 후 결과를 활용하는 함수
+    // let callback = (status, response) => {
+    //     if (status !== naver.maps.Service.Status.OK) {
+    //         return alert('Something wrong!');
+    //     }
+    //     let jibunAddress = response.v2.addresses[0].jibunAddress, // 지번주소
+    //         roadAddress = response.v2.addresses[0].roadAddress,
+    //         engAddress = response.v2.addresses[0].englishAddress,
+    //         lat = response.v2.addresses[0].y,
+    //         lng = response.v2.addresses[0].x;
+        
 
-    naver.maps.Service.geocode({ query: address }, callback);
+    //     // naver.maps.Event.addListener(map, 'click', () => {
+    //     //     numberMarkerList.forEach((marker, i) => {
+    //     //         marker.set('isActive', false);
+    //     //         marker.setIcon({
+    //     //             url: 'assets/img/sp_pins_spot_v3.png',
+    //     //             size: new naver.maps.Size(24, 37),
+    //     //             anchor: new naver.maps.Point(12, 37),
+    //     //             origin: new naver.maps.Point(i * 29, 50)
+    //     //         });
+    //     //     })
+    //     //     removeOverlay();
+    //     // });
+
+    //     // naver.maps.Event.addListener(map, 'rightclick', (e) => {
+    //     //     createMarkerByCoords(e.coord._lat, e.coord._lng);
+    //     // });
+    // }
+
+    // naver.maps.Service.geocode({ query: address }, callback);
 }
 
 // * 마커와 오버레이 관련 함수들
@@ -997,9 +1002,9 @@ function init() {
             // createMarkerByCoords(lat, lng);
 
             // 좌표 => 주소 변환
-            reverseGeocoding(lat, lng)
+            reverseGeocoding(37.537633, 127.092389)
                 .then(address => {
-                    setCurrentLocation(addressStringSort(address).dongAddr);
+                    setCurrentLocation(getAddressText(address).dongAddr);
                     displayMap(address);
                 })
         })
@@ -1016,60 +1021,74 @@ function reverseGeocoding(lat, lng) {
         .then(data => data);
 }
 
-function geocoding(address) {
-    $
-    .ajax({
-       method : "GET",
-       url : "https://apis.openapi.sk.com/tmap/geo/geocoding?version=1&format=json&callback=result",
-       async : false,
-       data : {
-          "appKey" : "발급AppKey",
-          "coordType" : "WGS84GEO",
-          "city_do" : city_do,
-          "gu_gun" : gu_gun,
-          "dong" : dong,
-          "bunji" : bunji
-       },
-       success : function(response) {
-          var resultData = response.coordinateInfo;
-          var lon, lat;
+function geocoding(address, type="full") {
+    console.log(address);
+    let city_do = address.addressInfo.city_do,
+        gu_gun = address.addressInfo.gu_gun,
+        dong = address.addressInfo.legalDong,
+        bunji = address.addressInfo.bunji;
+    if(type !== "full") {
+        dong = address.addressInfo.adminDong;
+        bunji = "";
+    }
 
-          if (resultData.lon.length > 0) {
-             lon = resultData.lon;
-             lat = resultData.lat;
-          } else {
-             lon = resultData.newLon;
-             lat = resultData.newLat;
-          }
+    return $.ajax({
+        method : "GET",
+        url : "https://apis.openapi.sk.com/tmap/geo/geocoding?version=1&format=json&callback=result",
+        async : false,
+        data : {
+            "appKey" : "l7xx68845a4aa2724d0ebbead38642364a0f",
+            "coordType" : "WGS84GEO",
+            // "city_do" : city_do,
+            // "gu_gun" : gu_gun,
+            // "dong" : dong,
+            // "bunji" : bunji
+            "city_do" : "서울특별시",
+            "gu_gun" : "광진구",
+            "dong" : "구의3동",
+            // "bunji" : bunji
+        },
+        success : function(response) {
+            var resultData = response.coordinateInfo;
+            var lon, lat;
+            console.log(resultData);
+            return resultData;
+            // if (resultData.lon.length > 0) {
+            // lon = resultData.lon;
+            // lat = resultData.lat;
+            // } else {
+            // lon = resultData.newLon;
+            // lat = resultData.newLat;
+            // }
 
-          //기존 마커 삭제
-          marker1.setMap(null);
+            // //기존 마커 삭제
+            // marker1.setMap(null);
 
-          var markerPosition = new Tmapv2.LatLng(
-                Number(lat), Number(lon));
-          //마커 올리기
-          marker1 = new Tmapv2.Marker(
-                {
-                   position : markerPosition,
-                   icon : "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png",
-                   iconSize : new Tmapv2.Size(
-                         24, 38),
-                   map : map
-                });
-          map.setCenter(markerPosition);
+            // var markerPosition = new Tmapv2.LatLng(
+            //     Number(lat), Number(lon));
+            // //마커 올리기
+            // marker1 = new Tmapv2.Marker(
+            //     {
+            //         position : markerPosition,
+            //         icon : "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png",
+            //         iconSize : new Tmapv2.Size(
+            //             24, 38),
+            //         map : map
+            //     });
+            // map.setCenter(markerPosition);
 
-       },
-       error : function(request, status, error) {
-          console.log("code:"
+        },
+        error : function(request, status, error) {
+            console.log("code:"
                 + request.status + "\n"
                 + "message:"
                 + request.responseText
                 + "\n" + "error:" + error);
-       }
+        }
     });
 }
 
-function addressStringSort(address) {
+function getAddressText(address) {
     
     var arrResult = address.addressInfo;
     //법정동 마지막 문자 
@@ -1110,7 +1129,6 @@ function addressStringSort(address) {
         + arrResult.legalDong + ' ' + arrResult.ri
         + '' + arrResult.bunji;
 
-        console.log("jibunAddr:",jibunAddr);
     //구주소 빌딩명 존재
     if (arrResult.buildingName != '') {//빌딩명만 존재하는 경우
         jibunAddr += (' ' + arrResult.buildingName);
@@ -1126,7 +1144,6 @@ function addressStringSort(address) {
         jibunAddr: jibunAddr,
         dongAddr: dongAddr
     }
-    console.log(result);
     return result;
 }
 
