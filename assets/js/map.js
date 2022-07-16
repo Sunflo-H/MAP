@@ -395,69 +395,97 @@ function aroundSearch(e) {
 
 function displayMap(address) {
     const mapContainer = document.getElementById('map'); // 지도를 표시할 div
-    let lat = geocoding(address,"dong").responseJSON.coordinateInfo.lat;
-    let lng = geocoding(address,"dong").responseJSON.coordinateInfo.lon;
-    let mapOption = {
-        center : new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
-        width : "100%", // map의 width 설정
-        height : "100%", // map의 height 설정	
-        zoom : 17
-    };
-    map = new Tmapv2.Map(mapContainer, mapOption);
-
-    //tmap 클릭 이벤트
-    map.addListener("click", function onClick(event){
-            console.log(event.latLng);
-            let lat = event.latLng._lat;
-            let lng = event.latLng._lng;
-    });
-        map = new naver.maps.Map(mapContainer, mapOption);
-
-        naver.maps.Event.addListener(map, 'click', () => {
-            numberMarkerList.forEach((marker, i) => {
-                marker.set('isActive', false);
-                marker.setIcon({
-                    url: 'assets/img/sp_pins_spot_v3.png',
-                    size: new naver.maps.Size(24, 37),
-                    anchor: new naver.maps.Point(12, 37),
-                    origin: new naver.maps.Point(i * 29, 50)
-                });
-            })
-            removeOverlay();
-        });
-
-    // console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
-    // // 주소로 좌표를 찾은 후 결과를 활용하는 함수
-    // let callback = (status, response) => {
-    //     if (status !== naver.maps.Service.Status.OK) {
-    //         return alert('Something wrong!');
-    //     }
-    //     let jibunAddress = response.v2.addresses[0].jibunAddress, // 지번주소
-    //         roadAddress = response.v2.addresses[0].roadAddress,
-    //         engAddress = response.v2.addresses[0].englishAddress,
-    //         lat = response.v2.addresses[0].y,
-    //         lng = response.v2.addresses[0].x;
+    geocoding(address)
+    .then(data => {
+        let addressInfo = data.v2.addresses;
+        console.log(addressInfo);
+        let lat = addressInfo[0].y,
+            lng = addressInfo[0].x,
+            jibunAddress = addressInfo[0].jibunAddress,
+            roadAddress = addressInfo[0].roadAddress;
+        let mapOption = {
+            center : new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
+            width : "100%", // map의 width 설정
+            height : "100%", // map의 height 설정	
+            zoom : 17
+        };
         
+        console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
+        map = new Tmapv2.Map(mapContainer, mapOption);
+        
+        //tmap 클릭 이벤트
+        map.addListener("click", function onClick(event){
+                let lat = event.latLng._lat;
+                let lng = event.latLng._lng;
+                console.log(reverseGeocoding(lat,lng));
+        });
+    });
+}
 
-    //     // naver.maps.Event.addListener(map, 'click', () => {
-    //     //     numberMarkerList.forEach((marker, i) => {
-    //     //         marker.set('isActive', false);
-    //     //         marker.setIcon({
-    //     //             url: 'assets/img/sp_pins_spot_v3.png',
-    //     //             size: new naver.maps.Size(24, 37),
-    //     //             anchor: new naver.maps.Point(12, 37),
-    //     //             origin: new naver.maps.Point(i * 29, 50)
-    //     //         });
-    //     //     })
-    //     //     removeOverlay();
-    //     // });
+function geocoding(address) {
+    return new Promise(resolve => {
+        let callback = (status, response) => {
+            if (status !== naver.maps.Service.Status.OK) {
+                return alert('Something wrong!');
+            }
+            resolve(response)
+        }
+        naver.maps.Service.geocode({ query: address}, callback);
+    })
+}
 
-    //     // naver.maps.Event.addListener(map, 'rightclick', (e) => {
-    //     //     createMarkerByCoords(e.coord._lat, e.coord._lng);
-    //     // });
-    // }
+function reverseGeocoding_dong(lat, lng) {
+    //정확한 주소 정보를 가져오지는 못하는것같다.
+    return new Promise (resolve => {
+        let coords = new naver.maps.LatLng(lat, lng);
+        let callback = (status, response) => {
+            if (status !== naver.maps.Service.Status.OK) {
+                return alert('Something wrong!');
+            }
+            resolve(response)
+        }
+        naver.maps.Service.reverseGeocode({coords: coords}, callback);
+    }) 
+}
 
-    // naver.maps.Service.geocode({ query: address }, callback);
+function reverseGeocoding(lat, lng) {
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    // 주소로 좌표를 검색합니다
+    geocoder.addressSearch('제주특별자치도 제주시 첨단로 242', function(result, status) {
+    
+        // 정상적으로 검색이 완료됐으면 
+         if (status === kakao.maps.services.Status.OK) {
+    
+            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+    
+            // 결과값으로 받은 위치를 마커로 표시합니다
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: coords
+            });
+    
+            // 인포윈도우로 장소에 대한 설명을 표시합니다
+            var infowindow = new kakao.maps.InfoWindow({
+                content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>'
+            });
+            infowindow.open(map, marker);
+    
+            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+            map.setCenter(coords);
+        } 
+    });    
+}
+
+function test() {
+    let url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode",
+        headers = {
+            "X-NCP-APIGW-API-KEY-ID":"es0epxrzju" ,
+            "X-NCP-APIGW-API-KEY": "lNKSzmkBdielGL26PjmWaKhpaCgz9wBVXMhyy0Ou" 
+
+        }
+    fetch(url, {headers : headers})
+    .then(response => console.log(response))
 }
 
 // * 마커와 오버레이 관련 함수들
@@ -1009,156 +1037,27 @@ function categoryClick(e, index) {
 function init() {
     getUserLocation()
         .then(data => {
+            console.log(data);
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
 
             getWeather(lat, lng)
             // createMarkerByCoords(lat, lng);
-
-            // 좌표 => 주소 변환
-            reverseGeocoding(37.537633, 127.092389)
-                .then(address => {
-                    setCurrentLocation(getAddressText(address).dongAddr);
-                    displayMap(address);
-                })
+            reverseGeocoding(lat, lng)
+            .then(data => {
+                let currentLocation = data.v2.address.roadAddress; // 현재 위치
+                if(currentLocation === '') currentLocation = data.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
+                
+                setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
+                displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
+                 //tmap 클릭 이벤트
+    //     map.addListener("click", function onClick(event){
+    //         let lat = event.latLng._lat;
+    //         let lng = event.latLng._lng;
+    //         console.log(reverseGeocoding(lat,lng));
+    // });
+            })
         })
-}
-
-function reverseGeocoding(lat, lng) {
-    let coordType = "WGS84GEO",       //응답좌표 타입 옵션 설정 입니다.
-        addressType = "A10",           //주소타입 옵션 설정 입니다.
-        appKey = "l7xx68845a4aa2724d0ebbead38642364a0f",
-        url = `https://apis.openapi.sk.com/tmap/geo/reversegeocoding?version=1&lat=${lat}&lon=${lng}&coordType=${coordType}&addressType=${addressType}&appKey=${appKey}`;
-
-    return fetch(url)
-        .then(res => res.json())
-        .then(data => data);
-}
-
-function geocoding(address, type="full") {
-    console.log(address);
-    let city_do = address.addressInfo.city_do,
-        gu_gun = address.addressInfo.gu_gun,
-        dong = address.addressInfo.legalDong,
-        bunji = address.addressInfo.bunji;
-    if(type !== "full") {
-        dong = address.addressInfo.adminDong;
-        bunji = "";
-    }
-
-    return $.ajax({
-        method : "GET",
-        url : "https://apis.openapi.sk.com/tmap/geo/geocoding?version=1&format=json&callback=result",
-        async : false,
-        data : {
-            "appKey" : "l7xx68845a4aa2724d0ebbead38642364a0f",
-            "coordType" : "WGS84GEO",
-            // "city_do" : city_do,
-            // "gu_gun" : gu_gun,
-            // "dong" : dong,
-            // "bunji" : bunji
-            "city_do" : "서울특별시",
-            "gu_gun" : "광진구",
-            "dong" : "구의3동",
-            // "bunji" : bunji
-        },
-        success : function(response) {
-            var resultData = response.coordinateInfo;
-            var lon, lat;
-            console.log(resultData);
-            return resultData;
-            // if (resultData.lon.length > 0) {
-            // lon = resultData.lon;
-            // lat = resultData.lat;
-            // } else {
-            // lon = resultData.newLon;
-            // lat = resultData.newLat;
-            // }
-
-            // //기존 마커 삭제
-            // marker1.setMap(null);
-
-            // var markerPosition = new Tmapv2.LatLng(
-            //     Number(lat), Number(lon));
-            // //마커 올리기
-            // marker1 = new Tmapv2.Marker(
-            //     {
-            //         position : markerPosition,
-            //         icon : "http://tmapapi.sktelecom.com/upload/tmap/marker/pin_b_m_a.png",
-            //         iconSize : new Tmapv2.Size(
-            //             24, 38),
-            //         map : map
-            //     });
-            // map.setCenter(markerPosition);
-
-        },
-        error : function(request, status, error) {
-            console.log("code:"
-                + request.status + "\n"
-                + "message:"
-                + request.responseText
-                + "\n" + "error:" + error);
-        }
-    });
-}
-
-function getAddressText(address) {
-    
-    var arrResult = address.addressInfo;
-    //법정동 마지막 문자 
-    var lastLegal = arrResult.legalDong
-        .charAt(arrResult.legalDong.length - 1);
-        
-
-    // 새주소
-    roadAddr = arrResult.city_do + ' '
-        + arrResult.gu_gun + ' ';
-
-    if (arrResult.eup_myun == ''
-        && (lastLegal == "읍" || lastLegal == "면")) {//읍면
-        roadAddr += arrResult.legalDong;
-    } else {
-        roadAddr += arrResult.eup_myun;
-    }
-    roadAddr += '' + arrResult.roadName + ' '
-        + arrResult.buildingIndex;
-
-    // 새주소 법정동& 건물명 체크
-    if (arrResult.legalDong != ''
-        && (lastLegal != "읍" && lastLegal != "면")) {//법정동과 읍면이 같은 경우
-
-        if (arrResult.buildingName != '') {//빌딩명 존재하는 경우
-            roadAddr += (' (' + arrResult.legalDong
-                + ', ' + arrResult.buildingName + ') ');
-        } else {
-            roadAddr += (' (' + arrResult.legalDong + ')');
-        }
-    } else if (arrResult.buildingName != '') {//빌딩명만 존재하는 경우
-        roadAddr += (' (' + arrResult.buildingName + ') ');
-    }
-
-    // 구주소
-    jibunAddr = arrResult.city_do + ' '
-        + arrResult.gu_gun + ' '
-        + arrResult.legalDong + ' ' + arrResult.ri
-        + '' + arrResult.bunji;
-
-    //구주소 빌딩명 존재
-    if (arrResult.buildingName != '') {//빌딩명만 존재하는 경우
-        jibunAddr += (' ' + arrResult.buildingName);
-    }
-
-    // 자세한 '동' 주소까지만 (서울 ~구 ~1동)
-    dongAddr = arrResult.city_do + ' '
-        + arrResult.gu_gun + ' '
-        + arrResult.adminDong 
-
-    let result = {
-        roadAddr: roadAddr,
-        jibunAddr: jibunAddr,
-        dongAddr: dongAddr
-    }
-    return result;
 }
 
 function setCurrentLocation(address) {
