@@ -398,7 +398,6 @@ function displayMap(address) {
     geocoding(address)
     .then(data => {
         let addressInfo = data.v2.addresses;
-        console.log(addressInfo);
         let lat = addressInfo[0].y,
             lng = addressInfo[0].x,
             jibunAddress = addressInfo[0].jibunAddress,
@@ -414,11 +413,13 @@ function displayMap(address) {
         map = new Tmapv2.Map(mapContainer, mapOption);
         
         //tmap 클릭 이벤트
-        map.addListener("click", function onClick(event){
+        map.addListener('click', function onClick(event){
                 let lat = event.latLng._lat;
                 let lng = event.latLng._lng;
                 console.log(reverseGeocoding(lat,lng));
         });
+        // 지도에 마커 생성
+        createMarkerByCoords(lat, lng);
     });
 }
 
@@ -428,94 +429,86 @@ function geocoding(address) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('Something wrong!');
             }
+            console.log(response);
             resolve(response)
         }
         naver.maps.Service.geocode({ query: address}, callback);
     })
 }
 
-function reverseGeocoding_dong(lat, lng) {
-    //정확한 주소 정보를 가져오지는 못하는것같다.
+
+
+function reverseGeocoding(lat, lng) {
     return new Promise (resolve => {
         let coords = new naver.maps.LatLng(lat, lng);
+        let option = {
+            coords: coords,
+            orders: [
+                naver.maps.Service.OrderType.ADDR,
+                naver.maps.Service.OrderType.ROAD_ADDR
+            ]
+        }
         let callback = (status, response) => {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('Something wrong!');
             }
             resolve(response)
         }
-        naver.maps.Service.reverseGeocode({coords: coords}, callback);
+
+        naver.maps.Service.reverseGeocode(option, callback);
     }) 
 }
 
-function reverseGeocoding(lat, lng) {
-    var geocoder = new kakao.maps.services.Geocoder();
-
-    // 주소로 좌표를 검색합니다
-    geocoder.addressSearch('제주특별자치도 제주시 첨단로 242', function(result, status) {
-    
-        // 정상적으로 검색이 완료됐으면 
-         if (status === kakao.maps.services.Status.OK) {
-    
-            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-    
-            // 결과값으로 받은 위치를 마커로 표시합니다
-            var marker = new kakao.maps.Marker({
-                map: map,
-                position: coords
-            });
-    
-            // 인포윈도우로 장소에 대한 설명을 표시합니다
-            var infowindow = new kakao.maps.InfoWindow({
-                content: '<div style="width:150px;text-align:center;padding:6px 0;">우리회사</div>'
-            });
-            infowindow.open(map, marker);
-    
-            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-            map.setCenter(coords);
-        } 
-    });    
-}
-
-function test() {
-    let url = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode",
-        headers = {
-            "X-NCP-APIGW-API-KEY-ID":"es0epxrzju" ,
-            "X-NCP-APIGW-API-KEY": "lNKSzmkBdielGL26PjmWaKhpaCgz9wBVXMhyy0Ou" 
-
+function reverseGeocoding_dong(lat, lng) {
+    return new Promise (resolve => {
+        let coords = new naver.maps.LatLng(lat, lng);
+        let option = {
+            coords: coords
         }
-    fetch(url, {headers : headers})
-    .then(response => console.log(response))
+        let callback = (status, response) => {
+            if (status !== naver.maps.Service.Status.OK) {
+                return alert('Something wrong!');
+            }
+            resolve(response)
+        }
+        naver.maps.Service.reverseGeocode(option, callback);
+    }) 
 }
 
 // * 마커와 오버레이 관련 함수들
 //좌표 정보만으로 마커를 한개만 생성한다. (내 좌표로 마커띄울때, 주변탐색시 중앙좌표에 마커띄울때 사용)
 function createMarkerByCoords(lat, lng) {
-    removeMarker();
-    removeOverlay();
+    // removeMarker();
+    // removeOverlay();
     console.log("좌표로 마커 생성 실행");
-    let position = new naver.maps.LatLng(lat, lng);
-    marker = new naver.maps.Marker({
+    let position = new Tmapv2.LatLng(lat, lng);
+    marker = new Tmapv2.Marker({
         map: map,
         position: position,
     });
-
-    naver.maps.Service.reverseGeocode({
-        coords: new naver.maps.LatLng(lat, lng),
-        orders: [ // 상세주소를 찾기위한 옵션
-            naver.maps.Service.OrderType.ADDR,
-            naver.maps.Service.OrderType.ROAD_ADDR
-        ].join(',')
-    }, function (status, response) {
-        if (status !== naver.maps.Service.Status.OK) {
-            return alert('Something wrong!');
-        }
-        let result = response.v2; // 검색 결과의 컨테이너
-        marker.set('addressData', result);
-    });
+    reverseGeocoding(lat,lng)
+    .then(data => {
+        console.log(data)
+    })
+    // naver.maps.Service.reverseGeocode({
+    //     coords: new naver.maps.LatLng(lat, lng),
+    //     orders: [ // 상세주소를 찾기위한 옵션
+    //         naver.maps.Service.OrderType.ADDR,
+    //         naver.maps.Service.OrderType.ROAD_ADDR
+    //     ].join(',')
+    // }, function (status, response) {
+    //     if (status !== naver.maps.Service.Status.OK) {
+    //         return alert('Something wrong!');
+    //     }
+    //     let result = response.v2; // 검색 결과의 컨테이너
+    //     marker.set('addressData', result);
+    // });
 
     // 마커에 클릭 이벤트를 적용합니다.
-    naver.maps.Event.addListener(marker, 'click', () => createOverlay(marker));
+    // naver.maps.Event.addListener(marker, 'click', () => createOverlay(marker));
+
+
+    marker.addListener('click', createOverlay(marker));
 
 }
 
@@ -1037,25 +1030,18 @@ function categoryClick(e, index) {
 function init() {
     getUserLocation()
         .then(data => {
-            console.log(data);
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
 
             getWeather(lat, lng)
-            // createMarkerByCoords(lat, lng);
-            reverseGeocoding(lat, lng)
+            reverseGeocoding_dong(lat, lng)
             .then(data => {
                 let currentLocation = data.v2.address.roadAddress; // 현재 위치
                 if(currentLocation === '') currentLocation = data.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
                 
                 setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
                 displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
-                 //tmap 클릭 이벤트
-    //     map.addListener("click", function onClick(event){
-    //         let lat = event.latLng._lat;
-    //         let lng = event.latLng._lng;
-    //         console.log(reverseGeocoding(lat,lng));
-    // });
+                
             })
         })
 }
