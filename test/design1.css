@@ -1,0 +1,29 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    color: red;
+}
+
+#body-container {
+    background-color: #252f62;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+#menu-container {
+    /* background-color: red; */
+    width: 100px;
+    height: 100%;
+}
+#map-container {
+    background-color: #fbfdff;
+    width: calc(100% - 100px);
+    height: 100%;
+    border-radius: 30px 0px 0px 30px;
+}

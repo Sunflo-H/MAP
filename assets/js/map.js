@@ -429,14 +429,11 @@ function geocoding(address) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('Something wrong!');
             }
-            console.log(response);
             resolve(response)
         }
         naver.maps.Service.geocode({ query: address}, callback);
     })
 }
-
-
 
 function reverseGeocoding(lat, lng) {
     return new Promise (resolve => {
@@ -459,27 +456,11 @@ function reverseGeocoding(lat, lng) {
     }) 
 }
 
-function reverseGeocoding_dong(lat, lng) {
-    return new Promise (resolve => {
-        let coords = new naver.maps.LatLng(lat, lng);
-        let option = {
-            coords: coords
-        }
-        let callback = (status, response) => {
-            if (status !== naver.maps.Service.Status.OK) {
-                return alert('Something wrong!');
-            }
-            resolve(response)
-        }
-        naver.maps.Service.reverseGeocode(option, callback);
-    }) 
-}
-
 // * 마커와 오버레이 관련 함수들
 //좌표 정보만으로 마커를 한개만 생성한다. (내 좌표로 마커띄울때, 주변탐색시 중앙좌표에 마커띄울때 사용)
 function createMarkerByCoords(lat, lng) {
-    // removeMarker();
-    // removeOverlay();
+    removeMarker();
+    removeOverlay();
     console.log("좌표로 마커 생성 실행");
     let position = new Tmapv2.LatLng(lat, lng);
     marker = new Tmapv2.Marker({
@@ -1034,7 +1015,7 @@ function init() {
             let lng = data.coords.longitude; // 경도 (동서)
 
             getWeather(lat, lng)
-            reverseGeocoding_dong(lat, lng)
+            reverseGeocoding(lat, lng)
             .then(data => {
                 let currentLocation = data.v2.address.roadAddress; // 현재 위치
                 if(currentLocation === '') currentLocation = data.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
