@@ -63,7 +63,7 @@ function displayMap(address) {
             jibunAddress = addressInfo[0].jibunAddress,
             roadAddress = addressInfo[0].roadAddress;
         let mapOption = {
-            center : new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
+            cover : new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
             // width : "98%", // map의 width 설정
             // height : "98%", // map의 height 설정	
             zoom : 17
@@ -89,16 +89,32 @@ function getUserLocation() {
     });
 }
 
-init();
+// init();
 
 const border = document.querySelector('.border');
-const icons = document.querySelectorAll('.menu-icon');
-console.log(icons);
-icons.forEach((icon,index) => {
-    console.log(icon);
+const menuIcons = document.querySelectorAll('.menu-icon');
+const menuCircles = document.querySelectorAll('.menu-circle');
+const menuI = document.querySelectorAll('.menu-circle span');
+menuIcons.forEach((icon,index) => {
     icon.addEventListener('click', () => {
-        let height = 85;
+        let height = 70;
         border.style.top= index * 100 + height + "px"
     })
 })
-  
+menuCircles.forEach(((circle,index) => {
+    circle.addEventListener('mouseover', () => {
+        circle.style.background = "var(--customGreen)";
+        circle.style.cursor = "pointer";
+    });
+    circle.addEventListener('mouseout', () => {
+        circle.style.background = "#1b2251";
+    });
+
+    // menuI[index].addEventListener('mouseover', () => {
+    //     circle.style.background = "var(--customGreen)";
+    //     menuI[index].style.cursor = "pointer";
+    // });
+    // menuI[index].addEventListener('mouseout', () => {
+    //     circle.style.background = "var(--customGreen)";
+    // });
+}))

@@ -65,10 +65,7 @@ li:first-child {
     line-height: 40px;
     box-sizing: border-box;
     background-color: #1b2251;
-}
-.menu-circle:hover {
-    background-color: var(--customGreen);
-    cursor: pointer;
+
 }
 
 .menu-label {
@@ -81,8 +78,8 @@ li:first-child {
 
 .border {
     position: absolute;
-    left: 50px;
-    top: 85px;
+    left: 81px;
+    top: 70px;
     width: 100px;
     height: 100px;
     transition-duration: 0.5s;
@@ -90,8 +87,8 @@ li:first-child {
 
 .border span {
     position:absolute;
-    top: 25px;
-    left: 38px;
+    top: 40px;
+    left: 5px;
     font-size: 14px;
     color: gray;
 }
@@ -110,5 +107,4 @@ li:first-child {
     height: 100%;
     border-radius: 30px;
     overflow: hidden;
-    /* border: 1px solid red; */
 }
