@@ -13,10 +13,22 @@ function init() {
             let currentLocation = data.v2.address.roadAddress; // 현재 위치
             if(currentLocation === '') currentLocation = data.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
             
-            setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
+            // setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
             displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
             
         })
+    })
+}
+
+function geocoding(address) {
+    return new Promise(resolve => {
+        let callback = (status, response) => {
+            if (status !== naver.maps.Service.Status.OK) {
+                return alert('Something wrong!');
+            }
+            resolve(response)
+        }
+        naver.maps.Service.geocode({ query: address}, callback);
     })
 }
 
@@ -52,8 +64,8 @@ function displayMap(address) {
             roadAddress = addressInfo[0].roadAddress;
         let mapOption = {
             center : new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
-            width : "100%", // map의 width 설정
-            height : "100%", // map의 height 설정	
+            // width : "98%", // map의 width 설정
+            // height : "98%", // map의 height 설정	
             zoom : 17
         };
         
@@ -67,7 +79,7 @@ function displayMap(address) {
                 console.log(reverseGeocoding(lat,lng));
         });
         // 지도에 마커 생성
-        createMarkerByCoords(lat, lng);
+        // createMarkerByCoords(lat, lng);
     });
 }
 
@@ -79,56 +91,14 @@ function getUserLocation() {
 
 init();
 
-
-// Designed by:  Mauricio Bucardo
-// Original image:
-// https://dribbble.com/shots/5619509-Animated-Tab-Bar
-
-"use strict"; 
-
-const body = document.body;
-const bgColorsBody = ["#ffb457", "#ff96bd", "#9999fb", "#ffe797", "#cffff1"];
-const menu = body.querySelector(".menu");
-const menuItems = menu.querySelectorAll(".menu__item");
-const menuBorder = menu.querySelector(".menu__border");
-let activeItem = menu.querySelector(".active");
-
-function clickItem(item, index) {
-
-    menu.style.removeProperty("--timeOut");
-    
-    if (activeItem == item) return;
-    
-    if (activeItem) {
-        activeItem.classList.remove("active");
-    }
-
-    
-    item.classList.add("active");
-    body.style.backgroundColor = bgColorsBody[index];
-    activeItem = item;
-    offsetMenuBorder(activeItem, menuBorder);
-    
-    
-}
-
-function offsetMenuBorder(element, menuBorder) {
-
-    const offsetActiveItem = element.getBoundingClientRect();
-    const left = Math.floor(offsetActiveItem.left - menu.offsetLeft - (menuBorder.offsetWidth  - offsetActiveItem.width) / 2) +  "px";
-    menuBorder.style.transform = `translate3d(${left}, 0 , 0)`;
-
-}
-
-offsetMenuBorder(activeItem, menuBorder);
-
-menuItems.forEach((item, index) => {
-
-    item.addEventListener("click", () => clickItem(item, index));
-    
+const border = document.querySelector('.border');
+const icons = document.querySelectorAll('.menu-icon');
+console.log(icons);
+icons.forEach((icon,index) => {
+    console.log(icon);
+    icon.addEventListener('click', () => {
+        let height = 85;
+        border.style.top= index * 100 + height + "px"
+    })
 })
-
-window.addEventListener("resize", () => {
-    offsetMenuBorder(activeItem, menuBorder);
-    menu.style.setProperty("--timeOut", "none");
-});
+  
