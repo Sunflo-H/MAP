@@ -36,14 +36,14 @@ body{
 }
 
 #menu-container {
-    /* background-color: red; */
     width: 100px;
     height: 100%;
 }
 
 .menu{
     margin: 0;
-    /* display: flex; */
+    margin-top: 200px;
+    display: flex;
     /* Works well with 100% width  */
     width: 32.05em;
     font-size: 1.5em;
