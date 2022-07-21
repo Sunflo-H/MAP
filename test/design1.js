@@ -89,7 +89,7 @@ function getUserLocation() {
     });
 }
 
-// init();
+init();
 
 const border = document.querySelector('.border');
 const menuIcons = document.querySelectorAll('.menu-icon');
@@ -109,12 +109,4 @@ menuCircles.forEach(((circle,index) => {
     circle.addEventListener('mouseout', () => {
         circle.style.background = "#1b2251";
     });
-
-    // menuI[index].addEventListener('mouseover', () => {
-    //     circle.style.background = "var(--customGreen)";
-    //     menuI[index].style.cursor = "pointer";
-    // });
-    // menuI[index].addEventListener('mouseout', () => {
-    //     circle.style.background = "var(--customGreen)";
-    // });
 }))

@@ -108,3 +108,11 @@ li:first-child {
     border-radius: 30px;
     overflow: hidden;
 }
+
+.category-container {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    z-index: 1;
+
+}
