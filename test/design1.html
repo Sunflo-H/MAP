@@ -25,10 +25,11 @@
             <li>
                 <div class="menu-icon">
                     <div class="menu-circle">
-                        <span><i class="fa-solid fa-location-dot"></i></span>
+                        <!-- <span><i class="fa-solid fa-location-dot"></i></span> -->
+                        <span><i class="fa fa-search"></i></span>
                     </div>
                 </div>
-                <div class="menu-label">지도</div>
+                <div class="menu-label">검색</div>
             </li>
             <li>
                 <div class="menu-icon">
@@ -49,7 +50,7 @@
             <li>
                 <div class="menu-icon">
                     <div class="menu-circle">
-                        <span><i class="fa-solid fa-sun"></i></span>
+                        <span><i class="fa fa-sun"></i></span>
                     </div>
                 </div>
                 <div class="menu-label">날씨</div>
@@ -66,11 +67,16 @@
         </div>
         <div id="map-container">
             <div id="map" style="position:relative">
-                <div class="category-container">
-                    <button>음식점</button>
-                    <button>카페</button>
-                    <button>편의점</button>
-                    <button>마트</button>
+                <div id="interaction-container">
+                    <div id="search-container">
+                        <input type="text">
+                    </div>
+                    <div id="category-container">
+                        <button>음식점</button>
+                        <button>카페</button>
+                        <button>편의점</button>
+                        <button>마트</button>
+                    </div>
                 </div>
             </div>
         </div>

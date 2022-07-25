@@ -2,6 +2,8 @@
     --naverGreen : #2DB400;
     --customGreen : #36ee48;
     --cacaoBlue : #258fff;
+    --main : #252f62;
+    --sub : #1b2251;
 }
 
 html { 
@@ -16,7 +18,7 @@ body {
     /* overflow: hidden; */
     /* align-items: center;
     justify-content: center; */
-    background-color: #252f62;
+    background-color: var(--main);
 }
 
 #body-container {
@@ -64,7 +66,7 @@ li:first-child {
     font-size: 1.2rem;
     line-height: 40px;
     box-sizing: border-box;
-    background-color: #1b2251;
+    background-color: var(--sub);
 
 }
 
@@ -106,7 +108,7 @@ li:first-child {
     background-color: #fbfdff;
     width: calc(100% - 100px);
     height: 100%;
-    border-radius: 30px 0px 0px 30px;
+    /* border-radius: 30px 0px 0px 30px; */
     padding: 10px;
     box-sizing: border-box;
 }
@@ -118,10 +120,27 @@ li:first-child {
     overflow: hidden;
 }
 
-.category-container {
-    position: absolute;
+#interaction-container {
+    display: flex;
+    height: 50px;
+    border: 1px solid red;
+    position:absolute;
     top: 10px;
     left: 20px;
     z-index: 1;
+    align-items: center;
+}
+
+#search-container {
+    /* border: 1px solid var(--main); */
+}
+#search-container input[type="text"] {
+    padding: 0;
+    border: 1px solid var(--main);
+    height: 100%;
+}
+
+#category-container {
+
 
 }
