@@ -122,22 +122,35 @@ li:first-child {
 
 #interaction-container {
     display: flex;
-    height: 50px;
-    border: 1px solid red;
+    /* height: 36px; */
+    /* border: 1px solid red; */
     position:absolute;
     top: 10px;
     left: 20px;
     z-index: 1;
-    align-items: center;
+    /* align-items: center; */
 }
 
 #search-container {
-    /* border: 1px solid var(--main); */
+    /* width: 217px; */
+    height: 36px;
+    border: 2px solid var(--main);
+    border-radius: 5px;
 }
+
 #search-container input[type="text"] {
     padding: 0;
-    border: 1px solid var(--main);
-    height: 100%;
+    border: none;
+    width: 160px;
+    height: 17px;
+    padding: 9px 12px 10px;
+    outline: none;
+}
+
+#search-container div {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
 }
 
 #category-container {
