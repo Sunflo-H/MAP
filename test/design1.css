@@ -2,6 +2,9 @@
     --naverGreen : #2DB400;
     --customGreen : #36ee48;
     --cacaoBlue : #258fff;
+    --customBlue : #004eff;
+    --seoulBlue : #558BCF;
+    --azure : #0099ff;
     --main : #252f62;
     --sub : #1b2251;
 }
@@ -165,6 +168,45 @@ li:first-child {
 
 
 #category-container {
+    display: flex;
+    height: 100%;
+    border: 2px solid var(--main);
+    border-radius: 5px;
+    background-color: white;
+    margin-left: 10px;
+}
 
+.category {
+    padding: 5px 10px 6px;
+    font-weight: bold;
+}
+.category:hover {
+    cursor: pointer;
+    /* color: var(--naverGreen); */
+    color: var(--cacaoBlue);
+}
 
+.category i {
+    margin-right: 5px;
+}
+
+.category:nth-child(1) i {
+    color: coral;
+}
+
+.category:nth-child(2) i {
+    color: coral;
+}
+
+.category:nth-child(3) i {
+    color: var(--azure);
+}
+
+.category:nth-child(4) i {
+    color: var(--azure);
+}
+
+.etc {
+    padding: 5px 10px 6px;
+    border-left: 2px solid var(--main);
 }
