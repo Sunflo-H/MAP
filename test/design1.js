@@ -46,6 +46,7 @@ function reverseGeocoding(lat, lng) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('Something wrong!');
             }
+            console.log(response);
             resolve(response)
         }
         
@@ -87,19 +88,19 @@ function displayMap(address) {
 
 function getUserLocation() {
     return new Promise((resolve, reject) => {
-        let option = {
-            // enableHighAccuracy: true,
-        }
-        navigator.geolocation.getCurrentPosition(resolve, reject, option); // succes, error
+        navigator.geolocation.getCurrentPosition(resolve, reject); // succes, error
     });
 }
 
 init();
 
+// css style 작업
+
 const border = document.querySelector('.border');
 const menuIcons = document.querySelectorAll('.menu-icon');
 const menuCircles = document.querySelectorAll('.menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
+const etc = document.querySelector('.etc');
 
 menuIcons.forEach((icon,index) => {
     icon.addEventListener('click', () => {
@@ -123,3 +124,7 @@ border.addEventListener('click', () => {
     console.log(menuContainer);
     menuContainer.style.width = "0px";
 });
+
+etc.addEventListener('click', () => {
+    
+})
