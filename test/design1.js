@@ -100,7 +100,9 @@ const border = document.querySelector('.border');
 const menuIcons = document.querySelectorAll('.menu-icon');
 const menuCircles = document.querySelectorAll('.menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
-const etc = document.querySelector('.etc');
+const etcBtn = document.querySelector('.etc-btn');
+const etcContainer = document.querySelector('.etc-container');
+
 
 menuIcons.forEach((icon,index) => {
     icon.addEventListener('click', () => {
@@ -125,6 +127,14 @@ border.addEventListener('click', () => {
     menuContainer.style.width = "0px";
 });
 
-etc.addEventListener('click', () => {
-    
+etcBtn.addEventListener('mouseenter', () => {
+    etcContainer.classList.remove('hide');
+    etcBtn.style.background = "rgba(0, 0, 0, 0.03)";
+    etcBtn.style.color = "var(--cacaoBlue)";
+})
+
+etcContainer.addEventListener('mouseleave', () => {
+    etcContainer.classList.add('hide');
+    etcBtn.style.backgroundColor = "white";
+    etcBtn.style.color = "black";
 })

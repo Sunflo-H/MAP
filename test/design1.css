@@ -9,6 +9,10 @@
     --sub : #1b2251;
 }
 
+.hide {
+    display: none !important;
+}
+
 html { 
     width: 100%;
     height: 100%;
@@ -111,7 +115,7 @@ li:first-child {
     background-color: #fbfdff;
     width: calc(100% - 100px);
     height: 100%;
-    /* border-radius: 30px 0px 0px 30px; */
+    border-radius: 2px 0px 0px 2px;
     padding: 10px;
     box-sizing: border-box;
 }
@@ -119,7 +123,7 @@ li:first-child {
 #map {
     width: 100%;
     height: 100%;
-    border-radius: 30px;
+    border-radius: 20px;
     overflow: hidden;
 }
 
@@ -194,39 +198,75 @@ li:first-child {
     color: var(--azure);
 }
 
+.category.hospital i{
+    color: darksalmon;
+}
+
 .category.etc:nth-child(1) i {
     color: burlywood;
 }
-.category.hospital i{
-    color: darksalmon;
+
+.category.etc:nth-child(2) i {
+    color: #2DB400;
+}
+
+.category.etc:nth-child(3) i {
+    color: orchid;
+}
+
+.category.etc:nth-child(4) i {
+    color: gold;
+}
+
+.category.etc:nth-child(5) i {
+    color: #2DB400;
+}
+.category.etc:nth-child(6) i {
+    color: tomato;
 }
 
 
 .etc-btn {
     padding: 6px 10px;
     border-left: 1px solid rgba(196, 194, 194, 0.403);
-    /* border-left: 2px solid var(--customGreen); */
-}
-
-.etc-btn:hover {
-    cursor: pointer;
-    color: var(--cacaoBlue);
+    border-radius: 0px 5px 5px 0px;
+    z-index: 1;
 }
 
 .etc-container {
     position: absolute;
+    left: 140px;
+    top: 33px;
+}
+
+.etc-btn-trigger {
+    position: absolute;
+    top: -33px;
+    left: 190px;
+    width: 35px;
+    height: 33px;
+    border-radius: 0px 5px 5px 0px;
+    z-index: 2;
+}
+
+.etc-container > div:first-child:hover {
+    cursor: pointer;
+}
+
+.etc-category-container {
+    margin-top: 7px;
     display: flex;
     flex-direction: column;
     width: 220px;
-    height: 135px;
+    height: 152px;
     flex-wrap: wrap;
-    top: 40px;
-    left: 145px;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
     background-color: white;
     border-radius: 5px;
+    padding: 5px 0px 5px 5px;
 }
 
-.etc {
-    /* border: 1px solid blue; */
+
+.etc-container .category {
+    margin-top: 5px;
 }
