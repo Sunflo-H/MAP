@@ -129,7 +129,7 @@ border.addEventListener('click', () => {
 
 etcBtn.addEventListener('mouseenter', () => {
     etcContainer.classList.remove('hide');
-    etcBtn.style.background = "rgba(0, 0, 0, 0.03)";
+    etcBtn.style.background = "rgba(0, 0, 0, 0.02)";
     etcBtn.style.color = "var(--cacaoBlue)";
 })
 

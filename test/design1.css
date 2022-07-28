@@ -146,14 +146,19 @@ li:first-child {
     display: inline-block;
     width: 30px;
     text-align: center;
+
+    /* 세로 가운데 정렬 */
+    position: relative;
+    top: 50%;
+    transform:translateY(-50%) ;
 }
 
 #search-container div:first-child label:hover {
     cursor: pointer;
 }
+
 #search-container div i {
     color: var(--main);
-    /* color: var(--customGreen); */
 }
 
 #search-container input[type="text"] {
@@ -163,12 +168,17 @@ li:first-child {
     width: 160px;
     outline: none;
     font-weight: bold;
+
+    position: relative;
+    top: 50%;
+    transform:translateY(-75%);
 }
 
 
 #category-container {
     position: relative;
     display: flex;
+    /* width: 370px; */
     height: 100%;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
     border-radius: 5px;
@@ -177,8 +187,10 @@ li:first-child {
 }
 
 .category {
-    padding: 6px 10px ;
+    padding: 6px 10px;
     font-weight: bold;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 600;
 }
 .category:hover {
     cursor: pointer;
@@ -228,6 +240,8 @@ li:first-child {
 
 .etc-btn {
     padding: 6px 10px;
+    flex-grow: 1;
+    text-align: center;
     border-left: 1px solid rgba(196, 194, 194, 0.403);
     border-radius: 0px 5px 5px 0px;
     z-index: 1;
@@ -254,12 +268,12 @@ li:first-child {
 }
 
 .etc-category-container {
-    margin-top: 7px;
     display: flex;
     flex-direction: column;
     width: 220px;
-    height: 152px;
+    height: 165px;
     flex-wrap: wrap;
+    margin-top: 7px;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
     background-color: white;
     border-radius: 5px;
