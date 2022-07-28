@@ -121,12 +121,6 @@ menuCircles.forEach(((circle,index) => {
     });
 }));
 
-border.addEventListener('click', () => {
-    let menuContainer = document.querySelector('#menu-container');
-    console.log(menuContainer);
-    menuContainer.style.width = "0px";
-});
-
 etcBtn.addEventListener('mouseenter', () => {
     etcContainer.classList.remove('hide');
     etcBtn.style.background = "rgba(0, 0, 0, 0.02)";
