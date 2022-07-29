@@ -13,6 +13,10 @@
     display: none !important;
 }
 
+.show {
+    display: block !important;
+}
+
 html { 
     width: 100%;
     height: 100%;
@@ -34,6 +38,7 @@ body {
     height: 100%;
     box-sizing: border-box;
     background-color: var(--main);
+    z-index: 3;
 }
 
 ul {
@@ -125,17 +130,22 @@ li:first-child {
 #menu-content-container {
     position: absolute;
     top: 0px;
-    left: -100px;
+    left: -200px;
     width: 240px;
     height: 100%;
     background-color: white;
-    z-index: -1;
+    z-index: 2;
     box-shadow: 0px 1px 1px;
+    transition-duration: 1s;
 }
 
-#menu-container:hover ~ #map-container #menu-content-container {
+/* #menu-container:hover ~ #map-container #menu-content-container {
     transform: translateX(200px);
-    z-index: 1;
+    z-index: 2;
+} */
+
+#menu-content-container .search-container {
+    
 }
 
 #interaction-container {

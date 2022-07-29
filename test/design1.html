@@ -28,12 +28,11 @@
            <ul>
             <li>
                 <div class="menu-icon">
-                    <div class="menu-circle">
-                        <!-- <span><i class="fa-solid fa-location-dot"></i></span> -->
+                    <div class="menu-circle" id="search">
                         <span><i class="fa fa-search"></i></span>
                     </div>
                 </div>
-                <div class="menu-label">검색</div>
+                <div class="menu-label"><label for="search">검색</label></div>
             </li>
             <li>
                 <div class="menu-icon">
@@ -64,13 +63,18 @@
                 <div class="login-icon">
                     <div class="menu-circle">
                         <i class="fa-solid fa-user"></i>
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>                        
+                        <!-- <i class="fa-solid fa-arrow-right-from-bracket"></i>                         -->
                     </div>
                 </div>
            </div>
         </div>
         <div id="map-container">
-            <div id="menu-content-container"></div>
+            <div id="menu-content-container">
+                <div class="search-container hide">a</div>
+                <div class="route-container hide">a</div>
+                <div class="bookmark-container hide">a</div>
+                <div class="weather-container hide">a</div>
+            </div>
             <div id="map" style="position:relative">
                 <div id="interaction-container">
                     <div id="search-container">

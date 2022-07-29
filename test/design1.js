@@ -102,7 +102,7 @@ const menuCircles = document.querySelectorAll('.menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
 const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
-
+const menuContentContainer = document.querySelector('#menu-content-container'); 
 
 menuIcons.forEach((icon,index) => {
     icon.addEventListener('click', () => {
@@ -111,14 +111,19 @@ menuIcons.forEach((icon,index) => {
     })
 });
 
-menuCircles.forEach(((circle,index) => {
+menuCircles.forEach(((circle, index) => {
     circle.addEventListener('mouseover', () => {
         circle.style.background = "var(--customGreen)";
         circle.style.cursor = "pointer";
     });
+
     circle.addEventListener('mouseout', () => {
         circle.style.background = "#1b2251";
     });
+
+    circle.addEventListener('click', () => {
+        menuContentContainer.style.transform = "translateX(300px)";
+    })
 }));
 
 etcBtn.addEventListener('mouseenter', () => {
@@ -132,3 +137,4 @@ etcContainer.addEventListener('mouseleave', () => {
     etcBtn.style.backgroundColor = "white";
     etcBtn.style.color = "black";
 })
+
