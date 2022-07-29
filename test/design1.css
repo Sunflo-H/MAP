@@ -146,8 +146,18 @@ li:first-child {
 #menu-content-container > div {
     width: 100%;
     height: 100%;
-    border: 1px solid red;
 }
+
+#menu-content-container .search-container {
+    display: flex;
+    width: 200px;
+    height: 36px;
+    border: 2px solid var(--customGreen);
+    border-radius: 5px;
+    margin: 10px auto;
+    padding: 5px 10px;
+}
+
 
 #interaction-container {
     display: flex;
@@ -175,11 +185,11 @@ li:first-child {
     transform:translateY(-50%) ;
 }
 
-#search-container div:first-child label:hover {
+#search-container label:hover {
     cursor: pointer;
 }
 
-#search-container div i {
+#search-container i {
     color: var(--main);
 }
 
