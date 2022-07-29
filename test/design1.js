@@ -104,11 +104,15 @@ const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
 const menuContentContainer = document.querySelector('#menu-content-container'); 
 
+border.addEventListener('click', () => {
+    menuContentContainer.classList.remove("menu-content-container-active");
+});
+
 menuIcons.forEach((icon,index) => {
     icon.addEventListener('click', () => {
         let height = 70;
         border.style.top= index * 100 + height + "px"
-    })
+    });
 });
 
 menuCircles.forEach(((circle, index) => {
@@ -122,19 +126,27 @@ menuCircles.forEach(((circle, index) => {
     });
 
     circle.addEventListener('click', () => {
-        menuContentContainer.style.transform = "translateX(300px)";
-    })
+        menuContentContainer.classList.add("menu-content-container-active");
+         let searchContainer = menuContentContainer.querySelector('.search-container');
+         let divs = document.querySelectorAll('#menu-content-container > div');
+         console.log(divs[index]);
+         console.log(divs.length);
+         for(let i = 0; i<divs.length; i++) {
+            if(i === index) divs[i].classList.remove('hide');
+            else divs[i].classList.add('hide');
+         }
+    });
 }));
 
 etcBtn.addEventListener('mouseenter', () => {
     etcContainer.classList.remove('hide');
     etcBtn.style.background = "rgba(0, 0, 0, 0.02)";
     etcBtn.style.color = "var(--cacaoBlue)";
-})
+});
 
 etcContainer.addEventListener('mouseleave', () => {
     etcContainer.classList.add('hide');
     etcBtn.style.backgroundColor = "white";
     etcBtn.style.color = "black";
-})
+});
 

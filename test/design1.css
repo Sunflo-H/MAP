@@ -17,6 +17,10 @@
     display: block !important;
 }
 
+.menu-content-container-active {
+    transform: translateX(250px);
+}
+
 html { 
     width: 100%;
     height: 100%;
@@ -130,8 +134,8 @@ li:first-child {
 #menu-content-container {
     position: absolute;
     top: 0px;
-    left: -200px;
-    width: 240px;
+    left: -150px;
+    width: 250px;
     height: 100%;
     background-color: white;
     z-index: 2;
@@ -139,13 +143,10 @@ li:first-child {
     transition-duration: 1s;
 }
 
-/* #menu-container:hover ~ #map-container #menu-content-container {
-    transform: translateX(200px);
-    z-index: 2;
-} */
-
-#menu-content-container .search-container {
-    
+#menu-content-container > div {
+    width: 100%;
+    height: 100%;
+    border: 1px solid red;
 }
 
 #interaction-container {
