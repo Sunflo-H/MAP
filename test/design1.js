@@ -1,5 +1,17 @@
-let mapContainer = document.querySelector('.map-container');
+const mapContainer = document.querySelector('.map-container');
 
+
+//css 작업에 사용된 변수
+const border = document.querySelector('.border');
+const menuIcons = document.querySelectorAll('.menu-icon');
+const menuCircles = document.querySelectorAll('.menu-circle');
+const menuI = document.querySelectorAll('.menu-circle span');
+const etcBtn = document.querySelector('.etc-btn');
+const etcContainer = document.querySelector('.etc-container');
+const menuContentContainer = document.querySelector('.menu-content-container');
+
+
+let map;
 
 function init() {
     getUserLocation()
@@ -12,11 +24,10 @@ function init() {
                 .then(data => {
                     let currentLocation = data.v2.address.roadAddress; // 현재 위치
                     if (currentLocation === '') currentLocation = data.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
-
+                    console.log(currentLocation);
                     // setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
                     displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
-
-                })
+                });
         })
 }
 
@@ -32,15 +43,18 @@ function geocoding(address) {
     })
 }
 
-function reverseGeocoding(lat, lng) {
+function reverseGeocoding(lat, lng , type) {
     return new Promise(resolve => {
         let coords = new naver.maps.LatLng(lat, lng);
+
+        let orderTypes = [
+            naver.maps.Service.OrderType.ADDR,
+            naver.maps.Service.OrderType.ROAD_ADDR
+        ];
+        if(type === "dong") orderTypes = [...orderTypes, naver.maps.Service.OrderType.ADM_CODE]
         let option = {
             coords: coords,
-            orders: [
-                naver.maps.Service.OrderType.ADDR,
-                naver.maps.Service.OrderType.ROAD_ADDR
-            ]
+            orders: orderTypes
         }
         let callback = (status, response) => {
             if (status !== naver.maps.Service.Status.OK) {
@@ -49,13 +63,29 @@ function reverseGeocoding(lat, lng) {
             console.log(response);
             resolve(response)
         }
-
         naver.maps.Service.reverseGeocode(option, callback);
     })
 }
 
+function setCurrentLocation() {
+    /**
+     * 
+     */
+
+    let lat = map.getCenter()._lat,
+        lng = map.getCenter()._lng;
+    console.log(lat, lng);
+    reverseGeocoding(lat, lng, "dong")
+    .then(data => {
+        let dong = data.v2.address.jibunAddress;
+        const locationAddress = document.querySelector('.location-address');
+        console.log(locationAddress);
+        locationAddress.innerText = dong;
+    })
+}
+
 function displayMap(address) {
-    const mapContainer = document.querySelector('.map'); // 지도를 표시할 div
+    const mapDiv = document.querySelector('.map'); // 지도를 표시할 div
     geocoding(address)
         .then(data => {
             let addressInfo = data.v2.addresses;
@@ -73,16 +103,23 @@ function displayMap(address) {
             };
 
             console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
-            map = new Tmapv2.Map(mapContainer, mapOption);
+            map = new Tmapv2.Map(mapDiv, mapOption);
 
             //tmap 클릭 이벤트
-            map.addListener('click', function onClick(event) {
+            map.addListener('click', (event) => {
                 let lat = event.latLng._lat;
                 let lng = event.latLng._lng;
                 console.log(reverseGeocoding(lat, lng));
             });
             // 지도에 마커 생성
             // createMarkerByCoords(lat, lng);
+
+            map.addListener('drag', (event) => {
+                console.log(event);
+            })
+            // "지도가 움직일 때", 또는 "center가 바뀔때" 같은 이벤트리스너 생성
+            // 이럴 때마다 setCurrentLocation(); 함수 실행
+
         });
 }
 
@@ -95,15 +132,6 @@ function getUserLocation() {
 init();
 
 // css style 작업
-
-const border = document.querySelector('.border');
-const menuIcons = document.querySelectorAll('.menu-icon');
-const menuCircles = document.querySelectorAll('.menu-circle');
-const menuI = document.querySelectorAll('.menu-circle span');
-const etcBtn = document.querySelector('.etc-btn');
-const etcContainer = document.querySelector('.etc-container');
-const menuContentContainer = document.querySelector('.menu-content-container');
-
 border.addEventListener('click', () => {
     menuContentContainer.classList.remove("menu-content-container-active");
     border.style.transform = "translateX(5px)";
