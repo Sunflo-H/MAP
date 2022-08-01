@@ -23,16 +23,16 @@
     <script src="design1.js" defer></script>
 </head>
 <body>
-    <div id="body-container">
-        <div id="menu-container">
+    <div class="body-container">
+        <div class="menu-container">
            <ul>
             <li>
                 <div class="menu-icon">
-                    <div class="menu-circle" id="search">
+                    <div class="menu-circle">
                         <span><i class="fa fa-search"></i></span>
                     </div>
                 </div>
-                <div class="menu-label"><label for="search">검색</label></div>
+                <div class="menu-name">검색</div>
             </li>
             <li>
                 <div class="menu-icon">
@@ -40,7 +40,7 @@
                         <span><i class="fa-solid fa-turn-up"></i></span>
                     </div>
                 </div>
-                <div class="menu-label">길찾기</div>
+                <div class="menu-name">길찾기</div>
             </li>
             <li>
                 <div class="menu-icon">
@@ -48,7 +48,7 @@
                         <span><i class="fa-solid fa-star"></i></span>
                     </div>
                 </div>
-                <div class="menu-label">즐겨찾기</div>
+                <div class="menu-name">즐겨찾기</div>
             </li>
             <li>
                 <div class="menu-icon">
@@ -56,10 +56,10 @@
                         <span><i class="fa fa-sun"></i></span>
                     </div>
                 </div>
-                <div class="menu-label">날씨</div>
+                <div class="menu-name">날씨</div>
             </li>
            </ul>
-           <div id="login-container">
+           <div class="login-container">
                 <div class="login-icon">
                     <div class="menu-circle">
                         <i class="fa-solid fa-user"></i>
@@ -67,15 +67,18 @@
                 </div>
            </div>
         </div>
-        <div id="map-container">
+        <div class="map-container">
 
-            <div id="menu-content-container">
+            <div class="menu-content-container">
                 <div class="hide">
-                    <div class="search-container">
+                    <div class="search-container-menu">
                         <div><label for="search-content-label"><i class="fa fa-search"></i></label></div>
-                        <input id="search-content-label" type="text" placeholder="장소 검색" autocomplete="off">
+                        <input class="search-content-label" type="text" placeholder="장소 검색" autocomplete="off">
                     </div>
-                    <div class="location-container"></div>
+                    <div class="location-container">
+                        <div class="location-address"></div>
+                        <div class="location-weather"></div>
+                    </div>
                     <div class="result-container"></div>
                 </div>
                 <div class="hide">b</div>
@@ -83,13 +86,13 @@
                 <div class="hide">d</div>
             </div>
 
-            <div id="map" style="position:relative">
-                <div id="interaction-container">
-                    <div id="search-container">
+            <div class="map" style="position:relative">
+                <div class="interaction-container">
+                    <div class="search-container">
                         <div><label for="search-label"><i class="fa fa-search"></i></label></div>
-                        <input id="search-label" type="text" placeholder="장소 검색" autocomplete="off">
+                        <input class="search-label" type="text" placeholder="장소 검색" autocomplete="off">
                     </div>
-                    <div id="category-container">
+                    <div class="category-container">
                         <div class="category food"><i class="fa fa-cutlery"></i>음식점</div>
                         <div class="category food"><i class="fa fa-coffee"></i>카페</div>
                         <div class="category shop"><i class="fa-solid fa-store"></i>편의점</div>

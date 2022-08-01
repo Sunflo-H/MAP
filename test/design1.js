@@ -1,4 +1,4 @@
-let mapContainer = document.querySelector('#map-container');
+let mapContainer = document.querySelector('.map-container');
 
 
 function init() {
@@ -55,7 +55,7 @@ function reverseGeocoding(lat, lng) {
 }
 
 function displayMap(address) {
-    const mapContainer = document.getElementById('map'); // 지도를 표시할 div
+    const mapContainer = document.querySelector('.map'); // 지도를 표시할 div
     geocoding(address)
     .then(data => {
         let addressInfo = data.v2.addresses;
@@ -102,7 +102,7 @@ const menuCircles = document.querySelectorAll('.menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
 const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
-const menuContentContainer = document.querySelector('#menu-content-container'); 
+const menuContentContainer = document.querySelector('.menu-content-container'); 
 
 border.addEventListener('click', () => {
     menuContentContainer.classList.remove("menu-content-container-active");
@@ -128,7 +128,7 @@ menuCircles.forEach(((circle, index) => {
     circle.addEventListener('click', () => {
         menuContentContainer.classList.add("menu-content-container-active");
          let searchContainer = menuContentContainer.querySelector('.search-container');
-         let divs = document.querySelectorAll('#menu-content-container > div');
+         let divs = document.querySelectorAll('.menu-content-container > div');
          console.log(divs[index]);
          console.log(divs.length);
          for(let i = 0; i<divs.length; i++) {
