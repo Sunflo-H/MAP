@@ -337,8 +337,8 @@ li:first-child {
 
 .border {
     position: absolute;
-    left: 81px;
-    /* left: 181px; */
+    /* left: 101px; */
+    left: 91px;
     top: 70px;
     transition-duration: 0.5s;
     transition-timing-function: ease-out;
