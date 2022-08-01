@@ -67,14 +67,7 @@ function reverseGeocoding(lat, lng , type) {
     })
 }
 
-function setCurrentLocation() {
-    /**
-     * 
-     */
-
-    let lat = map.getCenter()._lat,
-        lng = map.getCenter()._lng;
-    console.log(lat, lng);
+function setCurrentLocation(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
     reverseGeocoding(lat, lng, "dong")
     .then(data => {
         let dong = data.v2.address.jibunAddress;
@@ -116,12 +109,17 @@ function displayMap(address) {
 
             map.addListener('drag', (event) => {
                 console.log(event);
+                let latLng = event.latLng;
+                let lat = event.latLng._lat;
+                let lng = event.latLng._lng;
+                setCurrentLocation(lat, lng);
             })
             // "지도가 움직일 때", 또는 "center가 바뀔때" 같은 이벤트리스너 생성
             // 이럴 때마다 setCurrentLocation(); 함수 실행
-
         });
 }
+
+
 
 function getUserLocation() {
     return new Promise((resolve, reject) => {
