@@ -337,12 +337,12 @@ li:first-child {
 
 .border {
     position: absolute;
-    /* left: 101px; */
-    left: 91px;
+    left: 86px;
     top: 70px;
     transition-duration: 0.5s;
     transition-timing-function: ease-out;
     z-index: 3;
+    opacity: 0;
 }
 
 .border span {

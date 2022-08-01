@@ -106,7 +106,7 @@ const menuContentContainer = document.querySelector('.menu-content-container');
 
 border.addEventListener('click', () => {
     menuContentContainer.classList.remove("menu-content-container-active");
-    border.style.transform = "translateX(10px)";
+    border.style.transform = "translateX(5px)";
     border.style.opacity = "0";
     setTimeout(() => {
         border.classList.add('hide');
@@ -136,10 +136,10 @@ menuCircles.forEach(((circle, index) => {
         let divs = document.querySelectorAll('.menu-content-container > div');
 
         border.classList.remove('hide');
-        border.style.opacity = "1";
-
+        
         setTimeout(() => {
-            border.style.transform = "translateX(-10px)";
+            border.style.opacity = "1";
+            border.style.transform = "translateX(-5px)";
         }, 1);
         for (let i = 0; i < divs.length; i++) {
             if (i === index) divs[i].classList.remove('hide');
