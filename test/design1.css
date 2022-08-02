@@ -166,8 +166,15 @@ li:first-child {
 
 .location-container {
     border: 1px solid red;
+    padding: 5px 10px;
 }
 
+.location-address {
+    border: 1px solid blue;
+}
+.location-weather {
+    border: 1px solid green;
+}
 
 
 
@@ -343,6 +350,9 @@ li:first-child {
     transition-timing-function: ease-out;
     z-index: 3;
     opacity: 0;
+}
+.curve path {
+    border: 1px solid red;
 }
 
 .curve span {

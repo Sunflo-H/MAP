@@ -3,6 +3,8 @@ const mapContainer = document.querySelector('.map-container');
 
 //css 작업에 사용된 변수
 const curve = document.querySelector('.curve');
+const curvePath = document.querySelector('.curve path');
+const curveI = document.querySelector('.curve i');
 const menuIcons = document.querySelectorAll('.menu-icon');
 const menuCircles = document.querySelectorAll('.menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
@@ -200,7 +202,16 @@ function getUserLocation() {
 init();
 
 // css style 작업
-curve.addEventListener('click', () => {
+curvePath.addEventListener('click', () => {
+    menuContentContainer.classList.remove("menu-content-container-active");
+    curve.style.transform = "translateX(5px)";
+    curve.style.opacity = "0";
+    setTimeout(() => {
+        curve.classList.add('hide');
+    }, 200);
+});
+
+curveI.addEventListener('click', () => {
     menuContentContainer.classList.remove("menu-content-container-active");
     curve.style.transform = "translateX(5px)";
     curve.style.opacity = "0";
