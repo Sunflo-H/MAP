@@ -124,7 +124,7 @@ li:first-child {
     background-color: white;
     z-index: 2;
     
-    transition-duration: 0.5s;
+    transition-duration: 0.2s;
 }
 
 .menu-content-container > div {
@@ -165,7 +165,7 @@ li:first-child {
 }
 
 .location-container {
-
+    border: 1px solid red;
 }
 
 
@@ -335,17 +335,17 @@ li:first-child {
     margin-top: 5px;
 }
 
-.border {
+.curve {
     position: absolute;
     left: 86px;
     top: 70px;
-    transition-duration: 0.5s;
+    transition-duration: 0.1s;
     transition-timing-function: ease-out;
     z-index: 3;
     opacity: 0;
 }
 
-.border span {
+.curve span {
     position:absolute;
     top: 40px;
     left: 5px;
@@ -353,7 +353,7 @@ li:first-child {
     color: gray;
 }
 
-.border span:hover {
+.curve span:hover {
     cursor: pointer;
 }
 

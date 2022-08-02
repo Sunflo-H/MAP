@@ -2,7 +2,7 @@ const mapContainer = document.querySelector('.map-container');
 
 
 //css 작업에 사용된 변수
-const border = document.querySelector('.border');
+const curve = document.querySelector('.curve');
 const menuIcons = document.querySelectorAll('.menu-icon');
 const menuCircles = document.querySelectorAll('.menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
@@ -19,17 +19,85 @@ function init() {
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
 
-            // getWeather(lat, lng)
+            getWeather(lat, lng)
             reverseGeocoding(lat, lng)
                 .then(data => {
                     let currentLocation = data.v2.address.roadAddress; // 현재 위치
                     if (currentLocation === '') currentLocation = data.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
-                    console.log(currentLocation);
-                    // setCurrentLocation(currentLocation); // 현재 위치 정보를 세팅합니다.
+
                     displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
                 });
         })
 }
+
+function getWeather(lat, lng) {
+    console.log("현재 좌표의 날씨정보를 받아옵니다.");
+    const weatherDiv = document.querySelector('.location-weather');
+
+    let apiKey = '2bd8aa9e0a77682baadc650722225f4d',
+        units = 'metric' // 섭씨 적용
+    let weatherData = fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=${units}&appid=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            let weather;
+            let temp = Math.round(data.main.temp * 10) / 10;
+            switch (data.weather[0].main) {
+                case 'Clouds': weather = '구름'
+                case 'Clear': weather = '맑음'; break;
+                case 'Rain': weather = '비'; break;
+                case 'Thunderstorm': weather = '뇌우'; break;
+                case 'Snow': weather = '눈'; break;
+                case 'Smoke':
+                case 'Haze':
+                case 'Fog':
+                case 'Dust':
+                case 'Sand':
+                case 'Ash':
+                case 'Mist': weather = '안개'; break;
+                case 'Drizzle': weather = '이슬비'; break;
+                case 'Squall': weather = '스콜'; break;
+                case 'Tornado': weather = '폭풍'; break;
+            }
+
+            let result = { weather: weather, temp: temp };
+
+            return result;
+        });
+
+    let dustData = fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lng}&appid=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            let result = { fineDust: '', yellowDust: '' };
+            let pm2_5 = data.list[0].components.pm2_5; // 초미세먼지 ===> 미세먼지
+            let pm10 = data.list[0].components.pm10; // 미세먼지 ===> 황사
+
+            if (0 <= pm2_5 && pm2_5 < 16) result.fineDust = '좋음';
+            else if (16 <= pm2_5 && pm2_5 < 36) result.fineDust = '보통';
+            else if (36 <= pm2_5 && pm2_5 < 76) result.fineDust = '나쁨';
+            else if (76 <= pm2_5) result.fineDust = '매우나쁨';
+
+            if (0 <= pm10 && pm10 < 31) result.yellowDust = '좋음';
+            else if (31 <= pm10 && pm10 < 81) result.yellowDust = '보통';
+            else if (81 <= pm10 && pm10 < 151) result.yellowDust = '나쁨';
+            else if (151 <= pm10) result.yellowDust = '매우나쁨';
+
+            return result;
+        });
+
+    Promise.all([weatherData, dustData])
+        .then(data => {
+            let temp = data[0].temp,
+                weather = data[0].weather,
+                fineDust = data[1].fineDust,
+                yellowDust = data[1].yellowDust;
+
+                weatherDiv.innerHTML = `<span class="weather">${weather}</span>
+                                      <span class="temp">${temp}°C</span>
+                                      미세<span class="fineDust">${fineDust}</span>
+                                      황사<span class="yellowDust">${yellowDust}</span>`
+        })
+}
+
 
 function geocoding(address) {
     return new Promise(resolve => {
@@ -43,7 +111,7 @@ function geocoding(address) {
     })
 }
 
-function reverseGeocoding(lat, lng , type) {
+function reverseGeocoding(lat, lng, type) {
     return new Promise(resolve => {
         let coords = new naver.maps.LatLng(lat, lng);
 
@@ -51,7 +119,7 @@ function reverseGeocoding(lat, lng , type) {
             naver.maps.Service.OrderType.ADDR,
             naver.maps.Service.OrderType.ROAD_ADDR
         ];
-        if(type === "dong") orderTypes = [...orderTypes, naver.maps.Service.OrderType.ADM_CODE]
+        if (type === "dong") orderTypes = [...orderTypes, naver.maps.Service.OrderType.ADM_CODE]
         let option = {
             coords: coords,
             orders: orderTypes
@@ -69,12 +137,12 @@ function reverseGeocoding(lat, lng , type) {
 
 function setCurrentLocation(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
     reverseGeocoding(lat, lng, "dong")
-    .then(data => {
-        let dong = data.v2.address.jibunAddress;
-        const locationAddress = document.querySelector('.location-address');
-        console.log(locationAddress);
-        locationAddress.innerText = dong;
-    })
+        .then(data => {
+            let dong = data.v2.address.jibunAddress;
+            const locationAddress = document.querySelector('.location-address');
+            console.log(locationAddress);
+            locationAddress.innerText = dong;
+        })
 }
 
 function displayMap(address) {
@@ -90,13 +158,15 @@ function displayMap(address) {
             console.log(lat, lng);
             let mapOption = {
                 center: new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
-                // width : "98%", // map의 width 설정
-                // height : "98%", // map의 height 설정	
                 zoom: 17
             };
 
             console.log("현재 위치를 중심으로 맵을 띄웁니다.", address);
+            // 지도 생성
             map = new Tmapv2.Map(mapDiv, mapOption);
+
+            // 지도 생성후 사용되는 함수들
+            setCurrentLocation();
 
             //tmap 클릭 이벤트
             map.addListener('click', (event) => {
@@ -130,19 +200,19 @@ function getUserLocation() {
 init();
 
 // css style 작업
-border.addEventListener('click', () => {
+curve.addEventListener('click', () => {
     menuContentContainer.classList.remove("menu-content-container-active");
-    border.style.transform = "translateX(5px)";
-    border.style.opacity = "0";
+    curve.style.transform = "translateX(5px)";
+    curve.style.opacity = "0";
     setTimeout(() => {
-        border.classList.add('hide');
-    }, 500);
+        curve.classList.add('hide');
+    }, 200);
 });
 
 menuIcons.forEach((icon, index) => {
     icon.addEventListener('click', () => {
         let height = 70;
-        border.style.top = index * 100 + height + "px"
+        curve.style.top = index * 100 + height + "px"
     });
 });
 
@@ -161,11 +231,11 @@ menuCircles.forEach(((circle, index) => {
         let searchContainer = menuContentContainer.querySelector('.search-container');
         let divs = document.querySelectorAll('.menu-content-container > div');
 
-        border.classList.remove('hide');
-        
+        curve.classList.remove('hide');
+
         setTimeout(() => {
-            border.style.opacity = "1";
-            border.style.transform = "translateX(-5px)";
+            curve.style.opacity = "1";
+            curve.style.transform = "translateX(-5px)";
         }, 1);
         for (let i = 0; i < divs.length; i++) {
             if (i === index) divs[i].classList.remove('hide');
