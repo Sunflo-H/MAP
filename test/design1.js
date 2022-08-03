@@ -20,8 +20,8 @@ function init() {
         .then(data => {
             let lat = data.coords.latitude; // 위도 (남북)
             let lng = data.coords.longitude; // 경도 (동서)
-
-            getWeather(lat, lng)
+            console.log(lat, lng);
+            getWeather(lat, lng);
             reverseGeocoding(lat, lng)
                 .then(data => {
                     let currentLocation = data.v2.address.roadAddress; // 현재 위치
@@ -35,6 +35,7 @@ function init() {
 function getWeather(lat, lng) {
     console.log("현재 좌표의 날씨정보를 받아옵니다.");
     const weatherDiv = document.querySelector('.location-weather');
+    const dustDiv = document.querySelector('.location-dust');
 
     let apiKey = '2bd8aa9e0a77682baadc650722225f4d',
         units = 'metric' // 섭씨 적용
@@ -43,8 +44,9 @@ function getWeather(lat, lng) {
         .then(data => {
             let weather;
             let temp = Math.round(data.main.temp * 10) / 10;
+            console.log(data.weather[0]);
             switch (data.weather[0].main) {
-                case 'Clouds': weather = '구름'
+                case 'Clouds': weather = '구름'; break;
                 case 'Clear': weather = '맑음'; break;
                 case 'Rain': weather = '비'; break;
                 case 'Thunderstorm': weather = '뇌우'; break;
@@ -66,23 +68,23 @@ function getWeather(lat, lng) {
             return result;
         });
 
-    let dustData = fetch(`http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lng}&appid=${apiKey}`)
+    let dustData = fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lng}&appid=${apiKey}`)
         .then(response => response.json())
         .then(data => {
             let result = { fineDust: '', yellowDust: '' };
-            let pm2_5 = data.list[0].components.pm2_5; // 초미세먼지 ===> 미세먼지
-            let pm10 = data.list[0].components.pm10; // 미세먼지 ===> 황사
+            let pm2_5 = data.list[0].components.pm2_5; // 미세먼지
+            let pm10 = data.list[0].components.pm10; // 황사
 
-            if (0 <= pm2_5 && pm2_5 < 16) result.fineDust = '좋음';
-            else if (16 <= pm2_5 && pm2_5 < 36) result.fineDust = '보통';
-            else if (36 <= pm2_5 && pm2_5 < 76) result.fineDust = '나쁨';
-            else if (76 <= pm2_5) result.fineDust = '매우나쁨';
+            if (pm2_5 && pm2_5 <= 15) result.fineDust = '좋음';
+            else if (15 < pm2_5 && pm2_5 <= 35) result.fineDust = '보통';
+            else if (35 < pm2_5 && pm2_5 <= 75) result.fineDust = '나쁨';
+            else if (75 < pm2_5) result.fineDust = '매우나쁨';
 
             if (0 <= pm10 && pm10 < 31) result.yellowDust = '좋음';
             else if (31 <= pm10 && pm10 < 81) result.yellowDust = '보통';
             else if (81 <= pm10 && pm10 < 151) result.yellowDust = '나쁨';
             else if (151 <= pm10) result.yellowDust = '매우나쁨';
-
+            
             return result;
         });
 
@@ -91,12 +93,27 @@ function getWeather(lat, lng) {
             let temp = data[0].temp,
                 weather = data[0].weather,
                 fineDust = data[1].fineDust,
-                yellowDust = data[1].yellowDust;
+                yellowDust = data[1].yellowDust,
+                color;
+            
+            
+            weatherDiv.innerHTML = `<span class="weather">${weather}</span>
+                                      <span class="temp">${temp}°C</span>`
+            dustDiv.innerHTML = `<div><span>미세</span><span class="fineDust">${fineDust}</span></div>
+                                 <div><span>황사</span><span class="yellowDust">${yellowDust}</span></div>`
 
-                weatherDiv.innerHTML = `<span class="weather">${weather}</span>
-                                      <span class="temp">${temp}°C</span>
-                                      미세<span class="fineDust">${fineDust}</span>
-                                      황사<span class="yellowDust">${yellowDust}</span>`
+            switch(fineDust) {
+                case "좋음" : document.querySelector('.fineDust').style.background = "#2359c4"; break;
+                case "보통" : document.querySelector('.fineDust').style.background = "#01b56e"; break;
+                case "나쁨" : document.querySelector('.fineDust').style.background = "#f5c932"; break;
+                case "매우나쁨" : document.querySelector('.fineDust').style.background = "#da3539"; break;
+            }
+            switch(yellowDust) {
+                case "좋음" : document.querySelector('.yellowDust').style.background = "#2359c4"; break;
+                case "보통" : document.querySelector('.yellowDust').style.background = "#01b56e"; break;
+                case "나쁨" : document.querySelector('.yellowDust').style.background = "#f5c932"; break;
+                case "매우나쁨" : document.querySelector('.yellowDust').style.background = "#da3539"; break;
+            }
         })
 }
 
@@ -140,7 +157,7 @@ function reverseGeocoding(lat, lng, type) {
 function setCurrentLocation(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
     reverseGeocoding(lat, lng, "dong")
         .then(data => {
-            let dong = data.v2.address.jibunAddress;
+            let dong = data.v2.results[1].region.area2.name + " " + data.v2.results[1].region.area3.name;
             const locationAddress = document.querySelector('.location-address');
             console.log(locationAddress);
             locationAddress.innerText = dong;
@@ -180,8 +197,6 @@ function displayMap(address) {
             // createMarkerByCoords(lat, lng);
 
             map.addListener('drag', (event) => {
-                console.log(event);
-                let latLng = event.latLng;
                 let lat = event.latLng._lat;
                 let lng = event.latLng._lng;
                 setCurrentLocation(lat, lng);
