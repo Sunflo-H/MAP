@@ -44,7 +44,7 @@ function getWeather(lat, lng) {
         .then(data => {
             let weather;
             let temp = Math.round(data.main.temp * 10) / 10;
-            console.log(data.weather[0]);
+            console.log(data);
             switch (data.weather[0].main) {
                 case 'Clouds': weather = '구름'; break;
                 case 'Clear': weather = '맑음'; break;
@@ -99,21 +99,21 @@ function getWeather(lat, lng) {
             
             weatherDiv.innerHTML = `<span class="weather">${weather}</span>
                                       <span class="temp">${temp}°C</span>`
-            dustDiv.innerHTML = `<div><span>미세</span><span class="fineDust">${fineDust}</span></div>
-                                 <div><span>황사</span><span class="yellowDust">${yellowDust}</span></div>`
+            // dustDiv.innerHTML = `<div><span>초미세먼지</span><span class="fineDust">${fineDust}</span></div>
+            //                      <div><span>미세먼지</span><span class="yellowDust">${yellowDust}</span></div>`
 
-            switch(fineDust) {
-                case "좋음" : document.querySelector('.fineDust').style.background = "#2359c4"; break;
-                case "보통" : document.querySelector('.fineDust').style.background = "#01b56e"; break;
-                case "나쁨" : document.querySelector('.fineDust').style.background = "#f5c932"; break;
-                case "매우나쁨" : document.querySelector('.fineDust').style.background = "#da3539"; break;
-            }
-            switch(yellowDust) {
-                case "좋음" : document.querySelector('.yellowDust').style.background = "#2359c4"; break;
-                case "보통" : document.querySelector('.yellowDust').style.background = "#01b56e"; break;
-                case "나쁨" : document.querySelector('.yellowDust').style.background = "#f5c932"; break;
-                case "매우나쁨" : document.querySelector('.yellowDust').style.background = "#da3539"; break;
-            }
+            // switch(fineDust) {
+            //     case "좋음" : document.querySelector('.fineDust').style.background = "#2359c4"; break;
+            //     case "보통" : document.querySelector('.fineDust').style.background = "#01b56e"; break;
+            //     case "나쁨" : document.querySelector('.fineDust').style.background = "#f5c932"; break;
+            //     case "매우나쁨" : document.querySelector('.fineDust').style.background = "#da3539"; break;
+            // }
+            // switch(yellowDust) {
+            //     case "좋음" : document.querySelector('.yellowDust').style.background = "#2359c4"; break;
+            //     case "보통" : document.querySelector('.yellowDust').style.background = "#01b56e"; break;
+            //     case "나쁨" : document.querySelector('.yellowDust').style.background = "#f5c932"; break;
+            //     case "매우나쁨" : document.querySelector('.yellowDust').style.background = "#da3539"; break;
+            // }
         })
 }
 
