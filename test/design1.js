@@ -14,6 +14,7 @@ const menuContentContainer = document.querySelector('.menu-content-container');
 
 
 let map;
+let markers = [];
 
 function init() {
     getUserLocation()
@@ -54,21 +55,21 @@ function init() {
 function hotRestaurant() {
     let lat = map.getCenter()._lat,
         lng = map.getCenter()._lng;
-    
+
     // 지금 맵의 중심을 체크해서 
     // lat , lng 확보한후
     // reverseGeocoding을 실행 서울특별시, 동을 얻는다.
     reverseGeocoding(lat, lng, "dong")
-    .then(data => {
-        console.log(data);
-        console.log(data.v2.results[1].region.area1);
-        console.log(data.v2.results[1].region.area2);
+        .then(data => {
+            console.log(data);
+            console.log(data.v2.results[1].region.area1);
+            console.log(data.v2.results[1].region.area2);
 
-        fetch('../data/restaurant/seoul.json')
-        .then(res => res.json())
-        .then(jsonData => console.log(jsonData))
+            fetch('../data/restaurant/seoul.json')
+                .then(res => res.json())
+                .then(jsonData => console.log(jsonData))
 
-    })
+        })
 
 }
 
@@ -124,7 +125,7 @@ function getWeather(lat, lng) {
             else if (31 <= pm10 && pm10 < 81) result.yellowDust = '보통';
             else if (81 <= pm10 && pm10 < 151) result.yellowDust = '나쁨';
             else if (151 <= pm10) result.yellowDust = '매우나쁨';
-            
+
             return result;
         });
 
@@ -135,8 +136,8 @@ function getWeather(lat, lng) {
                 fineDust = data[1].fineDust,
                 yellowDust = data[1].yellowDust,
                 color;
-            
-            
+
+
             weatherDiv.innerHTML = `<span class="weather">${weather}</span>
                                       <span class="temp">${temp}°C</span>`
             // dustDiv.innerHTML = `<div><span>초미세먼지</span><span class="fineDust">${fineDust}</span></div>
@@ -147,17 +148,17 @@ function getWeather(lat, lng) {
                                 <div class="dust yellowDust">
                                     미세<span class="rate">${yellowDust}</span>
                                 </div>`
-            switch(fineDust) {
-                case "좋음" : document.querySelector('.fineDust .rate').style.color = "#2359c4"; break;
-                case "보통" : document.querySelector('.fineDust .rate').style.color = "#01b56e"; break;
-                case "나쁨" : document.querySelector('.fineDust .rate').style.color = "#f5c932"; break;
-                case "매우나쁨" : document.querySelector('.fineDust .rate').style.color = "#da3539"; break;
+            switch (fineDust) {
+                case "좋음": document.querySelector('.fineDust .rate').style.color = "#2359c4"; break;
+                case "보통": document.querySelector('.fineDust .rate').style.color = "#01b56e"; break;
+                case "나쁨": document.querySelector('.fineDust .rate').style.color = "#f5c932"; break;
+                case "매우나쁨": document.querySelector('.fineDust .rate').style.color = "#da3539"; break;
             }
-            switch(yellowDust) {
-                case "좋음" : document.querySelector('.yellowDust .rate').style.color = "#2359c4"; break;
-                case "보통" : document.querySelector('.yellowDust .rate').style.color = "#01b56e"; break;
-                case "나쁨" : document.querySelector('.yellowDust .rate').style.color = "#f5c932"; break;
-                case "매우나쁨" : document.querySelector('.yellowDust .rate').style.color = "#da3539"; break;
+            switch (yellowDust) {
+                case "좋음": document.querySelector('.yellowDust .rate').style.color = "#2359c4"; break;
+                case "보통": document.querySelector('.yellowDust .rate').style.color = "#01b56e"; break;
+                case "나쁨": document.querySelector('.yellowDust .rate').style.color = "#f5c932"; break;
+                case "매우나쁨": document.querySelector('.yellowDust .rate').style.color = "#da3539"; break;
             }
         })
 }
@@ -183,9 +184,9 @@ function reverseGeocoding(lat, lng, type) {
             naver.maps.Service.OrderType.ADDR,
             naver.maps.Service.OrderType.ROAD_ADDR
         ];
-        
+
         if (type === "dong") orderTypes = [...orderTypes, naver.maps.Service.OrderType.ADM_CODE]
-        
+
         let option = {
             coords: coords,
             orders: orderTypes
@@ -215,7 +216,7 @@ function setCurrentLocation(lat = map.getCenter()._lat, lng = map.getCenter()._l
 
 function displayMap(lat, lng) {
     const mapDiv = document.querySelector('.map'); // 지도를 표시할 div
-    
+
 
     console.log(lat, lng);
     let mapOption = {
@@ -226,26 +227,26 @@ function displayMap(lat, lng) {
     console.log("현재 위치를 중심으로 맵을 띄웁니다.", lat, lng);
     // 지도 생성
     map = new Tmapv2.Map(mapDiv, mapOption);
-/**
-    // 지도 생성후 사용되는 함수들
-    setCurrentLocation();
-    hotRestaurant();
-
-    //tmap 클릭 이벤트
-    map.addListener('click', (event) => {
-        let lat = event.latLng._lat;
-        let lng = event.latLng._lng;
-        console.log(reverseGeocoding(lat, lng));
-    });
-    // 지도에 마커 생성
-    // createMarkerByCoords(lat, lng);
-
-    map.addListener('drag', (event) => {
-        let lat = event.latLng._lat;
-        let lng = event.latLng._lng;
-        setCurrentLocation(lat, lng);
-    })
-     */
+    /**
+        // 지도 생성후 사용되는 함수들
+        setCurrentLocation();
+        hotRestaurant();
+    
+        //tmap 클릭 이벤트
+        map.addListener('click', (event) => {
+            let lat = event.latLng._lat;
+            let lng = event.latLng._lng;
+            console.log(reverseGeocoding(lat, lng));
+        });
+        // 지도에 마커 생성
+        // createMarkerByCoords(lat, lng);
+    
+        map.addListener('drag', (event) => {
+            let lat = event.latLng._lat;
+            let lng = event.latLng._lng;
+            setCurrentLocation(lat, lng);
+        })
+         */
 }
 
 //! if promise가 아니라면?
@@ -259,8 +260,7 @@ function pageSetting(result) {
     내좌표의주소찾은후주소명을검색카테고리에띄우기(lat, lng);
     마커생성(lat, lng);
 
-    let infoWindow = new Tmapv2.InfoWindow();
-    infoWi
+
 
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
@@ -270,38 +270,30 @@ function pageSetting(result) {
 }
 
 function 마커생성(lat, lng) {
+    let marker = new Tmapv2.InfoWindow();
+    // 마커가 어떤 카테고리냐에 따라 아이콘 변경
+    let icon = `<i class="fa fa-cutlery">`; // 음식점일때
+    var content = `<div class="marker-container">
+                        <div class="marker-icon"><i class="fa fa-cutlery"></i></div>
+                        <div class="marker-address">
+                            <div class="marker-address-name">지금까지 이런 치킨은 없었따. 분식집</div>
+                            <div class="marker-address-category">분식집</div>
+                        </div>
+                    </div>`
 
-    var content= "<div class='m-pop' style='position: static; top: 180px; left : 320px; display: flex; font-size: 14px; box-shadow: 5px 5px 5px #00000040; border-radius: 10px; width : 400px; height:100px; background-color: #FFFFFF; align-items: center; padding: 5px;'>"+
-					   "<div class='img-box' style='width: 110px; height: 90px; border-radius: 10px; background: #f5f5f5 url(resources/images/sample/p-sk-logo.png) no-repeat center;'></div>"+
-					   "<div class='info-box' style='margin-left : 10px'>"+
-					   "<p style='margin-bottom: 7px;'>"+
-					   "<span class='tit' style=' font-size: 16px; font-weight: bold;'>티맵 모빌리티</span>"+
-					   "<a href='http://tmapapi.sktelecom.com/' target='_blank' class='link' style='color: #3D6DCC; font-size: 13px; margin-left: 10px;'>홈페이지</a></p>"+
-					   "<p>"+
-					   "<span class='new-addr'>서울 중구 삼일대로 343 (우)04538</span>"+
-					   "</p>"+
-					   "<p>"+
-					   "<span class='old-addr' style='color: #707070;'>(지번) 저동1가 114</span>"+
-					   "</p>"+
-					   "</div>"+
-					   "<a href='javascript:void(0)' onclick='onClose()' class='btn-close' style='position: absolute; top: 10px; right: 10px; display: block; width: 15px; height: 15px; background: url(resources/images/sample/btn-close-b.svg) no-repeat center;'></a>"+
-					   "</div>";
-infoWindow = new Tmapv2.InfoWindow({
-			position: new Tmapv2.LatLng(lat, lng), //Popup 이 표출될 맵 좌표
-			content: content, //Popup 표시될 text
-			border :'0px solid #FF0000', //Popup의 테두리 border 설정.
-			type: 2, //Popup의 type 설정.
-			map: map //Popup이 표시될 맵 객체
-		});
-    var marker = new Tmapv2.Marker({
-        position: new Tmapv2.LatLng(lat, lng), //Marker의 중심좌표 설정.
-        map: map //Marker가 표시될 Map 설정..
+    marker = new Tmapv2.InfoWindow({
+        position: new Tmapv2.LatLng(lat, lng), //Popup 이 표출될 맵 좌표
+        content: content, //Popup 표시될 text
+        border: '0px solid #ff0000', //Popup의 테두리 border 설정.
+        type: 2, //Popup의 type 설정.
+        // align: 15,
+        background:false,
+        map: map //Popup이 표시될 맵 객체
     });
+    markers.push(marker);
 
-    marker.addListener("click", function(event) {
+    marker.addListener("click", function (event) {
         console.log("마커 클릭");
-        console.log(event);
-        console.log(marker.getPosition());
     });
 }
 
@@ -313,7 +305,7 @@ function 내좌표의주소찾은후주소명을검색카테고리에띄우기(l
         naver.maps.Service.OrderType.ROAD_ADDR,
         naver.maps.Service.OrderType.ADM_CODE
     ];
-    
+
     let option = {
         coords: coords,
         orders: orderTypes
@@ -333,18 +325,18 @@ function 내좌표의주소찾은후주소명을검색카테고리에띄우기(l
 
 function 지도표시하기(lat, lng) {
     const mapDiv = document.querySelector('.map'); // 지도를 표시할 div
-    
+
     let mapOption = {
         center: new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
         zoom: 17
     };
     map = new Tmapv2.Map(mapDiv, mapOption);
 
-    
+
 }
 
 function 마커클릭후정보를띄우기() {
-    
+
 }
 
 

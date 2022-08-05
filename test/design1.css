@@ -101,6 +101,7 @@ li:first-child {
 }
 
 
+/* 지도 관련 */
 .map-container {
     background-color: #fbfdff;
     width: calc(100% - 100px);
@@ -116,6 +117,55 @@ li:first-child {
     /* border-radius: 10px; */
     overflow: hidden;
 }
+
+/* 지도의 마커 */
+
+.marker-container {
+    display: flex;
+    /* min-width: 90px; */
+    height: 40px;
+    border: 1px solid #0475f4;
+    border-radius: 30px;
+    background-color: white;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+
+.marker-icon {
+    min-width: 28px;
+    max-width: 28px;
+    height: 28px;
+    border-radius: 100px;
+    background-color: #0475f4;
+    text-align: center;
+    line-height: 30px;
+}
+
+.marker-container i {
+    color: white;
+    font-size: 16px;
+}
+
+.marker-address {
+    padding: 0px 10px;
+    font-weight: bold;
+    font-family: 'Noto Sans KR', sans-serif;
+    line-height: 15px;
+}
+
+.marker-address-name {
+    /* min-width: 180px; */
+    font-size: 14px;   
+    white-space: nowrap;
+}
+
+.marker-address-category {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.558);
+}
+
+/* 메뉴의 컨텐츠 */
 
 .menu-content-container {
     position: absolute;
