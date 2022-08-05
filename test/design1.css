@@ -165,10 +165,8 @@ li:first-child {
 }
 
 .location-container {
-    /* display: flex; */
     padding: 5px 10px;
     margin-top: 10px;
-    /* border: 1px solid black; */
 }
 
 .location-wrap {
@@ -176,39 +174,37 @@ li:first-child {
 }
 
 .location-address {
-    /* border: 1px solid blue; */
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: bold;
     font-size: 18px;
     color: #333;
 }
+
 .location-weather {
-    /* border: 1px solid green; */
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
-    /* line-height: 28px; */
     font-weight: bold;
+    
 }
 
 .location-weather .temp {
-    /* font-weight: bold; */
     font-size: 15px;
+    margin-left: 4px;
 }
 
 .location-dust {
     flex-grow: 1;
-    height: 18px;
+    height: 20px;
     overflow: hidden;
     margin-left: 7px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: bold;
     /* border: 1px solid red; */
 }
 
 .dust {
     text-align: center;
-    
-    
-    /* border: 1px solid red; */
     margin:auto;
-    /* color: white; */
     font-size: 14px;
 }
 
@@ -217,19 +213,12 @@ li:first-child {
     font-weight: bold;
     margin-left: 5px;
 }
-.fineDust {
-}
-
-.fineDust .rate {
-    color: #da3539;
-}
-.yellowDust .rate {
-    color: #f5c932;
-}
 
 .recommend-container {
     height: 300px;
     margin-top: 15px;
+    
+    /* font-weight: bold; */
 }
 
 .recommend-container .border {
@@ -241,6 +230,7 @@ li:first-child {
 .recommend-container .border span {
     font-size: 14px;
     font-weight: bold;
+    font-family: 'Noto Sans KR', sans-serif;
     /* color: red; */
 }
 
@@ -253,7 +243,8 @@ li:first-child {
 .recommend-container .border div {
     flex-grow: 1;
     height: 0px;
-    border-top: 1px solid rgba(51, 51, 51, 0.5);
+    /* border-top: 2px solid rgba(51, 51, 51, 0.5); */
+    border-top: 2px solid black;
     margin-top: 10px;
     margin-left: 5px;
 }
