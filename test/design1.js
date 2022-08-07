@@ -146,6 +146,11 @@ function displayHotRestaurant() {
             fetch('../data/restaurant/seoul.json')
                 .then(res => res.json())
                 .then(data => {
+                    console.log(data);
+                    let a = data.filter(data => {
+                       return (data.지역 === region) && (data.도시명 === city);
+                    })
+                    console.log(a);
                     // 만약
                     // data[0].지역 === region;
                     // data[0].도시명 === city;
