@@ -238,7 +238,6 @@ li:first-child {
     height: 58px;
     padding: 5px 10px;
     margin: 10px 10px 0px;
-    border: 1px solid blue;
 }
 
 .location-wrapper {
@@ -296,14 +295,12 @@ li:first-child {
     height: calc(100% - 100px);
     overflow: hidden;
     margin-left: 10px;
-    border: 1px solid green;
 }
 
 .recommend-container {
     height: 100%;
-    /* padding: 15px 10px 0px; */
     box-sizing: border-box;
-    /* border: 1px solid red; */
+    margin-left: 10px;
 }
 
 .recommend-container .border {
@@ -316,7 +313,6 @@ li:first-child {
     font-size: 14px;
     font-weight: bold;
     font-family: 'Noto Sans KR', sans-serif;
-    /* color: red; */
 }
 
 .recommend-container .border span span{
@@ -337,6 +333,8 @@ li:first-child {
     height: calc(100% - 23px);
     overflow: scroll;
     overflow-x: hidden;
+    /* border: 1px solid red; */
+    margin-top: 10px;
 }
 
 .recommend-list-wrapper::-webkit-scrollbar {

@@ -1,3 +1,13 @@
+const RADIUS = {
+    LV1: 5000,
+    LV2: 10000,
+    LV3: 15000,
+    LV4: 20000
+}
+
+const SEARCH_DATA_LENGTH = 15;
+
+
 const mapContainer = document.querySelector('.map-container');
 
 
@@ -52,7 +62,75 @@ function init() {
         })
 }
 
-function hotRestaurant() {
+function search(keyword) {
+    Promise.all([searchByAddr(keyword), searchByKeyword(keyword)])
+    .then(data => {
+        //data[0], data[1]들은 배열(placeList)로 나오게끔 코드를 짰다. x,y 를 얻어 함수에 적용하면 된다.
+        console.log(data);
+        // 주소로 검색해서 나온 결과가 0이면 키워드로 검색을 살펴봐라
+        // 키워드로 검색해서 나온 결과가 0이면 주소로 검색을 살펴봐라
+        // 둘다 0이면 noPlaceError()를 실행
+        if (data[0].length === 0 && data[1].length !== 0) { // 주소데이터가 없고, 키워드데이터가 있다면
+            panTo(data[1][0].y, data[1][0].x);
+            removeMarker();
+            createNumberMarker(data[1]);
+            displaySearchList(data[1]);
+            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
+        }
+        else if (data[0].length !== 0) { // 주소 데이터가 있다면
+            panTo(data[0][0].y, data[0][0].x);
+            removeMarker();
+            createNumberMarker(data[0]);
+            displaySearchList(data[0]);
+            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
+        }
+        else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
+            noPlaceError();
+        }
+    })
+}
+
+function searchByAddr(addr) {
+    // 카카오 검색
+    // 주소-좌표 변환 객체를 생성합니다
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    // 주소로 좌표를 검색합니다
+    let placeList = new Promise((resolve, reject) => {
+        geocoder.addressSearch(addr, (result, status) => {
+            // 정상적으로 검색이 완료됐으면 
+            if (status === kakao.maps.services.Status.OK) {
+                console.log("주소로 검색 결과 : ", result);
+                resolve(result);
+            } else {
+                console.log("검색 실패 주소가 아닙니다. reulst는 공백입니다.");
+                resolve(result);
+            }
+        }, {
+            size: SEARCH_DATA_LENGTH
+        });
+    })
+    return placeList;
+}
+
+function searchByKeyword(keyword) {
+    console.log("키워드로 검색 실행 , 검색어 :", keyword);
+    const lat = map.getCenter()._lat;
+    const lng = map.getCenter()._lng;
+
+    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${keyword}&size=${SEARCH_DATA_LENGTH}`, {
+        headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("키워드로 검색 결과 :", data);
+            return data.documents;
+        })
+        .catch((error) => console.log("error:" + error));
+    return placeList;
+}
+
+function displayHotRestaurant() {
     let lat = map.getCenter()._lat,
         lng = map.getCenter()._lng;
 
@@ -61,13 +139,22 @@ function hotRestaurant() {
     // reverseGeocoding을 실행 서울특별시, 동을 얻는다.
     reverseGeocoding(lat, lng, "dong")
         .then(data => {
-            console.log(data);
-            console.log(data.v2.results[1].region.area1);
-            console.log(data.v2.results[1].region.area2);
-
+            let region = data.v2.results[1].region.area1.name;
+            let city = data.v2.results[1].region.area2.name;
+            console.log(region);
+            console.log(city);
             fetch('../data/restaurant/seoul.json')
                 .then(res => res.json())
-                .then(jsonData => console.log(jsonData))
+                .then(data => {
+                    // 만약
+                    // data[0].지역 === region;
+                    // data[0].도시명 === city;
+                    // 이면
+                    // 이 데이터로 
+                    // 대표메뉴, 음식종류, 추천사유 를 가져와서
+                    // 주변맛집에 나타내라
+                    // data.forEach()
+                })
 
         })
 
@@ -166,9 +253,6 @@ function getWeather(lat, lng) {
             },5000);
         })
     
-}
-
-function dustDivTransition() {
 }
 
 function geocoding(address) {
