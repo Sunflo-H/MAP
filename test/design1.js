@@ -154,10 +154,10 @@ function displayHotRestaurant() {
                     })
                     console.log(a[0]);
                     let element = `<div class="recommend-list-container">
+                                        <div><img src=${a[0].img}></div>
                                         <div>${a[0].식당상호}</div>
                                         <div>${a[0].음식종류}</div>
                                         <div>${a[0].추천사유}</div>
-                                        <img src=${a[0].img}>
                                     </div>`
                     recommendList.insertAdjacentHTML('beforeend', element);
                     // 만약
@@ -364,6 +364,7 @@ function pageSetting(result) {
     지도표시하기(lat, lng); // 지도 생성
     내좌표의주소찾은후주소명을검색카테고리에띄우기(lat, lng);
     마커생성(lat, lng);
+    displayHotRestaurant();
 
     // tmapMarker = new Tmapv2.Marker({
     //     position: new Tmapv2.LatLng(lat, lng),
