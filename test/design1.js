@@ -140,14 +140,13 @@ function getWeather(lat, lng) {
 
             weatherDiv.innerHTML = `<span class="weather">${weather}</span>
                                       <span class="temp">${temp}°C</span>`
-            // dustDiv.innerHTML = `<div><span>초미세먼지</span><span class="fineDust">${fineDust}</span></div>
-            //                      <div><span>미세먼지</span><span class="yellowDust">${yellowDust}</span></div>`
             dustDiv.innerHTML = `<div class="dust fineDust">
                                     초미세<span class="rate">${fineDust}</span>
                                 </div>
                                 <div class="dust yellowDust">
                                     미세<span class="rate">${yellowDust}</span>
                                 </div>`
+
             switch (fineDust) {
                 case "좋음": document.querySelector('.fineDust .rate').style.color = "#2359c4"; break;
                 case "보통": document.querySelector('.fineDust .rate').style.color = "#01b56e"; break;
@@ -160,9 +159,17 @@ function getWeather(lat, lng) {
                 case "나쁨": document.querySelector('.yellowDust .rate').style.color = "#f5c932"; break;
                 case "매우나쁨": document.querySelector('.yellowDust .rate').style.color = "#da3539"; break;
             }
+
+            setInterval(() => {
+                const dustDiv = document.querySelector('.location-dust');
+                dustDiv.classList.toggle('up');
+            },5000);
         })
+    
 }
 
+function dustDivTransition() {
+}
 
 function geocoding(address) {
     return new Promise(resolve => {
@@ -276,6 +283,8 @@ function 마커생성(lat, lng) {
     let marker = new Tmapv2.InfoWindow();
     // 마커가 어떤 카테고리냐에 따라 아이콘 변경
     let icon = `<i class="fa fa-cutlery">`; // 음식점일때
+    let addressName;
+    let addressCategory;
     var content = `<div class="marker-container">
                         <div class="marker-icon">${icon}</i></div>
                         <div class="marker-address">
