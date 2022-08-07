@@ -260,7 +260,10 @@ function pageSetting(result) {
     내좌표의주소찾은후주소명을검색카테고리에띄우기(lat, lng);
     마커생성(lat, lng);
 
-
+    // tmapMarker = new Tmapv2.Marker({
+    //     position: new Tmapv2.LatLng(lat, lng),
+    //     map: map
+    // });
 
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
@@ -274,11 +277,12 @@ function 마커생성(lat, lng) {
     // 마커가 어떤 카테고리냐에 따라 아이콘 변경
     let icon = `<i class="fa fa-cutlery">`; // 음식점일때
     var content = `<div class="marker-container">
-                        <div class="marker-icon"><i class="fa fa-cutlery"></i></div>
+                        <div class="marker-icon">${icon}</i></div>
                         <div class="marker-address">
                             <div class="marker-address-name">지금까지 이런 치킨은 없었따. 분식집</div>
                             <div class="marker-address-category">분식집</div>
                         </div>
+                        <div class="marker-point"></div>
                     </div>`
 
     marker = new Tmapv2.InfoWindow({
@@ -286,12 +290,13 @@ function 마커생성(lat, lng) {
         content: content, //Popup 표시될 text
         border: '0px solid #ff0000', //Popup의 테두리 border 설정.
         type: 2, //Popup의 type 설정.
-        // align: 15,
+        align: 17,
         background:false,
+        offset: new Tmapv2.Point(33, 5),
         map: map //Popup이 표시될 맵 객체
     });
     markers.push(marker);
-
+    console.log(marker.getOffset());
     marker.addListener("click", function (event) {
         console.log("마커 클릭");
     });

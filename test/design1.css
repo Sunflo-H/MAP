@@ -122,7 +122,6 @@ li:first-child {
 
 .marker-container {
     display: flex;
-    /* min-width: 90px; */
     height: 40px;
     border: 1px solid #0475f4;
     border-radius: 30px;
@@ -130,7 +129,6 @@ li:first-child {
     padding: 5px;
     box-sizing: border-box;
 }
-
 
 .marker-icon {
     min-width: 28px;
@@ -163,6 +161,24 @@ li:first-child {
 .marker-address-category {
     font-size: 10px;
     color: rgba(0, 0, 0, 0.558);
+}
+
+.marker-point {
+    position: absolute;
+    top: 39px;
+    left: 30px;
+    width: 5px;
+    height: 5px;
+    background-color: white;
+    border-right: 1px solid #0475f4;
+    border-bottom: 1px solid #0475f4;
+    transform: rotate(45deg);
+
+}
+
+.marker-container:hover {
+    color: #0475f4;
+    cursor: pointer;
 }
 
 /* 메뉴의 컨텐츠 */
