@@ -192,7 +192,6 @@ li:first-child {
     height: 100%;
     background-color: white;
     z-index: 2;
-    /* overflow: hidden; */
     
     transition-duration: 0.2s;
 }
@@ -201,18 +200,18 @@ li:first-child {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 100%;
-    padding: 10px 10px 0px 10px;
+    height: 100vh;
+    /* padding: 10px 10px 0px 10px; */
+    padding-top: 10px;
     box-sizing: border-box;
-    /* border: 1px solid red; */
 }
 
 .menu-search-searchBar-container {
-    /* width: 210px; */
     height: 22px;
     border: 2px solid var(--customGreen);
     border-radius: 5px;
     padding: 5px 10px;
+    margin: 0px 10px;
 }
 
 .menu-search-searchBar-container div {
@@ -236,8 +235,10 @@ li:first-child {
 }
 
 .menu-search-location-container {
+    height: 58px;
     padding: 5px 10px;
-    margin-top: 10px;
+    margin: 10px 10px 0px;
+    border: 1px solid blue;
 }
 
 .location-wrapper {
@@ -292,21 +293,23 @@ li:first-child {
 }
 
 .menu-search-main-container {
-    flex-grow: 1;
-    /* border: 1px solid green; */
+    height: calc(100% - 100px);
+    overflow: hidden;
+    margin-left: 10px;
+    border: 1px solid green;
 }
 
 .recommend-container {
     height: 100%;
-    padding: 15px 10px 0px;
-    /* border: 1px solid blue; */
+    /* padding: 15px 10px 0px; */
     box-sizing: border-box;
+    /* border: 1px solid red; */
 }
 
 .recommend-container .border {
     display: flex;
     height: 20px;
-    border: 1px solid green;
+    margin-right: 10px;
 }
 
 .recommend-container .border span {
@@ -332,24 +335,22 @@ li:first-child {
 }
 
 .recommend-list-wrapper {
-    border: 1px solid red;
     height: calc(100% - 23px);
-    overflow: hidden;
+    overflow: scroll;
+    border: 1px solid red;
 }
 
-/* .recommend-list-wrapper::-webkit-scrollbar {
+.recommend-list-wrapper::-webkit-scrollbar {
     display: none; 
-} */
+}
 
 .recommend-list-container {
     height: 150px;
-    border: 1px solid blue;
 }
 
 .result-container {
     margin-top: 20px;
     height: 300px;
-    border: 1px solid blue;
 }
 
 
