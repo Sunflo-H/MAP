@@ -141,7 +141,7 @@ function displayHotRestaurant() {
         .then(data => {
             let region = data.v2.results[1].region.area1.name;
             let city = data.v2.results[1].region.area2.name;
-            const recommendList = document.querySelector('.recommend-list-wrapper');
+            const recommendList = document.querySelector('.recommend-lists-container');
             console.log(region);
             console.log(city);
             console.log(recommendList);
