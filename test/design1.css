@@ -328,7 +328,6 @@ li:first-child {
 .recommend-container .border div {
     flex-grow: 1;
     height: 0px;
-    /* border-top: 2px solid rgba(51, 51, 51, 0.5); */
     border-top: 2px solid black;
     margin-top: 10px;
     margin-left: 5px;
@@ -337,16 +336,27 @@ li:first-child {
 .recommend-list-wrapper {
     height: calc(100% - 23px);
     overflow: scroll;
-    border: 1px solid red;
+    overflow-x: hidden;
 }
 
 .recommend-list-wrapper::-webkit-scrollbar {
-    display: none; 
+    width: 5px;
+}
+
+.recommend-list-wrapper::-webkit-scrollbar-thumb {
+    background-color: #c4c6c8;
+    border-radius: 10px;
+}
+
+.recommend-list-wrapper::-webkit-scrollbar-track {
+    background-color: #e9ecef;
 }
 
 .recommend-list-container {
-    height: 150px;
+    height: 1050px;
 }
+
+
 
 .result-container {
     margin-top: 20px;
