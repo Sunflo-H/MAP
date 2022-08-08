@@ -142,36 +142,23 @@ function displayHotRestaurant() {
             let region = data.v2.results[1].region.area1.name;
             let city = data.v2.results[1].region.area2.name;
             const recommendList = document.querySelector('.recommend-lists-container');
-            console.log(region);
-            console.log(city);
-            console.log(recommendList);
+
             fetch('../data/restaurant/seoul.json')
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
-                    let a = data.filter(data => {
+                    let restaurantList = data.filter(data => {
                        return (data.지역 === region) && (data.도시명 === city);
                     })
-                    console.log(a[0]);
-                    let element = `<div class="recommend-list-container">
-                                        <div><img src=${a[0].img}></div>
-                                        <div>${a[0].식당상호}</div>
-                                        <div>${a[0].음식종류}</div>
-                                        <div>${a[0].추천사유}</div>
-                                    </div>`
-                    recommendList.insertAdjacentHTML('beforeend', element);
-                    // 만약
-                    // data[0].지역 === region;
-                    // data[0].도시명 === city;
-                    // 이면
-                    // 이 데이터로 
-                    // 대표메뉴, 음식종류, 추천사유 를 가져와서
-                    // 주변맛집에 나타내라
-                    // data.forEach()
+                    restaurantList.forEach((restaurant) => {
+                        let element = `<div class="recommend-list-container">
+                                            <div><img src=${restaurant.img}></div>
+                                            <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
+                                            <div>${restaurant.추천사유}</div>
+                                        </div>`
+                        recommendList.insertAdjacentHTML('beforeend', element);
+                    })
                 })
-
         })
-
 }
 
 function getWeather(lat, lng) {
