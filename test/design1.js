@@ -62,73 +62,7 @@ function init() {
         })
 }
 
-function search(keyword) {
-    Promise.all([searchByAddr(keyword), searchByKeyword(keyword)])
-    .then(data => {
-        //data[0], data[1]들은 배열(placeList)로 나오게끔 코드를 짰다. x,y 를 얻어 함수에 적용하면 된다.
-        console.log(data);
-        // 주소로 검색해서 나온 결과가 0이면 키워드로 검색을 살펴봐라
-        // 키워드로 검색해서 나온 결과가 0이면 주소로 검색을 살펴봐라
-        // 둘다 0이면 noPlaceError()를 실행
-        if (data[0].length === 0 && data[1].length !== 0) { // 주소데이터가 없고, 키워드데이터가 있다면
-            panTo(data[1][0].y, data[1][0].x);
-            removeMarker();
-            createNumberMarker(data[1]);
-            displaySearchList(data[1]);
-            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
-        }
-        else if (data[0].length !== 0) { // 주소 데이터가 있다면
-            panTo(data[0][0].y, data[0][0].x);
-            removeMarker();
-            createNumberMarker(data[0]);
-            displaySearchList(data[0]);
-            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
-        }
-        else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
-            noPlaceError();
-        }
-    })
-}
 
-function searchByAddr(addr) {
-    // 카카오 검색
-    // 주소-좌표 변환 객체를 생성합니다
-    var geocoder = new kakao.maps.services.Geocoder();
-
-    // 주소로 좌표를 검색합니다
-    let placeList = new Promise((resolve, reject) => {
-        geocoder.addressSearch(addr, (result, status) => {
-            // 정상적으로 검색이 완료됐으면 
-            if (status === kakao.maps.services.Status.OK) {
-                console.log("주소로 검색 결과 : ", result);
-                resolve(result);
-            } else {
-                console.log("검색 실패 주소가 아닙니다. reulst는 공백입니다.");
-                resolve(result);
-            }
-        }, {
-            size: SEARCH_DATA_LENGTH
-        });
-    })
-    return placeList;
-}
-
-function searchByKeyword(keyword) {
-    console.log("키워드로 검색 실행 , 검색어 :", keyword);
-    const lat = map.getCenter()._lat;
-    const lng = map.getCenter()._lng;
-
-    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${keyword}&size=${SEARCH_DATA_LENGTH}`, {
-        headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("키워드로 검색 결과 :", data);
-            return data.documents;
-        })
-        .catch((error) => console.log("error:" + error));
-    return placeList;
-}
 
 function displayHotRestaurant() {
     let lat = map.getCenter()._lat,
@@ -353,11 +287,6 @@ function pageSetting(result) {
     마커생성(lat, lng);
     displayHotRestaurant();
 
-    // tmapMarker = new Tmapv2.Marker({
-    //     position: new Tmapv2.LatLng(lat, lng),
-    //     map: map
-    // });
-
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
         let lng = event.latLng._lng;
@@ -448,6 +377,120 @@ function getUserLocation() {
 }
 
 // init();
+
+
+// 검색 기능
+const searchInMenu = document.querySelector('.menu-search-searchBar-container input');
+console.log(searchInMenu);
+const searchInMap = document.querySelector('.interaction-container .search-container input');
+console.log(searchInMap);
+
+// 엔터키가 눌리면 검색
+// 다른키가 눌리면 입력
+
+searchInMap.addEventListener('keyup', e => {
+    console.log("키가 눌렸습니다.");
+    if (e.keyCode === 13) enterKey();
+    else if (e.keyCode === 38) {
+        if (searchbarIsOpen === true) upKey();
+    }
+    else if (e.keyCode === 40) {
+        if (searchbarIsOpen === true) downKey();
+    }
+    else if (e.isComposing === false) return; //키 입력 중복을 막아주는 기능
+    else {
+        //value가 공백이 되면 query에러가 발생하여 넣은 코드
+        if (searchInMap.value === '') return;
+
+        const promise1 = getAddrList(searchInMap.value);
+        const promise2 = getRestList(searchInMap.value);
+        Promise.all([promise1, promise2]).then(data => {
+            //! 이후 검색 데이터가 더 추가되면 그때 relationList에 배열을 합치는 코드를 바꿔주자
+            //! 일단 이렇게 두개의 데이터만 두고 짜            
+            let relationList = data[0].concat(data[1]).slice(0, 10);
+
+            if (relationList.length === 0) {
+                closeSearchBar();
+            }
+            else {
+                openSearchBar();
+                openSearchBar_relation();
+                openSearchBar_histroy();
+                displayRelation(relationList);
+                setHtmlHistory();
+            }
+        });
+    }
+})
+
+function search(keyword) {
+    Promise.all([searchByAddr(keyword), searchByKeyword(keyword)])
+    .then(data => {
+        //data[0], data[1]들은 배열(placeList)로 나오게끔 코드를 짰다. x,y 를 얻어 함수에 적용하면 된다.
+        console.log(data);
+        // 주소로 검색해서 나온 결과가 0이면 키워드로 검색을 살펴봐라
+        // 키워드로 검색해서 나온 결과가 0이면 주소로 검색을 살펴봐라
+        // 둘다 0이면 noPlaceError()를 실행
+        if (data[0].length === 0 && data[1].length !== 0) { // 주소데이터가 없고, 키워드데이터가 있다면
+            panTo(data[1][0].y, data[1][0].x);
+            removeMarker();
+            createNumberMarker(data[1]);
+            displaySearchList(data[1]);
+            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
+        }
+        else if (data[0].length !== 0) { // 주소 데이터가 있다면
+            panTo(data[0][0].y, data[0][0].x);
+            removeMarker();
+            createNumberMarker(data[0]);
+            displaySearchList(data[0]);
+            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
+        }
+        else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
+            noPlaceError();
+        }
+    })
+}
+
+function searchByAddr(addr) {
+    // 카카오 검색
+    // 주소-좌표 변환 객체를 생성합니다
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    // 주소로 좌표를 검색합니다
+    let placeList = new Promise((resolve, reject) => {
+        geocoder.addressSearch(addr, (result, status) => {
+            // 정상적으로 검색이 완료됐으면 
+            if (status === kakao.maps.services.Status.OK) {
+                console.log("주소로 검색 결과 : ", result);
+                resolve(result);
+            } else {
+                console.log("검색 실패 주소가 아닙니다. reulst는 공백입니다.");
+                resolve(result);
+            }
+        }, {
+            size: SEARCH_DATA_LENGTH
+        });
+    })
+    return placeList;
+}
+
+function searchByKeyword(keyword) {
+    console.log("키워드로 검색 실행 , 검색어 :", keyword);
+    const lat = map.getCenter()._lat;
+    const lng = map.getCenter()._lng;
+
+    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${keyword}&size=${SEARCH_DATA_LENGTH}`, {
+        headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("키워드로 검색 결과 :", data);
+            return data.documents;
+        })
+        .catch((error) => console.log("error:" + error));
+    return placeList;
+}
+
 
 // css style 작업
 curvePath.addEventListener('click', () => {
