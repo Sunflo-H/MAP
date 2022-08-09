@@ -381,15 +381,13 @@ function getUserLocation() {
 
 // 검색 기능
 const searchInMenu = document.querySelector('.menu-search-searchBar-container input');
-console.log(searchInMenu);
 const searchInMap = document.querySelector('.interaction-container .search-container input');
-console.log(searchInMap);
 
 // 엔터키가 눌리면 검색
 // 다른키가 눌리면 입력
 
 searchInMap.addEventListener('keyup', e => {
-    console.log("키가 눌렸습니다.");
+    console.log("키가 눌렸습니다.", e.keyCode);
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
         if (searchbarIsOpen === true) upKey();
@@ -402,26 +400,57 @@ searchInMap.addEventListener('keyup', e => {
         //value가 공백이 되면 query에러가 발생하여 넣은 코드
         if (searchInMap.value === '') return;
 
-        const promise1 = getAddrList(searchInMap.value);
-        const promise2 = getRestList(searchInMap.value);
+        const promise1 = getJsonAddr(searchInMap.value);
+        const promise2 = getJsonRestaurant(searchInMap.value);
         Promise.all([promise1, promise2]).then(data => {
             //! 이후 검색 데이터가 더 추가되면 그때 relationList에 배열을 합치는 코드를 바꿔주자
             //! 일단 이렇게 두개의 데이터만 두고 짜            
             let relationList = data[0].concat(data[1]).slice(0, 10);
-
-            if (relationList.length === 0) {
-                closeSearchBar();
-            }
-            else {
-                openSearchBar();
-                openSearchBar_relation();
-                openSearchBar_histroy();
-                displayRelation(relationList);
-                setHtmlHistory();
-            }
+            console.log(relationList);
+            // if (relationList.length === 0) {
+            //     closeSearchBar();
+            // }
+            // else {
+            //     openSearchBar();
+            //     openSearchBar_relation();
+            //     openSearchBar_histroy();
+            //     displayRelation(relationList);
+            //     setHtmlHistory();
+            // }
         });
     }
 })
+
+// 검색 api를 사용하여 검색후 장소의 이름들을 promise형태 및 배열로 return 하는 함수
+function getJsonAddr(keyword) {
+    console.log("주소 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
+    let result = fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${keyword}&size=5`, {
+        headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
+    })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            let list = [];
+            // data = documents[{...}, {...}, {...}]; 의 형태
+            data.documents.forEach(data => list.push(data.address_name));
+            return list;
+        });
+    return result;
+}
+
+//직접 만든 restaurant.json 으로부터 검색어와 일치하는 값을 찾아 promise형태 및 배열로 return 하는 함수
+function getJsonRestaurant(keyword) {
+    console.log("레스토랑 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
+    let result = fetch('/data/restaurant.json')
+        .then(res => res.json())
+        .then(data => {
+            let list = [];
+            const restList = data.results[0].items.filter(restaurant => restaurant.name.substring(0, keyword.length) === keyword);
+            restList.forEach(data => list.push(data.name));
+            return list;
+        })
+    return result;
+}
 
 function search(keyword) {
     Promise.all([searchByAddr(keyword), searchByKeyword(keyword)])

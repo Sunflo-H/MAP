@@ -360,8 +360,9 @@ li:first-child {
 }
 
 .recommend-list-container {
-    height: 230px;
-    padding-right: 10px;
+    height: 210px;
+    padding-right: 15px;
+    margin-top: 20px;
 }
 
 .recommend-list-container:hover {
@@ -401,8 +402,7 @@ li:first-child {
     margin-top: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: pre;
-
+    white-space: nowrap;
 }
 
 
@@ -436,7 +436,7 @@ li:first-child {
 
 
 
-
+/* 지도의 상호작용들 */
 .interaction-container {
     display: flex;
     position:absolute;
@@ -444,7 +444,7 @@ li:first-child {
     left: 20px;
     z-index: 1;
 }
-
+/* 상호작용중 검색 */
 .search-container {
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
     border-radius: 5px;
