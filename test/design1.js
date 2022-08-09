@@ -379,12 +379,9 @@ function getUserLocation() {
 // init();
 
 
-// 검색 기능
+// 검색 기능 모음
 const searchInMenu = document.querySelector('.menu-search-searchBar-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
-
-// 엔터키가 눌리면 검색
-// 다른키가 눌리면 입력
 
 searchInMap.addEventListener('keyup', e => {
     console.log("키가 눌렸습니다.", e.keyCode);
@@ -522,6 +519,9 @@ function searchByKeyword(keyword) {
 
 
 // css style 작업
+// const 
+
+
 curvePath.addEventListener('click', () => {
     menuContentContainer.classList.remove("menu-content-container-active");
     curve.style.transform = "translateX(5px)";

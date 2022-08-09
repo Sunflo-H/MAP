@@ -444,15 +444,19 @@ li:first-child {
     left: 20px;
     z-index: 1;
 }
-/* 상호작용중 검색 */
+/* 상호작용 기능중 검색 */
 .search-container {
+    position: relative;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
     border-radius: 5px;
     background-color: white;
+    width: 215px;
+    height: 36px;
     padding: 6px 10px;
+    box-sizing: border-box;
 }
 
-.search-container div {
+.search-container div:first-child {
     display: inline-block;
     width: 30px;
     text-align: center;
@@ -475,7 +479,7 @@ li:first-child {
     padding: 0;
     border: none;
     box-sizing: border-box;
-    width: 160px;
+    width: 159px;
     outline: none;
     font-weight: bold;
 
@@ -484,6 +488,16 @@ li:first-child {
     transform:translateY(-75%);
 }
 
+.autoComplete {
+    position: absolute;
+    top: 34px;
+    left: 0px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* 상호작용 기능중 카테고리 */
 
 .category-container {
     position: relative;
