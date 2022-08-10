@@ -25,9 +25,11 @@
     <script src="design1.js" defer></script>
 </head>
 <body>
-    <div class="body-container">
-        <div class="menu-container">
-           <ul>
+    <!-- 메인 -->
+    <div class="main-wrapper">
+        <!-- 메뉴 카테고리들-->
+        <div class="menu-wrapper">
+           <ul class="menu-container">
             <li>
                 <div class="menu-icon">
                     <div class="menu-circle">
@@ -69,53 +71,56 @@
                 </div>
            </div>
         </div>
-        <div class="map-container">
+        <!-- 메뉴의 컨텐츠  -->
+        <div class="menu-content-container">
+            <div class="menu-search hide">
+                <div class="menu-search-searchBar-container">
+                    <div><label for="search-content-label"><i class="fa fa-search"></i></label></div>
+                    <input id="search-content-label" type="text" placeholder="장소 검색" autocomplete="off">
+                </div>
 
-            <div class="menu-content-container">
-                <div class="menu-search hide">
-                    <div class="menu-search-searchBar-container">
-                        <div><label for="search-content-label"><i class="fa fa-search"></i></label></div>
-                        <input id="search-content-label" type="text" placeholder="장소 검색" autocomplete="off">
-                    </div>
-
-                    <div class="menu-search-location-container">
-                        <div class="location-address"></div>
-                        <div class="location-wrapper">
-                            <div class="location-weather"></div>
-                            <div class="location-dust up">
-                                <div class="dust fineDust"></div>
-                                <div class="dust yellowDust"></div>
-                            </div>
+                <div class="menu-search-location-container">
+                    <div class="location-address"></div>
+                    <div class="location-wrapper">
+                        <div class="location-weather"></div>
+                        <div class="location-dust up">
+                            <div class="dust fineDust"></div>
+                            <div class="dust yellowDust"></div>
                         </div>
-                    </div>
-
-                    <div class="menu-search-main-container">
-                        <div class="recommend-container">
-                            <div class="border">
-                                <span>주변<span>맛집</span></span>
-                                <div></div>
-                            </div>
-                            <div class="recommend-lists-container">
-                                
-                            </div>
-                        </div>
-                        <div class="result-container hide"></div>
-
                     </div>
                 </div>
 
-                <div class="hide">b</div>
-                <div class="hide">c</div>
-                <div class="hide">d</div>
+                <div class="menu-search-main-container">
+                    <div class="recommend-container">
+                        <div class="border">
+                            <span>주변<span>맛집</span></span>
+                            <div></div>
+                        </div>
+                        <div class="recommend-lists-container">
+                            
+                        </div>
+                    </div>
+                    <div class="result-container hide"></div>
+
+                </div>
             </div>
 
+            <div class="hide">b</div>
+            <div class="hide">c</div>
+            <div class="hide">d</div>
+        </div>
+        <!-- 지도  -->
+        <div class="map-container">
             <div class="map">
+                <!-- 지도 내 상호작용들 -->
                 <div class="interaction-container">
+                    <!-- 상호작용 중 검색기능 -->
                     <div class="search-container">
                         <div><label for="search-label"><i class="fa fa-search"></i></label></div>
                         <input class="search-label" id="search-label" type="text" placeholder="장소 검색" autocomplete="off">
                         <div class="autoComplete hide">자동완성</div>
                     </div>
+                    <!-- 상호작용 중 검색카테고리 -->
                     <div class="category-container">
                         <div class="category food"><i class="fa fa-cutlery"></i>음식점</div>
                         <div class="category food"><i class="fa fa-coffee"></i>카페</div>
@@ -136,12 +141,11 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
         </div>
     </div>
+    <!-- 메뉴 컨텐츠의 닫기버튼 -->
     <div class="curve hide">
         <div class="curve-left">
             <svg width="50" height="100" viewBox="0 0 130 200" >

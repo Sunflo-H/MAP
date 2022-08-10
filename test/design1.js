@@ -16,7 +16,7 @@ const curve = document.querySelector('.curve');
 const curvePath = document.querySelector('.curve path');
 const curveI = document.querySelector('.curve i');
 const menuIcons = document.querySelectorAll('.menu-icon');
-const menuCircles = document.querySelectorAll('.menu-circle');
+const menuCircles = document.querySelectorAll('.menu-container .menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
 const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
@@ -548,15 +548,6 @@ menuIcons.forEach((icon, index) => {
 });
 
 menuCircles.forEach(((circle, index) => {
-    circle.addEventListener('mouseover', () => {
-        circle.style.background = "var(--customGreen)";
-        circle.style.cursor = "pointer";
-    });
-
-    circle.addEventListener('mouseout', () => {
-        circle.style.background = "#1b2251";
-    });
-
     circle.addEventListener('click', () => {
         menuContentContainer.classList.add("menu-content-container-active");
         let searchContainer = menuContentContainer.querySelector('.search-container');
