@@ -20,7 +20,7 @@ const menuCircles = document.querySelectorAll('.menu-container .menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
 const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
-const menuContentContainer = document.querySelector('.menu-content-container');
+const menuContentContainer = document.querySelector('.menuContent-container');
 
 
 let map;
@@ -383,8 +383,10 @@ function getUserLocation() {
 const searchInMenu = document.querySelector('.menu-search-searchBar-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
 
+// 검색창에 값을 입력했을때 발생하는 이벤트 
 searchInMap.addEventListener('keyup', e => {
     console.log("키가 눌렸습니다.", e.keyCode);
+    displayAutoComplete();
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
         if (searchbarIsOpen === true) upKey();
@@ -398,7 +400,7 @@ searchInMap.addEventListener('keyup', e => {
         if (searchInMap.value === '') return;
 
         const promise1 = getJsonAddr(searchInMap.value);
-        const promise2 = getJsonRestaurant(searchInMap.value);
+        const promise2 = getJsonData(searchInMap.value);
         Promise.all([promise1, promise2]).then(data => {
             //! 이후 검색 데이터가 더 추가되면 그때 relationList에 배열을 합치는 코드를 바꿔주자
             //! 일단 이렇게 두개의 데이터만 두고 짜            
@@ -418,7 +420,6 @@ searchInMap.addEventListener('keyup', e => {
     }
 })
 
-// 검색 api를 사용하여 검색후 장소의 이름들을 promise형태 및 배열로 return 하는 함수
 function getJsonAddr(keyword) {
     console.log("주소 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
     let result = fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${keyword}&size=5`, {
@@ -435,8 +436,7 @@ function getJsonAddr(keyword) {
     return result;
 }
 
-//직접 만든 restaurant.json 으로부터 검색어와 일치하는 값을 찾아 promise형태 및 배열로 return 하는 함수
-function getJsonRestaurant(keyword) {
+function getJsonData(keyword) {
     console.log("레스토랑 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
     let result = fetch('/data/restaurant.json')
         .then(res => res.json())
@@ -517,13 +517,15 @@ function searchByKeyword(keyword) {
     return placeList;
 }
 
+function displayAutoComplete() {
+    const autoComplete = document.querySelector('.autoComplete');
+    if(searchInMap.value !== "") autoComplete.classList.remove('hide');
+    else autoComplete.classList.add('hide');
+}
 
-// css style 작업
-// const 
-
-
+// 메뉴 컨텐츠의 닫기버튼(곡선)
 curvePath.addEventListener('click', () => {
-    menuContentContainer.classList.remove("menu-content-container-active");
+    menuContentContainer.classList.remove("menuContent-container-active");
     curve.style.transform = "translateX(5px)";
     curve.style.opacity = "0";
     setTimeout(() => {
@@ -532,7 +534,7 @@ curvePath.addEventListener('click', () => {
 });
 
 curveI.addEventListener('click', () => {
-    menuContentContainer.classList.remove("menu-content-container-active");
+    menuContentContainer.classList.remove("menuContent-container-active");
     curve.style.transform = "translateX(5px)";
     curve.style.opacity = "0";
     setTimeout(() => {
@@ -540,6 +542,7 @@ curveI.addEventListener('click', () => {
     }, 200);
 });
 
+// 메뉴의 아이콘 관련 이벤트들
 menuIcons.forEach((icon, index) => {
     icon.addEventListener('click', () => {
         let height = 70;
@@ -549,9 +552,9 @@ menuIcons.forEach((icon, index) => {
 
 menuCircles.forEach(((circle, index) => {
     circle.addEventListener('click', () => {
-        menuContentContainer.classList.add("menu-content-container-active");
+        menuContentContainer.classList.add("menuContent-container-active");
         let searchContainer = menuContentContainer.querySelector('.search-container');
-        let divs = document.querySelectorAll('.menu-content-container > div');
+        let divs = document.querySelectorAll('.menuContent-container > div');
 
         curve.classList.remove('hide');
 
@@ -566,6 +569,7 @@ menuCircles.forEach(((circle, index) => {
     });
 }));
 
+// 지도상의 카테고리의 기타카테고리 관련 이벤트
 etcBtn.addEventListener('mouseenter', () => {
     etcContainer.classList.remove('hide');
     etcBtn.style.background = "rgba(0, 0, 0, 0.02)";

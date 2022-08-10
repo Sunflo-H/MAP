@@ -72,14 +72,16 @@
            </div>
         </div>
         <!-- 메뉴의 컨텐츠  -->
-        <div class="menu-content-container">
-            <div class="menu-search hide">
-                <div class="menu-search-searchBar-container">
+        <div class="menuContent-container">
+            <!-- 검색 컨텐츠 -->
+            <div class="menuContent-search-wrapper hide">
+                <!-- 검색 컨텐츠 - 검색바 -->
+                <div class="searchInMenu-container">
                     <div><label for="search-content-label"><i class="fa fa-search"></i></label></div>
                     <input id="search-content-label" type="text" placeholder="장소 검색" autocomplete="off">
                 </div>
-
-                <div class="menu-search-location-container">
+                <!-- 검색 컨텐츠 - 지역 정보 -->
+                <div class="location-container">
                     <div class="location-address"></div>
                     <div class="location-wrapper">
                         <div class="location-weather"></div>
@@ -89,7 +91,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- 검색 컨텐츠 - 맛집, 검색한 정보 -->
                 <div class="menu-search-main-container">
                     <div class="recommend-container">
                         <div class="border">
@@ -117,7 +119,7 @@
                     <!-- 상호작용 중 검색기능 -->
                     <div class="search-container">
                         <div><label for="search-label"><i class="fa fa-search"></i></label></div>
-                        <input class="search-label" id="search-label" type="text" placeholder="장소 검색" autocomplete="off">
+                        <input id="search-label" type="text" placeholder="장소 검색" autocomplete="off">
                         <div class="autoComplete hide">자동완성</div>
                     </div>
                     <!-- 상호작용 중 검색카테고리 -->

@@ -19,7 +19,7 @@
     display: block !important;
 }
 
-.menu-content-container-active {
+.menuContent-container-active {
     transform: translateX(250px);
     box-shadow: 0px 1px 1px;
 }
@@ -107,7 +107,7 @@ body {
 }
 
 /* 메뉴의 컨텐츠 */
-.menu-content-container {
+.menuContent-container {
     position: absolute;
     top: 0px;
     left: -150px;
@@ -120,17 +120,17 @@ body {
     transition-duration: 0.2s;
 }
 
-.menu-content-container > div {
+.menuContent-container > div {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100vh;
-    /* padding: 10px 10px 0px 10px; */
     padding-top: 10px;
     box-sizing: border-box;
 }
 
-.menu-search-searchBar-container {
+/* 검색 컨텐츠 - 검색바  */
+.searchInMenu-container {
     height: 22px;
     border: 2px solid var(--customGreen);
     border-radius: 5px;
@@ -138,7 +138,7 @@ body {
     margin: 0px 10px;
 }
 
-.menu-search-searchBar-container div {
+.searchInMenu-container div {
     display: inline-block;
     height: 100%;
     position: relative;
@@ -147,11 +147,11 @@ body {
     color: var(--customGreen);
 }
 
-.menu-search-searchBar-container label:hover {
+.searchInMenu-container label:hover {
     cursor: pointer;
 }
 
-.menu-search-searchBar-container input {
+.searchInMenu-container input {
     position: relative;
     top: 50%; 
     transform:translateY(-50%) ;
@@ -162,7 +162,8 @@ body {
     font-weight: bold;
 }
 
-.menu-search-location-container {
+/* 검색 컨텐츠 - 지역 정보 */
+.location-container {
     height: 58px;
     padding: 5px 10px;
     margin: 10px 10px 0px;
@@ -219,6 +220,7 @@ body {
     margin-left: 5px;
 }
 
+/* 검색 컨텐츠 - 맛집, 검색한 정보 */
 .menu-search-main-container {
     height: calc(100% - 100px);
     overflow: hidden;
