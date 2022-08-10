@@ -130,7 +130,7 @@ body {
 }
 
 /* 검색 컨텐츠 - 검색바  */
-.searchInMenu-container {
+.searchContent .searchbar-container {
     height: 22px;
     border: 2px solid var(--customGreen);
     border-radius: 5px;
@@ -138,7 +138,7 @@ body {
     margin: 0px 10px;
 }
 
-.searchInMenu-container div {
+.searchContent .searchbar-container div {
     display: inline-block;
     height: 100%;
     position: relative;
@@ -147,11 +147,11 @@ body {
     color: var(--customGreen);
 }
 
-.searchInMenu-container label:hover {
+.searchContent .searchbar-container label:hover {
     cursor: pointer;
 }
 
-.searchInMenu-container input {
+.searchContent .searchbar-container input {
     position: relative;
     top: 50%; 
     transform:translateY(-50%) ;
@@ -163,38 +163,37 @@ body {
 }
 
 /* 검색 컨텐츠 - 지역 정보 */
-.location-container {
+.searchContent .location-container {
     height: 58px;
     padding: 5px 10px;
     margin: 10px 10px 0px;
 }
 
-.location-wrapper {
+.searchContent .location-wrapper {
     display: flex;
     height: 22px;
     overflow: hidden;
 }
 
-.location-address {
+.searchContent .location-address {
     font-family: 'Noto Sans KR', sans-serif;
     font-weight: bold;
     font-size: 18px;
     color: #333;
 }
 
-.location-weather {
+.searchContent .location-weather {
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
     font-weight: bold;
-    
 }
 
-.location-weather .temp {
+.searchContent .location-weather .temp {
     font-size: 15px;
     margin-left: 4px;
 }
 
-.location-dust {
+.searchContent .location-dust {
     flex-grow: 1;
     height: 40px;
     overflow: hidden;
@@ -204,24 +203,24 @@ body {
     transition-duration: 1s;
 }
 
-.location-dust.up {
+.searchContent .location-dust.up {
     transform: translateY(-20px);
 }
 
-.dust {
+.searchContent .dust {
     text-align: center;
     margin:auto;
     font-size: 14px;
 }
 
-.rate {
+.searchContent .rate {
     font-size: 15px;
     font-weight: bold;
     margin-left: 5px;
 }
 
 /* 검색 컨텐츠 - 맛집, 검색한 정보 */
-.menu-search-main-container {
+.searchResult-container {
     height: calc(100% - 100px);
     overflow: hidden;
     margin-left: 10px;
