@@ -283,8 +283,7 @@ function pageSetting(result) {
     let lng = result.coords.longitude; // 경도 (동서)
     getWeather(lat, lng);
     지도표시하기(lat, lng); // 지도 생성
-    내좌표의주소찾은후주소명을검색카테고리에띄우기(lat, lng);
-    마커생성(lat, lng);
+    내좌표의주소찾은후주소명을검색컨텐츠에띄우기(lat, lng);
     displayHotRestaurant();
 
     map.addListener('click', (event) => {
@@ -294,23 +293,48 @@ function pageSetting(result) {
     });
 }
 
-function 마커생성(lat, lng) {
-    let marker = new Tmapv2.InfoWindow();
-    // 마커가 어떤 카테고리냐에 따라 아이콘 변경
-    let icon = `<i class="fa fa-cutlery">`; // 음식점일때
-    let addressName;
-    let addressCategory;
-    var content = `<div class="marker-container">
+function 마커생성(data) {
+    let icon;
+    let content;
+    let type = data.category_group_name; //주소, 장소, 음식점-카페 등등
+    
+    if(type === undefined) { // 주소일때
+        icon = `<i class="fa-solid fa-location-dot"></i>`; 
+        content = `<div class="marker-container">
                         <div class="marker-icon">${icon}</i></div>
                         <div class="marker-address">
-                            <div class="marker-address-name">지금까지 이런 치킨은 없었따. 분식집</div>
-                            <div class="marker-address-category">분식집</div>
+                            <div class="marker-address-name">${data.address_name}</div>
                         </div>
                         <div class="marker-point"></div>
                     </div>`
+    }
+    else if(type === "") { // 장소일때
+        icon = `<i class="fa-solid fa-location-dot"></i>`; 
+        content = `<div class="marker-container">
+                        <div class="marker-icon">${icon}</i></div>
+                        <div class="marker-address">
+                            <div class="marker-address-name">${data.place_name}</div>
+                        </div>
+                        <div class="marker-point"></div>
+                    </div>`
+    }
+    else { // 음식점, 카페, 마트 등등
+        icon = `<i class="fa fa-cutlery">`; // 음식점일때
+        content = `<div class="marker-container">
+                        <div class="marker-icon">${icon}</i></div>
+                        <div class="marker-address">
+                            <div class="marker-place-name">${data.place_name}</div>
+                            <div class="marker-place-category">${type}</div>
+                        </div>
+                        <div class="marker-point"></div>
+                    </div>`
+    }
+    // 좌표, 마커의 내용(정보), 타입 - 아이콘모양
+    let marker = new Tmapv2.InfoWindow();
+    
 
     marker = new Tmapv2.InfoWindow({
-        position: new Tmapv2.LatLng(lat, lng), //Popup 이 표출될 맵 좌표
+        position: new Tmapv2.LatLng(data.y, data.x), //Popup 이 표출될 맵 좌표
         content: content, //Popup 표시될 text
         border: '0px solid #ff0000', //Popup의 테두리 border 설정.
         type: 2, //Popup의 type 설정.
@@ -319,14 +343,22 @@ function 마커생성(lat, lng) {
         offset: new Tmapv2.Point(33, 5),
         map: map //Popup이 표시될 맵 객체
     });
+    
     markers.push(marker);
-    console.log(marker.getOffset());
+    
     marker.addListener("click", function (event) {
         console.log("마커 클릭");
     });
 }
 
-function 내좌표의주소찾은후주소명을검색카테고리에띄우기(lat, lng) {
+function 마커삭제() {
+    markers.forEach(marker => {
+        marker.setMap(null);
+    })
+    markers = [];
+}
+
+function 내좌표의주소찾은후주소명을검색컨텐츠에띄우기(lat, lng) {
     let coords = new naver.maps.LatLng(lat, lng);
 
     let orderTypes = [
@@ -472,27 +504,25 @@ function getJsonData(keyword) {
 function search(keyword) {
     Promise.all([searchByAddr(keyword), searchByKeyword(keyword)])
     .then(data => {
-        //data[0], data[1]들은 배열(placeList)로 나오게끔 코드를 짰다. x,y 를 얻어 함수에 적용하면 된다.
         console.log(data);
-        // 주소로 검색해서 나온 결과가 0이면 키워드로 검색을 살펴봐라
-        // 키워드로 검색해서 나온 결과가 0이면 주소로 검색을 살펴봐라
-        // 둘다 0이면 noPlaceError()를 실행
-        if (data[0].length === 0 && data[1].length !== 0) { // 주소데이터가 없고, 키워드데이터가 있다면
-            panTo(data[1][0].y, data[1][0].x);
-            removeMarker();
-            createNumberMarker(data[1]);
-            displaySearchList(data[1]);
-            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
-        }
-        else if (data[0].length !== 0) { // 주소 데이터가 있다면
+        if (data[0].length !== 0) {
             panTo(data[0][0].y, data[0][0].x);
-            removeMarker();
-            createNumberMarker(data[0]);
-            displaySearchList(data[0]);
-            if (categoryIsActive().state === true) closeCategory(categoryIsActive().index);
+            마커삭제();
+            data[0].forEach(data => {
+                console.log(data);
+                마커생성(data);
+            })
+        }
+        else if (data[0].length === 0 && data[1].length !== 0 ) {
+            panTo(data[1][0].y, data[1][0].x);
+            마커삭제();
+            data[1].forEach(data => {
+                console.log(data);
+                마커생성(data);
+            })
         }
         else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
-            noPlaceError();
+            alert('검색 결과가 없습니다.');
         }
     })
 }

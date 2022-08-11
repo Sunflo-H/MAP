@@ -599,12 +599,20 @@ body {
 }
 
 .marker-address-name {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+
+    font-size: 14px;   
+    white-space: nowrap;
+}
+.marker-place-name {
     /* min-width: 180px; */
     font-size: 14px;   
     white-space: nowrap;
 }
 
-.marker-address-category {
+.marker-place-category {
     font-size: 10px;
     color: rgba(0, 0, 0, 0.558);
 }
