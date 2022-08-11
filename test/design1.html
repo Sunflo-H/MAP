@@ -127,9 +127,17 @@
 
                     <!-- 상호작용 중 검색기능 -->
                     <div class="search-container">
-                        <div><label for="search-label"><i class="fa fa-search"></i></label></div>
+                        <div class="label-container"><label for="search-label"><i class="fa fa-search"></i></label></div>
                         <input id="search-label" type="text" placeholder="장소 검색" autocomplete="off">
-                        <div class="autoComplete hide">자동완성</div>
+                        <div class="searchList hide">
+                            
+                            <div class="historyList hide">
+                                <div class="no-history">검색기록이없습니다.</div>
+                            </div>
+                            <div class="autoCompleteList hide">
+
+                            </div>
+                        </div>
                     </div>
 
                     <!-- 상호작용 중 검색카테고리 -->

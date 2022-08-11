@@ -375,7 +375,7 @@ body {
     box-sizing: border-box;
 }
 
-.search-container div:first-child {
+.search-container .label-container {
     display: inline-block;
     width: 30px;
     text-align: center;
@@ -407,7 +407,7 @@ body {
     transform:translateY(-75%);
 }
 
-.autoComplete {
+.searchList {
     position: absolute;
     top: 34px;
     left: 0px;
@@ -415,6 +415,40 @@ body {
     background-color: white;
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
 }
+
+.autoCompleteList {
+}
+
+.autoComplete {
+    padding-left: 20px;
+    padding-top: 2px;
+}
+
+.autoComplete i {
+    color: var(--main);
+    font-size: 14px;
+}
+
+.autoComplete span {
+    padding-left: 5px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    /* font-weight: bold; */
+}
+
+.autoComplete:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.historyList {
+
+}
+.history {
+    padding-left: 20px;
+}
+.no-history {
+    padding-left: 20px;
+}
+
 
 /* 상호작용 중 검색카테고리 */
 

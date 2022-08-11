@@ -380,13 +380,14 @@ function getUserLocation() {
 
 
 // 검색 기능 모음
+const body = document.querySelector('body');
+const searchContainerInMap = document.querySelector('.search-container');
 const searchInMenu = document.querySelector('.menu-search-searchBar-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
 
 // 검색창에 값을 입력했을때 발생하는 이벤트 
 searchInMap.addEventListener('keyup', e => {
-    console.log("키가 눌렸습니다.", e.keyCode);
-    displayAutoComplete();
+    // console.log("키가 눌렸습니다.", e.keyCode);
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
         if (searchbarIsOpen === true) upKey();
@@ -394,42 +395,81 @@ searchInMap.addEventListener('keyup', e => {
     else if (e.keyCode === 40) {
         if (searchbarIsOpen === true) downKey();
     }
-    else if (e.isComposing === false) return; //키 입력 중복을 막아주는 기능
-    else {
-        //value가 공백이 되면 query에러가 발생하여 넣은 코드
-        if (searchInMap.value === '') return;
+    else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
+})
 
-        const promise1 = getJsonAddr(searchInMap.value);
-        const promise2 = getJsonData(searchInMap.value);
-        Promise.all([promise1, promise2]).then(data => {
-            //! 이후 검색 데이터가 더 추가되면 그때 relationList에 배열을 합치는 코드를 바꿔주자
-            //! 일단 이렇게 두개의 데이터만 두고 짜            
-            let relationList = data[0].concat(data[1]).slice(0, 10);
-            console.log(relationList);
-            // if (relationList.length === 0) {
-            //     closeSearchBar();
-            // }
-            // else {
-            //     openSearchBar();
-            //     openSearchBar_relation();
-            //     openSearchBar_histroy();
-            //     displayRelation(relationList);
-            //     setHtmlHistory();
-            // }
-        });
+searchInMap.addEventListener('input', e => {
+    
+    if (searchInMap.value === '') {
+        displayAutoComplete(false);
+        displayHistory(true);
+        return;
     }
+
+    const promise1 = getJsonAddr(searchInMap.value);
+    const promise2 = getJsonData(searchInMap.value);
+
+    Promise.all([promise1, promise2]).then(data => {
+        //! 이후 검색 데이터가 더 추가되면 그때 relationList에 배열을 합치는 코드를 바꿔주자
+        //! 일단 이렇게 두개의 데이터만 두고 짜            
+        let result = data[0].concat(data[1]).slice(0, 10);
+        /**
+         * 검색창 포커스 => 히스토리 목록을 보여줘 (없으면 검색기록이 없습니다.)
+         * 
+         * 입력중인데 포커스 => 입력값 체크하고 자동완성 보여주기
+         * 
+         * 포커스 해제 => 검색컨테이너를 제외한 body를 클릭하면닫기
+         * 
+         * 값을 입력 => 히스토리 닫고
+         *              자동완성값이 있다면 보여줘 
+         *              자동완성값이 없다면 닫아줘
+         * 
+         * 값을 지움 => 다 닫아
+         * 
+         * 
+         */
+
+        if (result.length !== 0) {
+            displayAutoComplete(true,result);
+            displayHistory(false);
+        }
+        else {
+            console.log("실행");
+            displayAutoComplete(false);
+        }
+    })
+})
+
+searchInMap.addEventListener('focus', e => {
+    console.log(e);
+    displaySearchList(true);
+    displayHistory(true);
+})
+
+body.addEventListener('click',e => {
+    const container = document.querySelector('.search-container');
+
+    if(e.target === container) return;
+    if(e.target.parentNode === container) return;
+    if(e.target.parentNode.parentNode === container) return;
+    if(e.target.parentNode.parentNode.parentNode === container) return;
+
+    // 컨테이너만 닫아도 될까?
+    // 그 안에 내용들은 삭제하지 않아도 괜찮나?
+    displaySearchList(false);
+    
+    // displayAutoComplete(false);
+    // displayHistory(false);
 })
 
 function getJsonAddr(keyword) {
-    console.log("주소 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
+    // console.log("주소 데이터로부터 자동완성단어를 찾습니다. 검색어 : ", keyword);
     let result = fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${keyword}&size=5`, {
         headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
     })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
             let list = [];
-            // data = documents[{...}, {...}, {...}]; 의 형태
             data.documents.forEach(data => list.push(data.address_name));
             return list;
         });
@@ -437,7 +477,7 @@ function getJsonAddr(keyword) {
 }
 
 function getJsonData(keyword) {
-    console.log("레스토랑 데이터로부터 연관검색어를 찾습니다. 검색어 : ", keyword);
+    // console.log("제이슨 데이터로부터 자동완성단어를 찾습니다. 검색어 : ", keyword);
     let result = fetch('/data/restaurant.json')
         .then(res => res.json())
         .then(data => {
@@ -517,10 +557,110 @@ function searchByKeyword(keyword) {
     return placeList;
 }
 
-function displayAutoComplete() {
-    const autoComplete = document.querySelector('.autoComplete');
-    if(searchInMap.value !== "") autoComplete.classList.remove('hide');
-    else autoComplete.classList.add('hide');
+function displaySearchList(isTrue) {
+    const container = document.querySelector('.searchList');
+    if(isTrue) container.classList.remove('hide');
+    else container.classList.add('hide');
+}
+
+function displayAutoComplete(isTrue, result) {
+    const container = document.querySelector('.searchList');
+    const autoCompleteList = container.querySelector('.autoCompleteList');
+
+    if(isTrue){
+        autoCompleteList.classList.remove('hide');
+        
+        while(autoCompleteList.hasChildNodes()) autoCompleteList.removeChild(autoCompleteList.firstChild);
+        
+        result.forEach((data, i) => {
+            let element = `<div class="autoComplete">
+                            <i class="fa-solid fa-location-dot"></i> 
+                            <span>${data}</span>
+                            </div>`;
+            autoCompleteList.insertAdjacentHTML('beforeend', element);
+        })
+    }
+    else {
+        autoCompleteList.classList.add('hide');
+    }
+}
+
+function displayHistory(isTrue){
+    const container = document.querySelector('.searchList');
+    const historyList = container.querySelector('.historyList');
+
+    if(isTrue) historyList.classList.remove('hide');
+    else historyList.classList.add('hide');
+}
+
+function enterKey() {
+    search(searchInMap.value);
+    displaySearchList(false);
+}
+
+function upKey() {
+    let activeChild = relationContainer.lastElementChild;
+    let isActive = false;
+
+    for (let i = 0; i < relationContainer.childElementCount; i++) {
+        if (activeChild.classList.contains('active') === true) {
+            activeChild.classList.remove('active');
+
+            if (activeChild.previousElementSibling !== null) {
+                console.log("액티브가 있고 다음 자식이 있어요 다음 자식에게 액티브를 줍니다.");
+                activeChild = activeChild.previousElementSibling;
+                activeChild.classList.add('active');
+                searchInput.value = activeChild.innerText;
+            }
+            else if (activeChild.previousElementSibling === null) {
+                console.log("히스토리로 넘어가야 하는 상태");
+            }
+
+            isActive = true;
+            return;
+        } else {
+            console.log("액티브가 없어요 다음 자식으로 옮깁니다.");
+            activeChild = activeChild.previousElementSibling;
+        }
+    }
+
+    if (isActive === false) {
+        console.log("액티브가 없어서 마지막 자식에게 부여");
+        activeChild = relationContainer.lastElementChild;
+        activeChild.classList.add('active');
+        searchInput.value = activeChild.innerText;
+    }
+}
+
+function downKey() {
+    let activeChild = relationContainer.firstElementChild;
+    let isActive = false;
+    for (let i = 0; i < relationContainer.childElementCount; i++) {
+        if (activeChild.classList.contains('active') === true) {
+            activeChild.classList.remove('active');
+            if (activeChild.nextElementSibling !== null) {
+                console.log("액티브가 있고 다음 자식이 있어요 다음 자식에게 액티브를 줍니다.");
+                activeChild = activeChild.nextElementSibling;
+                activeChild.classList.add('active');
+                searchInput.value = activeChild.innerText;
+            }
+            else if (activeChild.nextElementSibling === null) {
+                console.log("히스토리로 넘어가야 하는 상태");
+            }
+
+            isActive = true;
+            return;
+        } else {
+            console.log("액티브가 없어요 다음 자식으로 옮깁니다.");
+            activeChild = activeChild.nextElementSibling;
+        }
+    }
+    if (isActive === false) {
+        console.log("액티브가 없어서 첫번째 자식에게 부여");
+        activeChild = relationContainer.firstElementChild;
+        activeChild.classList.add('active');
+        searchInput.value = activeChild.innerText;
+    }
 }
 
 // 메뉴 컨텐츠의 닫기버튼(곡선)
