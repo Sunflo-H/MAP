@@ -385,11 +385,9 @@ function getUserLocation() {
 
 // 검색 기능 모음
 const body = document.querySelector('body');
-const searchContainerInMap = document.querySelector('.search-container');
 const searchInMenu = document.querySelector('.menu-search-searchBar-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
 
-// 검색창에 값을 입력했을때 발생하는 이벤트 
 searchInMap.addEventListener('keyup', e => {
     // console.log("키가 눌렸습니다.", e.keyCode);
     if (e.keyCode === 13) enterKey();
@@ -413,41 +411,23 @@ searchInMap.addEventListener('input', e => {
     const promise1 = getJsonAddr(searchInMap.value);
     const promise2 = getJsonData(searchInMap.value);
 
-    Promise.all([promise1, promise2]).then(data => {
-        //! 이후 검색 데이터가 더 추가되면 그때 relationList에 배열을 합치는 코드를 바꿔주자
-        //! 일단 이렇게 두개의 데이터만 두고 짜            
+    Promise.all([promise1, promise2]).then(data => {      
         let result = data[0].concat(data[1]).slice(0, 10);
-        /**
-         * 검색창 포커스 => 히스토리 목록을 보여줘 (없으면 검색기록이 없습니다.)
-         * 
-         * 입력중인데 포커스 => 입력값 체크하고 자동완성 보여주기
-         * 
-         * 포커스 해제 => 검색컨테이너를 제외한 body를 클릭하면닫기
-         * 
-         * 값을 입력 => 히스토리 닫고
-         *              자동완성값이 있다면 보여줘 
-         *              자동완성값이 없다면 닫아줘
-         * 
-         * 값을 지움 => 다 닫아
-         * 
-         * 
-         */
 
         if (result.length !== 0) {
             displayAutoComplete(true,result);
             displayHistory(false);
         }
         else {
-            console.log("실행");
             displayAutoComplete(false);
+            displayHistory(true);
         }
     })
 })
 
 searchInMap.addEventListener('focus', e => {
-    console.log(e);
     displaySearchList(true);
-    displayHistory(true);
+    if(searchInMap.value === "") displayHistory(true);
 })
 
 body.addEventListener('click',e => {
@@ -458,13 +438,9 @@ body.addEventListener('click',e => {
     if(e.target.parentNode.parentNode === container) return;
     if(e.target.parentNode.parentNode.parentNode === container) return;
 
-    // 컨테이너만 닫아도 될까?
-    // 그 안에 내용들은 삭제하지 않아도 괜찮나?
     displaySearchList(false);
-    
-    // displayAutoComplete(false);
-    // displayHistory(false);
 })
+
 
 function getJsonAddr(keyword) {
     // console.log("주소 데이터로부터 자동완성단어를 찾습니다. 검색어 : ", keyword);
@@ -582,6 +558,15 @@ function displayAutoComplete(isTrue, result) {
                             <span>${data}</span>
                             </div>`;
             autoCompleteList.insertAdjacentHTML('beforeend', element);
+        })
+
+        // autoComplete 생성후 클릭이벤트 적용
+        const autoComplete = document.querySelectorAll('.autoComplete');
+        autoComplete.forEach((autoComplete) => {
+            autoComplete.addEventListener('click', e => {
+                let keyword = e.currentTarget.lastElementChild.innerText;
+                search(keyword);
+            })
         })
     }
     else {
