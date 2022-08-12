@@ -243,36 +243,12 @@ function setCurrentLocation(lat = map.getCenter()._lat, lng = map.getCenter()._l
 function displayMap(lat, lng) {
     const mapDiv = document.querySelector('.map'); // 지도를 표시할 div
 
-
-    console.log(lat, lng);
     let mapOption = {
         center: new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
         zoom: 17
     };
 
-    console.log("현재 위치를 중심으로 맵을 띄웁니다.", lat, lng);
-    // 지도 생성
     map = new Tmapv2.Map(mapDiv, mapOption);
-    /**
-        // 지도 생성후 사용되는 함수들
-        setCurrentLocation();
-        hotRestaurant();
-    
-        //tmap 클릭 이벤트
-        map.addListener('click', (event) => {
-            let lat = event.latLng._lat;
-            let lng = event.latLng._lng;
-            console.log(reverseGeocoding(lat, lng));
-        });
-        // 지도에 마커 생성
-        // createMarkerByCoords(lat, lng);
-    
-        map.addListener('drag', (event) => {
-            let lat = event.latLng._lat;
-            let lng = event.latLng._lng;
-            setCurrentLocation(lat, lng);
-        })
-         */
 }
 
 //! if promise가 아니라면?
@@ -282,8 +258,10 @@ function pageSetting(result) {
     let lat = result.coords.latitude; // 위도 (남북)
     let lng = result.coords.longitude; // 경도 (동서)
     getWeather(lat, lng);
-    지도표시하기(lat, lng); // 지도 생성
-    내좌표의주소찾은후주소명을검색컨텐츠에띄우기(lat, lng);
+    displayMap(lat, lng); // 지도 생성
+
+    // 메뉴 - 검색컨텐츠
+    현재위치찾아표시(lat, lng);
     displayHotRestaurant();
 
     map.addListener('click', (event) => {
@@ -293,7 +271,7 @@ function pageSetting(result) {
     });
 }
 
-function 마커생성(data) {
+function createMarker(data) {
     let icon;
     let content;
     let type = data.category_group_name; //주소, 장소, 음식점-카페 등등
@@ -358,7 +336,7 @@ function 마커삭제() {
     markers = [];
 }
 
-function 내좌표의주소찾은후주소명을검색컨텐츠에띄우기(lat, lng) {
+function 현재위치찾아표시(lat, lng) {
     let coords = new naver.maps.LatLng(lat, lng);
 
     let orderTypes = [
@@ -372,7 +350,7 @@ function 내좌표의주소찾은후주소명을검색컨텐츠에띄우기(lat,
         orders: orderTypes
     }
 
-    let 주소찾아표시하기 = (status, response) => {
+    let callback = (status, response) => {
         if (status !== naver.maps.Service.Status.OK) {
             return alert('Something wrong!');
         }
@@ -381,19 +359,7 @@ function 내좌표의주소찾은후주소명을검색컨텐츠에띄우기(lat,
         locationAddress.innerText = dong;
     }
 
-    naver.maps.Service.reverseGeocode(option, 주소찾아표시하기);
-}
-
-function 지도표시하기(lat, lng) {
-    const mapDiv = document.querySelector('.map'); // 지도를 표시할 div
-
-    let mapOption = {
-        center: new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
-        zoom: 17
-    };
-    map = new Tmapv2.Map(mapDiv, mapOption);
-
-
+    naver.maps.Service.reverseGeocode(option, callback);
 }
 
 function 마커클릭후정보를띄우기() {
@@ -401,8 +367,6 @@ function 마커클릭후정보를띄우기() {
 }
 
 function panTo(lat, lng) {
-    // 지도 중심을 부드럽게 이동시킵니다
-    // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
     map.panTo(new Tmapv2.LatLng(lat, lng));
 }
 
@@ -510,7 +474,7 @@ function search(keyword) {
             마커삭제();
             data[0].forEach(data => {
                 console.log(data);
-                마커생성(data);
+                createMarker(data);
             })
         }
         else if (data[0].length === 0 && data[1].length !== 0 ) {
@@ -518,7 +482,7 @@ function search(keyword) {
             마커삭제();
             data[1].forEach(data => {
                 console.log(data);
-                마커생성(data);
+                createMarker(data);
             })
         }
         else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
@@ -555,7 +519,7 @@ function searchByKeyword(keyword) {
     const lat = map.getCenter()._lat;
     const lng = map.getCenter()._lng;
 
-    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV1}&query=${keyword}&size=${SEARCH_DATA_LENGTH}`, {
+    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV4}&query=${keyword}&size=${SEARCH_DATA_LENGTH}`, {
         headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
     })
         .then((response) => response.json())
