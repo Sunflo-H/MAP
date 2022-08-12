@@ -4,7 +4,6 @@ const RADIUS = {
     LV3: 15000,
     LV4: 20000
 }
-
 const SEARCH_DATA_LENGTH = 15;
 
 
@@ -22,9 +21,11 @@ const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
 const menuContentContainer = document.querySelector('.menuContent-container');
 
-
+// 전역변수
 let map;
 let markers = [];
+let cityChangeCheck;
+let currentCityValue;
 
 function init() {
     getUserLocation()
@@ -62,36 +63,33 @@ function init() {
         })
 }
 
-
-
 function displayHotRestaurant() {
     let lat = map.getCenter()._lat,
         lng = map.getCenter()._lng;
 
-    // 지금 맵의 중심을 체크해서 
-    // lat , lng 확보한후
-    // reverseGeocoding을 실행 서울특별시, 동을 얻는다.
     reverseGeocoding(lat, lng, "dong")
         .then(data => {
             let region = data.v2.results[1].region.area1.name;
             let city = data.v2.results[1].region.area2.name;
             const recommendList = document.querySelector('.recommend-lists-container');
-
-            fetch('../data/restaurant/seoul.json')
+        
+            if(cityChangeCheck){
+                while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
+                
+                fetch('/data/restaurant/seoul.json')
                 .then(res => res.json())
                 .then(data => {
-                    let restaurantList = data.filter(data => {
-                       return (data.지역 === region) && (data.도시명 === city);
-                    })
+                    let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
                     restaurantList.forEach((restaurant) => {
                         let element = `<div class="recommend-list-container">
                                             <div><img src=${restaurant.img}></div>
                                             <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
                                             <div>${restaurant.추천사유}</div>
                                         </div>`
-                        recommendList.insertAdjacentHTML('beforeend', element);
+                                        recommendList.insertAdjacentHTML('beforeend', element);
                     })
                 })
+            }
         })
 }
 
@@ -196,7 +194,7 @@ function geocoding(address) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('Something wrong!');
             }
-            resolve(response)
+            resolve(response);
         }
         naver.maps.Service.geocode({ query: address }, callback);
     })
@@ -212,7 +210,7 @@ function reverseGeocoding(lat, lng, type) {
         ];
 
         if (type === "dong") orderTypes = [...orderTypes, naver.maps.Service.OrderType.ADM_CODE]
-
+    
         let option = {
             coords: coords,
             orders: orderTypes
@@ -220,9 +218,9 @@ function reverseGeocoding(lat, lng, type) {
 
         let callback = (status, response) => {
             if (status !== naver.maps.Service.Status.OK) {
+                console.log(status);
                 return alert('Something wrong!');
             }
-            console.log(response);
             resolve(response);
         }
 
@@ -231,20 +229,35 @@ function reverseGeocoding(lat, lng, type) {
 }
 
 function setCurrentLocation(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
-    reverseGeocoding(lat, lng, "dong")
+    
+        reverseGeocoding(lat, lng, "dong")
         .then(data => {
-            let dong = data.v2.results[1].region.area2.name + " " + data.v2.results[1].region.area3.name;
-            const locationAddress = document.querySelector('.location-address');
-            console.log(locationAddress);
-            locationAddress.innerText = dong;
-        })
+                let city = data.v2.results[1].region.area2.name;
+                let dong = data.v2.results[1].region.area3.name;
+                
+                
+                const locationAddress = document.querySelector('.location-address');
+                const citySpan = locationAddress.querySelector('.city');
+                const dongSpan = locationAddress.querySelector('.dong');
+
+                if(currentCityValue !== city) cityChangeCheck = true;
+                else cityChangeCheck = false;
+
+                
+    
+                citySpan.innerText = city;
+                dongSpan.innerText = dong;
+                currentCityValue = city;
+                console.log(cityChangeCheck);
+                console.log(currentCityValue);
+            })
 }
 
 function displayMap(lat, lng) {
-    const mapDiv = document.querySelector('.map'); // 지도를 표시할 div
+    const mapDiv = document.querySelector('.map');
 
     let mapOption = {
-        center: new Tmapv2.LatLng(lat, lng), // 지도 초기 좌표
+        center: new Tmapv2.LatLng(lat, lng),
         zoom: 17
     };
 
@@ -261,14 +274,19 @@ function pageSetting(result) {
     displayMap(lat, lng); // 지도 생성
 
     // 메뉴 - 검색컨텐츠
-    현재위치찾아표시(lat, lng);
+    setCurrentLocation();
     displayHotRestaurant();
 
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
         let lng = event.latLng._lng;
-        console.log(reverseGeocoding(lat, lng));
+        // console.log(reverseGeocoding(lat, lng));
     });
+
+    map.addListener('mouseup', (event) => {
+        setCurrentLocation();
+        displayHotRestaurant()
+    })
 }
 
 function createMarker(data) {
@@ -334,36 +352,6 @@ function 마커삭제() {
         marker.setMap(null);
     })
     markers = [];
-}
-
-function 현재위치찾아표시(lat, lng) {
-    let coords = new naver.maps.LatLng(lat, lng);
-
-    let orderTypes = [
-        naver.maps.Service.OrderType.ADDR,
-        naver.maps.Service.OrderType.ROAD_ADDR,
-        naver.maps.Service.OrderType.ADM_CODE
-    ];
-
-    let option = {
-        coords: coords,
-        orders: orderTypes
-    }
-
-    let callback = (status, response) => {
-        if (status !== naver.maps.Service.Status.OK) {
-            return alert('Something wrong!');
-        }
-        let dong = response.v2.results[1].region.area2.name + " " + response.v2.results[1].region.area3.name;
-        const locationAddress = document.querySelector('.location-address');
-        locationAddress.innerText = dong;
-    }
-
-    naver.maps.Service.reverseGeocode(option, callback);
-}
-
-function 마커클릭후정보를띄우기() {
-
 }
 
 function panTo(lat, lng) {
