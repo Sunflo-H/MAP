@@ -63,35 +63,35 @@ function init() {
         })
 }
 
-function displayHotRestaurant() {
-    let lat = map.getCenter()._lat,
-        lng = map.getCenter()._lng;
+// function displayHotRestaurant() {
+//     console.log("맛집");
+//     let lat = map.getCenter()._lat,
+//         lng = map.getCenter()._lng;
 
-    reverseGeocoding(lat, lng, "dong")
-        .then(data => {
-            let region = data.v2.results[1].region.area1.name;
-            let city = data.v2.results[1].region.area2.name;
-            const recommendList = document.querySelector('.recommend-lists-container');
+//     reverseGeocoding(lat, lng, "dong")
+//         .then(data => {
+//             let region = data.v2.results[1].region.area1.name;
+//             let city = data.v2.results[1].region.area2.name;
+//             const recommendList = document.querySelector('.recommend-lists-container');
         
-            if(cityChangeCheck){
-                while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
+            
+//                 while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
                 
-                fetch('/data/restaurant/seoul.json')
-                .then(res => res.json())
-                .then(data => {
-                    let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
-                    restaurantList.forEach((restaurant) => {
-                        let element = `<div class="recommend-list-container">
-                                            <div><img src=${restaurant.img}></div>
-                                            <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
-                                            <div>${restaurant.추천사유}</div>
-                                        </div>`
-                                        recommendList.insertAdjacentHTML('beforeend', element);
-                    })
-                })
-            }
-        })
-}
+//                 fetch('/data/restaurant/seoul.json')
+//                 .then(res => res.json())
+//                 .then(data => {
+//                     let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
+//                     restaurantList.forEach((restaurant) => {
+//                         let element = `<div class="recommend-list-container">
+//                                             <div><img src=${restaurant.img}></div>
+//                                             <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
+//                                             <div>${restaurant.추천사유}</div>
+//                                         </div>`
+//                                         recommendList.insertAdjacentHTML('beforeend', element);
+//                     })
+//                 })
+//             })
+// }
 
 function getWeather(lat, lng) {
     console.log("현재 좌표의 날씨정보를 받아옵니다.");
@@ -228,29 +228,48 @@ function reverseGeocoding(lat, lng, type) {
     })
 }
 
-function setCurrentLocation(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
+function setSearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
     
         reverseGeocoding(lat, lng, "dong")
         .then(data => {
+                let region = data.v2.results[1].region.area1.name;
                 let city = data.v2.results[1].region.area2.name;
                 let dong = data.v2.results[1].region.area3.name;
-                
                 
                 const locationAddress = document.querySelector('.location-address');
                 const citySpan = locationAddress.querySelector('.city');
                 const dongSpan = locationAddress.querySelector('.dong');
 
-                if(currentCityValue !== city) cityChangeCheck = true;
+                if(citySpan.innerText !== city) cityChangeCheck = true;
                 else cityChangeCheck = false;
 
-                
-    
                 citySpan.innerText = city;
                 dongSpan.innerText = dong;
-                currentCityValue = city;
-                console.log(cityChangeCheck);
-                console.log(currentCityValue);
+
+                if(cityChangeCheck) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
+                    const recommendList = document.querySelector('.recommend-lists-container');
+                
+                    while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
+                    
+                    fetch('/data/restaurant/seoul.json')
+                    .then(res => res.json())
+                    .then(data => {
+                        let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
+                        restaurantList.forEach((restaurant) => {
+                            let element = `<div class="recommend-list-container">
+                                                <div><img src=${restaurant.img}></div>
+                                                <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
+                                                <div>${restaurant.추천사유}</div>
+                                            </div>`
+                                            recommendList.insertAdjacentHTML('beforeend', element);
+                        })
+                    })
+                }
             })
+}
+
+function setCurrentLocation() {
+
 }
 
 function displayMap(lat, lng) {
@@ -274,8 +293,7 @@ function pageSetting(result) {
     displayMap(lat, lng); // 지도 생성
 
     // 메뉴 - 검색컨텐츠
-    setCurrentLocation();
-    displayHotRestaurant();
+    setSearchContent();
 
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
@@ -284,8 +302,8 @@ function pageSetting(result) {
     });
 
     map.addListener('mouseup', (event) => {
-        setCurrentLocation();
-        displayHotRestaurant()
+        setSearchContent();
+        
     })
 }
 
