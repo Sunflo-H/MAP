@@ -63,36 +63,6 @@ function init() {
         })
 }
 
-// function displayHotRestaurant() {
-//     console.log("맛집");
-//     let lat = map.getCenter()._lat,
-//         lng = map.getCenter()._lng;
-
-//     reverseGeocoding(lat, lng, "dong")
-//         .then(data => {
-//             let region = data.v2.results[1].region.area1.name;
-//             let city = data.v2.results[1].region.area2.name;
-//             const recommendList = document.querySelector('.recommend-lists-container');
-        
-            
-//                 while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
-                
-//                 fetch('/data/restaurant/seoul.json')
-//                 .then(res => res.json())
-//                 .then(data => {
-//                     let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
-//                     restaurantList.forEach((restaurant) => {
-//                         let element = `<div class="recommend-list-container">
-//                                             <div><img src=${restaurant.img}></div>
-//                                             <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
-//                                             <div>${restaurant.추천사유}</div>
-//                                         </div>`
-//                                         recommendList.insertAdjacentHTML('beforeend', element);
-//                     })
-//                 })
-//             })
-// }
-
 function getWeather(lat, lng) {
     console.log("현재 좌표의 날씨정보를 받아옵니다.");
     const weatherDiv = document.querySelector('.location-weather');
@@ -228,48 +198,44 @@ function reverseGeocoding(lat, lng, type) {
     })
 }
 
-function setSearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
+function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
     
         reverseGeocoding(lat, lng, "dong")
         .then(data => {
-                let region = data.v2.results[1].region.area1.name;
-                let city = data.v2.results[1].region.area2.name;
-                let dong = data.v2.results[1].region.area3.name;
+            const locationAddress = document.querySelector('.location-address');
+            const citySpan = locationAddress.querySelector('.city');
+            const dongSpan = locationAddress.querySelector('.dong');
+            const recommendList = document.querySelector('.recommend-lists-container');
+
+            let region = data.v2.results[1].region.area1.name,
+                city = data.v2.results[1].region.area2.name,
+                dong = data.v2.results[1].region.area3.name;
+
+            if(citySpan.innerText !== city) cityChangeCheck = true;
+            else cityChangeCheck = false;
+
+            citySpan.innerText = city;
+            dongSpan.innerText = dong;
+
+            if(cityChangeCheck) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
                 
-                const locationAddress = document.querySelector('.location-address');
-                const citySpan = locationAddress.querySelector('.city');
-                const dongSpan = locationAddress.querySelector('.dong');
-
-                if(citySpan.innerText !== city) cityChangeCheck = true;
-                else cityChangeCheck = false;
-
-                citySpan.innerText = city;
-                dongSpan.innerText = dong;
-
-                if(cityChangeCheck) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
-                    const recommendList = document.querySelector('.recommend-lists-container');
+                while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
                 
-                    while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
-                    
-                    fetch('/data/restaurant/seoul.json')
-                    .then(res => res.json())
-                    .then(data => {
-                        let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
-                        restaurantList.forEach((restaurant) => {
-                            let element = `<div class="recommend-list-container">
-                                                <div><img src=${restaurant.img}></div>
-                                                <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
-                                                <div>${restaurant.추천사유}</div>
-                                            </div>`
-                                            recommendList.insertAdjacentHTML('beforeend', element);
-                        })
+                fetch('/data/restaurant/seoul.json')
+                .then(res => res.json())
+                .then(data => {
+                    let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
+                    restaurantList.forEach((restaurant) => {
+                        let element = `<div class="recommend-list-container">
+                                            <div><img src=${restaurant.img}></div>
+                                            <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
+                                            <div>${restaurant.추천사유}</div>
+                                        </div>`
+                        recommendList.insertAdjacentHTML('beforeend', element);
                     })
-                }
-            })
-}
-
-function setCurrentLocation() {
-
+                })
+            }
+        })
 }
 
 function displayMap(lat, lng) {
@@ -292,8 +258,7 @@ function pageSetting(result) {
     getWeather(lat, lng);
     displayMap(lat, lng); // 지도 생성
 
-    // 메뉴 - 검색컨텐츠
-    setSearchContent();
+    displaySearchContent();
 
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
@@ -302,7 +267,7 @@ function pageSetting(result) {
     });
 
     map.addListener('mouseup', (event) => {
-        setSearchContent();
+        displaySearchContent();
         
     })
 }
@@ -388,10 +353,52 @@ function getUserLocation() {
 
 // 검색 기능 모음
 const body = document.querySelector('body');
-const searchInMenu = document.querySelector('.menu-search-searchBar-container input');
+const searchInMenu = document.querySelector('.searchContent .search-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
 
-console.log(searchInMenu);
+console.log(searchInMap);
+
+// searchInMenu.addEventListener('keyup', e => {
+//     if (e.keyCode === 13) enterKey();
+//     else if (e.keyCode === 38) {
+//         if (searchbarIsOpen === true) upKey();
+//     }
+//     else if (e.keyCode === 40) {
+//         if (searchbarIsOpen === true) downKey();
+//     }
+//     else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
+// })
+
+// searchInMenu.addEventListener('input', e => {
+    
+//     if (searchInMap.value === '') {
+//         displayAutoComplete(false);
+//         displayHistory(true);
+//         return;
+//     }
+
+//     const promise1 = getJsonAddr(searchInMap.value);
+//     const promise2 = getJsonData(searchInMap.value);
+
+//     Promise.all([promise1, promise2]).then(data => {      
+//         let result = data[0].concat(data[1]).slice(0, 10);
+
+//         if (result.length !== 0) {
+//             displayAutoComplete(true, result);
+//             displayHistory(false);
+//         }
+//         else {
+//             displayAutoComplete(false);
+//             displayHistory(true);
+//         }
+//     })
+// })
+
+// searchInMenu.addEventListener('focus', e => {
+//     displaySearchList(true);
+//     if(searchInMap.value === "") displayHistory(true);
+// })
+
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
@@ -418,7 +425,7 @@ searchInMap.addEventListener('input', e => {
         let result = data[0].concat(data[1]).slice(0, 10);
 
         if (result.length !== 0) {
-            displayAutoComplete(true,result);
+            displayAutoComplete(true, result);
             displayHistory(false);
         }
         else {
@@ -429,18 +436,21 @@ searchInMap.addEventListener('input', e => {
 })
 
 searchInMap.addEventListener('focus', e => {
+    console.log("포커스");
     displaySearchList(true);
     if(searchInMap.value === "") displayHistory(true);
 })
 
 body.addEventListener('click',e => {
-    const container = document.querySelector('.search-container');
-
+    const container = document.querySelector('.interaction-container .search-container');
+    
+    if(e.target === searchInMap) return;
     if(e.target === container) return;
     if(e.target.parentNode === container) return;
     if(e.target.parentNode.parentNode === container) return;
     if(e.target.parentNode.parentNode.parentNode === container) return;
-
+    
+    console.log("바디를 클릭했습니다.");
     displaySearchList(false);
 })
 
@@ -539,14 +549,22 @@ function searchByKeyword(keyword) {
 }
 
 function displaySearchList(isTrue) {
-    const container = document.querySelector('.searchList');
-    if(isTrue) container.classList.remove('hide');
-    else container.classList.add('hide');
+    
+    const container = document.querySelector('.interaction-container .searchList');
+    
+    if(isTrue) {
+        console.log(isTrue, "보여주자");
+        container.classList.remove('hide');
+    }
+    else {
+        console.log(isTrue, "숨기자");
+        container.classList.add('hide');
+    }
 }
 
 function displayAutoComplete(isTrue, result) {
-    const container = document.querySelector('.searchList');
-    const autoCompleteList = container.querySelector('.autoCompleteList');
+    const container = document.querySelector('.interaction-container .searchList');
+    const autoCompleteList = container.querySelector('.interaction-container .autoCompleteList');
 
     if(isTrue){
         autoCompleteList.classList.remove('hide');
@@ -576,8 +594,8 @@ function displayAutoComplete(isTrue, result) {
 }
 
 function displayHistory(isTrue){
-    const container = document.querySelector('.searchList');
-    const historyList = container.querySelector('.historyList');
+    const container = document.querySelector('.interaction-container .searchList');
+    const historyList = container.querySelector('.interaction-container .historyList');
 
     if(isTrue) historyList.classList.remove('hide');
     else historyList.classList.add('hide');
