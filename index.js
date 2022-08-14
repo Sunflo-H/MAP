@@ -25,69 +25,6 @@ const menuContentContainer = document.querySelector('.menuContent-container');
 let map;
 let markers = [];
 let cityIsChange;
-// let searchListIsOpen;
-// let autoCompleteIsOpen;
-// let historyIsOpen;
-
-const searchListIsOpen = ( function iife() {
-    let isOpen;
-
-    return {
-        value: function () {
-            return isOpen;
-        },
-
-        open: function () {
-            isOpen = true;
-            return isOpen;
-        },
-
-        close: function () {
-            isOpen = false;
-            return isOpen;
-        }
-    }
-})();
-
-const autoCompleteIsOpen = ( function iife() {
-    let isOpen;
-
-    return {
-        value: function () {
-            return isOpen;
-        },
-
-        open: function () {
-            isOpen = true;
-            return isOpen;
-        },
-
-        close: function () {
-            isOpen = false;
-            return isOpen;
-        }
-    }
-})();
-
-const historyIsOpen = ( function iife() {
-    let isOpen;
-
-    return {
-        value: function () {
-            return isOpen;
-        },
-
-        open: function () {
-            isOpen = true;
-            return isOpen;
-        },
-
-        close: function () {
-            isOpen = false;
-            return isOpen;
-        }
-    }
-})();
 
 
 
@@ -418,10 +355,28 @@ function getUserLocation() {
 const body = document.querySelector('body');
 const searchInMenu = document.querySelector('.searchContent .search-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
+// 즉시실행함수로 전역변수를 최소화
+function stateCheck() {
+    let state;
 
-console.log(searchInMap);
+    return {
+        value: function () {
+            return state;
+        },
 
+        true: function () {
+            state = true;
+        },
 
+        false: function () {
+            state = false;
+        }
+    }
+}
+
+const searchListState = (stateCheck)();
+const autoCompleteState = (stateCheck)();
+const historyState = (stateCheck)();
 
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
@@ -578,11 +533,11 @@ function displaySearchList(isTrue) {
     
     if(isTrue) {
         container.classList.remove('hide');
-        searchListIsOpen.open();
+        searchListState.true();
     }
     else {
         container.classList.add('hide');
-        searchListIsOpen.close();
+        searchListState.false();
     }
 }
 
@@ -591,14 +546,15 @@ function displayAutoComplete(isTrue, result) {
     const autoCompleteList = container.querySelector('.interaction-container .autoCompleteList');
 
     if(isTrue){
+        autoCompleteState.true();
         autoCompleteList.classList.remove('hide');
         
         while(autoCompleteList.hasChildNodes()) autoCompleteList.removeChild(autoCompleteList.firstChild);
         
         result.forEach((data, i) => {
             let element = `<div class="autoComplete">
-                            <i class="fa-solid fa-location-dot"></i> 
-                            <span>${data}</span>
+                                <i class="fa-solid fa-location-dot"></i> 
+                                <span>${data}</span>
                             </div>`;
             autoCompleteList.insertAdjacentHTML('beforeend', element);
         })
@@ -613,6 +569,7 @@ function displayAutoComplete(isTrue, result) {
         })
     }
     else {
+        autoCompleteState.false();
         autoCompleteList.classList.add('hide');
     }
 }
@@ -621,8 +578,14 @@ function displayHistory(isTrue){
     const container = document.querySelector('.interaction-container .searchList');
     const historyList = container.querySelector('.interaction-container .historyList');
 
-    if(isTrue) historyList.classList.remove('hide');
-    else historyList.classList.add('hide');
+    if(isTrue) {
+        historyState.true();
+        historyList.classList.remove('hide');
+    }
+    else {
+        historyState.false();
+        historyList.classList.add('hide');
+    }
 }
 
 function enterKey() {

@@ -1,3 +1,24 @@
+
+function iife() {
+    let isOpen;
+
+    return {
+        value: function () {
+            return isOpen;
+        },
+
+        open: function () {
+            isOpen = true;
+            return isOpen;
+        },
+
+        close: function () {
+            isOpen = false;
+            return isOpen;
+        }
+    }
+}
+
 const a = ( function iife() {
     let isOpen;
 
@@ -18,23 +39,7 @@ const a = ( function iife() {
     }
 })();
 
-const b = ( function iife() {
-    let isOpen;
-
-    return {
-        value: function () {
-            return isOpen;
-        },
-
-        open: function () {
-            isOpen = true;
-        },
-
-        close: function () {
-            isOpen = false;
-        }
-    }
-})();
+const b = (iife)();
 
 a.open();
 b.close();
@@ -43,24 +48,4 @@ console.log(b.value());
 
 function toggle() {
 
-}
-
-function iife() {
-    let isOpen;
-
-    return {
-        value: function () {
-            return isOpen;
-        },
-
-        open: function () {
-            isOpen = true;
-            return isOpen;
-        },
-
-        close: function () {
-            isOpen = false;
-            return isOpen;
-        }
-    }
 }
