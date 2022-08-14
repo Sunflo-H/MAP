@@ -381,10 +381,10 @@ const historyState = (stateCheck)();
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
-        if (searchListIsOpen.value() === true) upKey();
+        if (searchListState.value() === true) upKey();
     }
     else if (e.keyCode === 40) {
-        if (searchbarIsOpen === true) downKey();
+        if (searchListState.value() === true) downKey();
     }
     else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
 })
@@ -592,6 +592,12 @@ function enterKey() {
     search(searchInMap.value);
     displaySearchList(false);
 }
+/**
+ * UP,DOWN키를 적용하기 위헤선 검색의 html 구조가 바뀌어야 할것같다.
+ * searchList 에 autoComplete와 history를 구분하지 않고 한번에 나오게 한다.
+ * 그후 UP,DOWN 키를 적용하면 autoComplete와 history 모두 적용할수 있다.
+ */
+ 
 
 function upKey() {
     const autoCompleteList = document.querySelector('.autoCompleteList');
