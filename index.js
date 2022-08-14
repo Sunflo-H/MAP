@@ -24,8 +24,72 @@ const menuContentContainer = document.querySelector('.menuContent-container');
 // 전역변수
 let map;
 let markers = [];
-let cityChangeCheck;
-let currentCityValue;
+let cityIsChange;
+// let searchListIsOpen;
+// let autoCompleteIsOpen;
+// let historyIsOpen;
+
+const searchListIsOpen = ( function iife() {
+    let isOpen;
+
+    return {
+        value: function () {
+            return isOpen;
+        },
+
+        open: function () {
+            isOpen = true;
+            return isOpen;
+        },
+
+        close: function () {
+            isOpen = false;
+            return isOpen;
+        }
+    }
+})();
+
+const autoCompleteIsOpen = ( function iife() {
+    let isOpen;
+
+    return {
+        value: function () {
+            return isOpen;
+        },
+
+        open: function () {
+            isOpen = true;
+            return isOpen;
+        },
+
+        close: function () {
+            isOpen = false;
+            return isOpen;
+        }
+    }
+})();
+
+const historyIsOpen = ( function iife() {
+    let isOpen;
+
+    return {
+        value: function () {
+            return isOpen;
+        },
+
+        open: function () {
+            isOpen = true;
+            return isOpen;
+        },
+
+        close: function () {
+            isOpen = false;
+            return isOpen;
+        }
+    }
+})();
+
+
 
 function init() {
     getUserLocation()
@@ -64,7 +128,6 @@ function init() {
 }
 
 function getWeather(lat, lng) {
-    console.log("현재 좌표의 날씨정보를 받아옵니다.");
     const weatherDiv = document.querySelector('.location-weather');
     const dustDiv = document.querySelector('.location-dust');
 
@@ -75,7 +138,7 @@ function getWeather(lat, lng) {
         .then(data => {
             let weather;
             let temp = Math.round(data.main.temp * 10) / 10;
-            console.log(data);
+            
             switch (data.weather[0].main) {
                 case 'Clouds': weather = '구름'; break;
                 case 'Clear': weather = '맑음'; break;
@@ -211,13 +274,13 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
                 city = data.v2.results[1].region.area2.name,
                 dong = data.v2.results[1].region.area3.name;
 
-            if(citySpan.innerText !== city) cityChangeCheck = true;
-            else cityChangeCheck = false;
+            if(citySpan.innerText !== city) cityIsChange = true;
+            else cityIsChange = false;
 
             citySpan.innerText = city;
             dongSpan.innerText = dong;
 
-            if(cityChangeCheck) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
+            if(cityIsChange) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
                 
                 while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
                 
@@ -358,51 +421,12 @@ const searchInMap = document.querySelector('.interaction-container .search-conta
 
 console.log(searchInMap);
 
-// searchInMenu.addEventListener('keyup', e => {
-//     if (e.keyCode === 13) enterKey();
-//     else if (e.keyCode === 38) {
-//         if (searchbarIsOpen === true) upKey();
-//     }
-//     else if (e.keyCode === 40) {
-//         if (searchbarIsOpen === true) downKey();
-//     }
-//     else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
-// })
 
-// searchInMenu.addEventListener('input', e => {
-    
-//     if (searchInMap.value === '') {
-//         displayAutoComplete(false);
-//         displayHistory(true);
-//         return;
-//     }
-
-//     const promise1 = getJsonAddr(searchInMap.value);
-//     const promise2 = getJsonData(searchInMap.value);
-
-//     Promise.all([promise1, promise2]).then(data => {      
-//         let result = data[0].concat(data[1]).slice(0, 10);
-
-//         if (result.length !== 0) {
-//             displayAutoComplete(true, result);
-//             displayHistory(false);
-//         }
-//         else {
-//             displayAutoComplete(false);
-//             displayHistory(true);
-//         }
-//     })
-// })
-
-// searchInMenu.addEventListener('focus', e => {
-//     displaySearchList(true);
-//     if(searchInMap.value === "") displayHistory(true);
-// })
 
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
-        if (searchbarIsOpen === true) upKey();
+        if (searchListIsOpen.value() === true) upKey();
     }
     else if (e.keyCode === 40) {
         if (searchbarIsOpen === true) downKey();
@@ -553,12 +577,12 @@ function displaySearchList(isTrue) {
     const container = document.querySelector('.interaction-container .searchList');
     
     if(isTrue) {
-        console.log(isTrue, "보여주자");
         container.classList.remove('hide');
+        searchListIsOpen.open();
     }
     else {
-        console.log(isTrue, "숨기자");
         container.classList.add('hide');
+        searchListIsOpen.close();
     }
 }
 
@@ -607,10 +631,13 @@ function enterKey() {
 }
 
 function upKey() {
-    let activeChild = relationContainer.lastElementChild;
+    const autoCompleteList = document.querySelector('.autoCompleteList');
+    console.log(autoCompleteList);
+    let activeChild = autoCompleteList.lastElementChild;
     let isActive = false;
+    console.log(activeChild);
 
-    for (let i = 0; i < relationContainer.childElementCount; i++) {
+    for (let i = 0; i < autoCompleteList.childElementCount; i++) {
         if (activeChild.classList.contains('active') === true) {
             activeChild.classList.remove('active');
 
