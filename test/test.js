@@ -1,51 +1,16 @@
-
-function iife() {
-    let isOpen;
-
-    return {
-        value: function () {
-            return isOpen;
-        },
-
-        open: function () {
-            isOpen = true;
-            return isOpen;
-        },
-
-        close: function () {
-            isOpen = false;
-            return isOpen;
-        }
-    }
-}
-
-const a = ( function iife() {
-    let isOpen;
-
-    return {
-        value: function () {
-            return isOpen;
-        },
-
-        open: function () {
-            isOpen = true;
-            return isOpen;
-        },
-
-        close: function () {
-            isOpen = false;
-            return isOpen;
-        }
-    }
-})();
-
-const b = (iife)();
-
-a.open();
-b.close();
-console.log(a.value());
-console.log(b.value());
-
-function toggle() {
-
-}
+function a() {
+    console.log("실행");
+    const element = document.getElementById('my_div');
+    alert(element.innerHTML);
+    // alert(element.innerText);
+  } 
+  
+  function b() {
+    const element = document.getElementById('my_div');
+    alert(element.innerText);
+  } 
+  
+  function getTextContent() {
+    const element = document.getElementById('my_div');
+    alert(element.textContent);
+  } 

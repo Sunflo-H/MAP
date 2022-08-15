@@ -417,7 +417,27 @@ body {
     border-radius: 0px 0px 5px 5px ;
 }
 
-.autoCompleteList {
+.history {
+    padding-left: 20px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.history i {
+    color: var(--main);
+    font-size: 14px;
+}
+
+.history span {
+    padding-left: 5px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    /* font-weight: bold; */
+}
+
+.history:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
 }
 
 .autoComplete {
@@ -440,15 +460,9 @@ body {
 
 .autoComplete:hover {
     background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
 }
 
-.historyList {
-
-}
-
-.history {
-    padding-left: 20px;
-}
 
 .no-history {
     padding-left: 20px;

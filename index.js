@@ -216,7 +216,8 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
 
             citySpan.innerText = city;
             dongSpan.innerText = dong;
-
+            // setCurrentLocation();
+            // setHotRestaurant();
             if(cityIsChange) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
                 
                 while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
@@ -392,24 +393,20 @@ searchInMap.addEventListener('keyup', e => {
 searchInMap.addEventListener('input', e => {
     
     if (searchInMap.value === '') {
-        displayAutoComplete(false);
-        displayHistory(true);
+        displaySearchList(true);
+        setHistory();
         return;
     }
 
-    const promise1 = getJsonAddr(searchInMap.value);
-    const promise2 = getJsonData(searchInMap.value);
-
-    Promise.all([promise1, promise2]).then(data => {      
+    Promise.all([getJsonAddr(searchInMap.value), getJsonData(searchInMap.value)]).then(data => {      
         let result = data[0].concat(data[1]).slice(0, 10);
 
         if (result.length !== 0) {
-            displayAutoComplete(true, result);
-            displayHistory(false);
+            displaySearchList(true);
+            setAutoComplete(result);
         }
         else {
-            displayAutoComplete(false);
-            displayHistory(true);
+            displaySearchList(false);
         }
     })
 })
@@ -417,7 +414,7 @@ searchInMap.addEventListener('input', e => {
 searchInMap.addEventListener('focus', e => {
     console.log("포커스");
     displaySearchList(true);
-    if(searchInMap.value === "") displayHistory(true);
+    // if(searchInMap.value === "") displayHistory(true);
 })
 
 body.addEventListener('click',e => {
@@ -528,65 +525,119 @@ function searchByKeyword(keyword) {
 }
 
 function displaySearchList(isTrue) {
-    
-    const container = document.querySelector('.interaction-container .searchList');
+    const searchList = document.querySelector('.interaction-container .searchList');
     
     if(isTrue) {
-        container.classList.remove('hide');
+        searchList.classList.remove('hide');
         searchListState.true();
     }
     else {
-        container.classList.add('hide');
+        searchList.classList.add('hide');
         searchListState.false();
     }
 }
 
-function displayAutoComplete(isTrue, result) {
-    const container = document.querySelector('.interaction-container .searchList');
-    const autoCompleteList = container.querySelector('.interaction-container .autoCompleteList');
+function setHistory() {
+    let historyArr = ["아차산","구의동","롯데리아"];
+    historyArr = [];
+    const searchList = document.querySelector('.interaction-container .searchList');
 
-    if(isTrue){
-        autoCompleteState.true();
-        autoCompleteList.classList.remove('hide');
-        
-        while(autoCompleteList.hasChildNodes()) autoCompleteList.removeChild(autoCompleteList.firstChild);
-        
-        result.forEach((data, i) => {
-            let element = `<div class="autoComplete">
-                                <i class="fa-solid fa-location-dot"></i> 
+    while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
+    
+    if (historyArr.length !== 0) {
+        //히스토리 길이만큼 히스토리 세팅
+        historyArr.forEach(data => {
+            let element = `<div class="history">
+                                <i class="fa-solid fa-clock-rotate-left"></i> 
                                 <span>${data}</span>
                             </div>`;
-            autoCompleteList.insertAdjacentHTML('beforeend', element);
-        })
-
-        // autoComplete 생성후 클릭이벤트 적용
-        const autoComplete = document.querySelectorAll('.autoComplete');
-        autoComplete.forEach((autoComplete) => {
-            autoComplete.addEventListener('click', e => {
-                let keyword = e.currentTarget.lastElementChild.innerText;
-                search(keyword);
-            })
-        })
+            searchList.insertAdjacentHTML('beforeend', element);
+        });
     }
     else {
-        autoCompleteState.false();
-        autoCompleteList.classList.add('hide');
+        let element = `<div class="history">
+                            <div class="no-history">검색기록이없습니다.메뉴 내 검색</div>
+                        </div>`;
+        searchList.insertAdjacentHTML('beforeend', element);
     }
 }
 
-function displayHistory(isTrue){
-    const container = document.querySelector('.interaction-container .searchList');
-    const historyList = container.querySelector('.interaction-container .historyList');
+function setAutoComplete(data) {
+    const searchList = document.querySelector('.interaction-container .searchList');
 
-    if(isTrue) {
-        historyState.true();
-        historyList.classList.remove('hide');
-    }
-    else {
-        historyState.false();
-        historyList.classList.add('hide');
-    }
+    while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
+    data.forEach(data => {
+        let element = `<div class="autoComplete">
+                            <i class="fa-solid fa-location-dot"></i> 
+                            <span>${data}</span>
+                        </div>`;
+        searchList.insertAdjacentHTML('beforeend', element);
+    });
 }
+// 이것보다 히스토리에서 작업하는게 맞을듯?
+function 아무것도없을때세팅() { 
+    const searchList = document.querySelector('.interaction-container .searchList');
+
+    let element = `<div class="no-history">검색기록이없습니다.메뉴 내 검색</div>
+                    <div class="history">a</div>
+                    <div class="history">구의동</div>
+                    <div class="history">강남</div>
+                    <div class="autoComplete">ㄱ</div>
+                    <div class="autoComplete">ㄴ</div>
+                    <div class="autoComplete">ㄷ</div>
+                    <div class="autoComplete">ㄹ</div>`
+
+    while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
+
+    searchList.insertAdjacentHTML('beforeend', element);
+}
+
+// function displayAutoComplete(isTrue, result) {
+//     const container = document.querySelector('.interaction-container .searchList');
+//     const autoCompleteList = container.querySelector('.interaction-container .autoCompleteList');
+
+//     if(isTrue){
+//         autoCompleteState.true();
+//         autoCompleteList.classList.remove('hide');
+        
+//         while(autoCompleteList.hasChildNodes()) autoCompleteList.removeChild(autoCompleteList.firstChild);
+        
+//         result.forEach((data, i) => {
+//             let element = `<div class="autoComplete">
+//                                 <i class="fa-solid fa-location-dot"></i> 
+//                                 <span>${data}</span>
+//                             </div>`;
+//             autoCompleteList.insertAdjacentHTML('beforeend', element);
+//         })
+
+//         // autoComplete 생성후 클릭이벤트 적용
+//         const autoComplete = document.querySelectorAll('.autoComplete');
+//         autoComplete.forEach((autoComplete) => {
+//             autoComplete.addEventListener('click', e => {
+//                 let keyword = e.currentTarget.lastElementChild.innerText;
+//                 search(keyword);
+//             })
+//         })
+//     }
+//     else {
+//         autoCompleteState.false();
+//         autoCompleteList.classList.add('hide');
+//     }
+// }
+
+// function displayHistory(isTrue){
+//     const container = document.querySelector('.interaction-container .searchList');
+//     const historyList = container.querySelector('.interaction-container .historyList');
+
+//     if(isTrue) {
+//         historyState.true();
+//         historyList.classList.remove('hide');
+//     }
+//     else {
+//         historyState.false();
+//         historyList.classList.add('hide');
+//     }
+// }
 
 function enterKey() {
     search(searchInMap.value);
