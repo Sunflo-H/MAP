@@ -25,8 +25,26 @@ const menuContentContainer = document.querySelector('.menuContent-container');
 let map;
 let markers = [];
 let cityIsChange;
+let mapCenter;
 
+// 즉시실행함수로 전역변수를 최소화
+function stateCheck() {
+    let state;
 
+    return {
+        value: function () {
+            return state;
+        },
+
+        true: function () {
+            state = true;
+        },
+
+        false: function () {
+            state = false;
+        }
+    }
+}
 
 function init() {
     getUserLocation()
@@ -236,18 +254,21 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
                     })
                 })
             }
-        })
+        });
 }
 
 function displayMap(lat, lng) {
     const mapDiv = document.querySelector('.map');
+    const center = new Tmapv2.LatLng(lat, lng); 
 
     let mapOption = {
-        center: new Tmapv2.LatLng(lat, lng),
+        center: center,
         zoom: 17
     };
 
     map = new Tmapv2.Map(mapDiv, mapOption);
+
+    mapCenter = map.getCenter();
 }
 
 //! if promise가 아니라면?
@@ -268,9 +289,12 @@ function pageSetting(result) {
     });
 
     map.addListener('mouseup', (event) => {
-        displaySearchContent();
-        
-    })
+        if(mapCenter._lat !== map.getCenter()._lat 
+           || mapCenter._lng !== map.getCenter()._lng) {
+            console.log("마우스업");
+            displaySearchContent();
+        }
+    });
 }
 
 function createMarker(data) {
@@ -286,7 +310,7 @@ function createMarker(data) {
                             <div class="marker-address-name">${data.address_name}</div>
                         </div>
                         <div class="marker-point"></div>
-                    </div>`
+                    </div>`;
     }
     else if(type === "") { // 장소일때
         icon = `<i class="fa-solid fa-location-dot"></i>`; 
@@ -296,7 +320,7 @@ function createMarker(data) {
                             <div class="marker-address-name">${data.place_name}</div>
                         </div>
                         <div class="marker-point"></div>
-                    </div>`
+                    </div>`;
     }
     else { // 음식점, 카페, 마트 등등
         icon = `<i class="fa fa-cutlery">`; // 음식점일때
@@ -307,7 +331,7 @@ function createMarker(data) {
                             <div class="marker-place-category">${type}</div>
                         </div>
                         <div class="marker-point"></div>
-                    </div>`
+                    </div>`;
     }
     // 좌표, 마커의 내용(정보), 타입 - 아이콘모양
     let marker = new Tmapv2.InfoWindow();
@@ -334,7 +358,7 @@ function createMarker(data) {
 function 마커삭제() {
     markers.forEach(marker => {
         marker.setMap(null);
-    })
+    });
     markers = [];
 }
 
@@ -356,24 +380,7 @@ function getUserLocation() {
 const body = document.querySelector('body');
 const searchInMenu = document.querySelector('.searchContent .search-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
-// 즉시실행함수로 전역변수를 최소화
-function stateCheck() {
-    let state;
 
-    return {
-        value: function () {
-            return state;
-        },
-
-        true: function () {
-            state = true;
-        },
-
-        false: function () {
-            state = false;
-        }
-    }
-}
 
 const searchListState = (stateCheck)();
 const autoCompleteState = (stateCheck)();
@@ -411,10 +418,10 @@ searchInMap.addEventListener('input', e => {
     })
 })
 
-searchInMap.addEventListener('focus', e => {
+searchInMap.addEventListener('click', e => {
     console.log("포커스");
     displaySearchList(true);
-    // if(searchInMap.value === "") displayHistory(true);
+    if(searchInMap.value === "") setHistory();
 })
 
 body.addEventListener('click',e => {
@@ -556,7 +563,7 @@ function setHistory() {
     }
     else {
         let element = `<div class="history">
-                            <div class="no-history">검색기록이없습니다.메뉴 내 검색</div>
+                            <div class="no-history">검색기록이없습니다.</div>
                         </div>`;
         searchList.insertAdjacentHTML('beforeend', element);
     }
@@ -574,70 +581,6 @@ function setAutoComplete(data) {
         searchList.insertAdjacentHTML('beforeend', element);
     });
 }
-// 이것보다 히스토리에서 작업하는게 맞을듯?
-function 아무것도없을때세팅() { 
-    const searchList = document.querySelector('.interaction-container .searchList');
-
-    let element = `<div class="no-history">검색기록이없습니다.메뉴 내 검색</div>
-                    <div class="history">a</div>
-                    <div class="history">구의동</div>
-                    <div class="history">강남</div>
-                    <div class="autoComplete">ㄱ</div>
-                    <div class="autoComplete">ㄴ</div>
-                    <div class="autoComplete">ㄷ</div>
-                    <div class="autoComplete">ㄹ</div>`
-
-    while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
-
-    searchList.insertAdjacentHTML('beforeend', element);
-}
-
-// function displayAutoComplete(isTrue, result) {
-//     const container = document.querySelector('.interaction-container .searchList');
-//     const autoCompleteList = container.querySelector('.interaction-container .autoCompleteList');
-
-//     if(isTrue){
-//         autoCompleteState.true();
-//         autoCompleteList.classList.remove('hide');
-        
-//         while(autoCompleteList.hasChildNodes()) autoCompleteList.removeChild(autoCompleteList.firstChild);
-        
-//         result.forEach((data, i) => {
-//             let element = `<div class="autoComplete">
-//                                 <i class="fa-solid fa-location-dot"></i> 
-//                                 <span>${data}</span>
-//                             </div>`;
-//             autoCompleteList.insertAdjacentHTML('beforeend', element);
-//         })
-
-//         // autoComplete 생성후 클릭이벤트 적용
-//         const autoComplete = document.querySelectorAll('.autoComplete');
-//         autoComplete.forEach((autoComplete) => {
-//             autoComplete.addEventListener('click', e => {
-//                 let keyword = e.currentTarget.lastElementChild.innerText;
-//                 search(keyword);
-//             })
-//         })
-//     }
-//     else {
-//         autoCompleteState.false();
-//         autoCompleteList.classList.add('hide');
-//     }
-// }
-
-// function displayHistory(isTrue){
-//     const container = document.querySelector('.interaction-container .searchList');
-//     const historyList = container.querySelector('.interaction-container .historyList');
-
-//     if(isTrue) {
-//         historyState.true();
-//         historyList.classList.remove('hide');
-//     }
-//     else {
-//         historyState.false();
-//         historyList.classList.add('hide');
-//     }
-// }
 
 function enterKey() {
     search(searchInMap.value);
@@ -651,13 +594,13 @@ function enterKey() {
  
 
 function upKey() {
-    const autoCompleteList = document.querySelector('.autoCompleteList');
-    console.log(autoCompleteList);
-    let activeChild = autoCompleteList.lastElementChild;
+    const searchList = document.querySelector('.interaction-container .searchList');
+    console.log(searchList);
+    let activeChild = searchList.lastElementChild;
     let isActive = false;
     console.log(activeChild);
 
-    for (let i = 0; i < autoCompleteList.childElementCount; i++) {
+    for (let i = 0; i < searchList.childElementCount; i++) {
         if (activeChild.classList.contains('active') === true) {
             activeChild.classList.remove('active');
 
