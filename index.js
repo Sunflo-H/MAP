@@ -290,8 +290,7 @@ function pageSetting(result) {
 
     map.addListener('mouseup', (event) => {
         if(mapCenter._lat !== map.getCenter()._lat 
-           || mapCenter._lng !== map.getCenter()._lng) {
-            console.log("마우스업");
+            || mapCenter._lng !== map.getCenter()._lng) {
             displaySearchContent();
         }
     });
@@ -432,8 +431,7 @@ body.addEventListener('click',e => {
     if(e.target.parentNode === container) return;
     if(e.target.parentNode.parentNode === container) return;
     if(e.target.parentNode.parentNode.parentNode === container) return;
-    
-    console.log("바디를 클릭했습니다.");
+
     displaySearchList(false);
 })
 
@@ -562,8 +560,8 @@ function setHistory() {
         });
     }
     else {
-        let element = `<div class="history">
-                            <div class="no-history">검색기록이없습니다.</div>
+        let element = `<div class="no-history">
+                            검색기록이없습니다.
                         </div>`;
         searchList.insertAdjacentHTML('beforeend', element);
     }
@@ -574,6 +572,7 @@ function setAutoComplete(data) {
 
     while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
     data.forEach(data => {
+        console.log(data);
         let element = `<div class="autoComplete">
                             <i class="fa-solid fa-location-dot"></i> 
                             <span>${data}</span>
@@ -585,80 +584,74 @@ function setAutoComplete(data) {
 function enterKey() {
     search(searchInMap.value);
     displaySearchList(false);
-}
-/**
- * UP,DOWN키를 적용하기 위헤선 검색의 html 구조가 바뀌어야 할것같다.
- * searchList 에 autoComplete와 history를 구분하지 않고 한번에 나오게 한다.
- * 그후 UP,DOWN 키를 적용하면 autoComplete와 history 모두 적용할수 있다.
- */
- 
+} 
 
 function upKey() {
     const searchList = document.querySelector('.interaction-container .searchList');
-    console.log(searchList);
-    let activeChild = searchList.lastElementChild;
-    let isActive = false;
-    console.log(activeChild);
+    let standardChild = searchList.lastElementChild;
+
+    if(standardChild.classList.contains('no-history')) return;
+    
+    //위, 아래 누르면 input의 마우스포인터가 앞뒤로 이동하는거 막을수있나?
 
     for (let i = 0; i < searchList.childElementCount; i++) {
-        if (activeChild.classList.contains('active') === true) {
-            activeChild.classList.remove('active');
 
-            if (activeChild.previousElementSibling !== null) {
-                console.log("액티브가 있고 다음 자식이 있어요 다음 자식에게 액티브를 줍니다.");
-                activeChild = activeChild.previousElementSibling;
-                activeChild.classList.add('active');
-                searchInput.value = activeChild.innerText;
+        if (standardChild.classList.contains('active') === true) {
+            standardChild.classList.remove('active');
+
+            if (standardChild.previousElementSibling !== null) {
+                standardChild = standardChild.previousElementSibling;
+                standardChild.classList.add('active');
+                searchInMap.value = standardChild.innerText;
             }
-            else if (activeChild.previousElementSibling === null) {
-                console.log("히스토리로 넘어가야 하는 상태");
+            else if (standardChild.previousElementSibling === null) {
+                standardChild = searchList.lastElementChild;
+                standardChild.classList.add('active');
+                searchInMap.value = standardChild.innerText;        
             }
 
-            isActive = true;
             return;
-        } else {
-            console.log("액티브가 없어요 다음 자식으로 옮깁니다.");
-            activeChild = activeChild.previousElementSibling;
-        }
+        } 
+        else standardChild = standardChild.previousElementSibling;
     }
 
-    if (isActive === false) {
-        console.log("액티브가 없어서 마지막 자식에게 부여");
-        activeChild = relationContainer.lastElementChild;
-        activeChild.classList.add('active');
-        searchInput.value = activeChild.innerText;
-    }
+    standardChild = searchList.lastElementChild;
+    standardChild.classList.add('active');
+    searchInMap.value = standardChild.innerText;
 }
 
 function downKey() {
-    let activeChild = relationContainer.firstElementChild;
-    let isActive = false;
-    for (let i = 0; i < relationContainer.childElementCount; i++) {
-        if (activeChild.classList.contains('active') === true) {
-            activeChild.classList.remove('active');
-            if (activeChild.nextElementSibling !== null) {
-                console.log("액티브가 있고 다음 자식이 있어요 다음 자식에게 액티브를 줍니다.");
-                activeChild = activeChild.nextElementSibling;
-                activeChild.classList.add('active');
-                searchInput.value = activeChild.innerText;
+    const searchList = document.querySelector('.interaction-container .searchList');
+    let standardChild = searchList.firstElementChild;
+
+    if(standardChild.classList.contains('no-history')) return;
+    
+    //위, 아래 누르면 input의 마우스포인터가 앞뒤로 이동하는거 막을수있나?
+
+    for (let i = 0; i < searchList.childElementCount; i++) {
+
+        if (standardChild.classList.contains('active') === true) {
+            standardChild.classList.remove('active');
+
+            if (standardChild.nextElementSibling !== null) {
+                standardChild = standardChild.nextElementSibling;
+                standardChild.classList.add('active');
+                searchInMap.value = standardChild.innerText;
             }
-            else if (activeChild.nextElementSibling === null) {
-                console.log("히스토리로 넘어가야 하는 상태");
+            else if (standardChild.nextElementSibling === null) {
+                standardChild = searchList.firstElementChild;
+                standardChild.classList.add('active');
+                searchInMap.value = standardChild.innerText;        
             }
 
-            isActive = true;
             return;
-        } else {
-            console.log("액티브가 없어요 다음 자식으로 옮깁니다.");
-            activeChild = activeChild.nextElementSibling;
-        }
+        } 
+        else standardChild = standardChild.nextElementSibling;
     }
-    if (isActive === false) {
-        console.log("액티브가 없어서 첫번째 자식에게 부여");
-        activeChild = relationContainer.firstElementChild;
-        activeChild.classList.add('active');
-        searchInput.value = activeChild.innerText;
-    }
+
+    standardChild = searchList.firstElementChild;
+    standardChild.classList.add('active');
+    searchInMap.value = standardChild.innerText;
 }
 
 // 메뉴 컨텐츠의 닫기버튼(곡선)
