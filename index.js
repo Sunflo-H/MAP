@@ -375,6 +375,39 @@ function getUserLocation() {
 // init();
 
 // 검색 - 카테고리
+function categorySearch(event) {
+    console.log("카테고리를 눌렀습니다. 해당 카테고리로 주변 탐색을 실행합니다.");
+    let places = new kakao.maps.services.Places();
+    let categoryCode = event.currentTarget.parentNode.getAttribute('data-categoryCode');
+    let lat = map.getCenter()._lat;
+    let lng = map.getCenter()._lng;
+    let location = new kakao.maps.LatLng(lat, lng);
+
+    console.log("asd");
+
+    // 카테고리 검색 결과를 받을 콜백 함수
+    let callback = function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            console.log(result);
+            createNumberMarker(result);
+            displaySearchList(result);
+        }
+    };
+    // 공공기관 코드 검색, 찾은 placeList는 callback으로 전달한다.
+    places.categorySearch(categoryCode, callback, {
+        location: location,
+        size: SEARCH_DATA_LENGTH
+    });
+}
+
+const categoryList = document.querySelectorAll('.category');
+console.log(categoryList);
+
+categoryList.forEach(category => {
+    category.addEventListener('click', event => {
+       categorySearch(event);
+    })
+});
 
 // 검색 기능 모음
 const body = document.querySelector('body');
