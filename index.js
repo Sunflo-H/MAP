@@ -363,6 +363,7 @@ function 마커삭제() {
 
 function panTo(lat, lng) {
     map.panTo(new Tmapv2.LatLng(lat, lng));
+    displaySearchContent(lat, lng);
 }
 
 function getUserLocation() {
@@ -572,13 +573,35 @@ function setAutoComplete(data) {
 
     while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
     data.forEach(data => {
-        console.log(data);
         let element = `<div class="autoComplete">
                             <i class="fa-solid fa-location-dot"></i><span>${data}</span>
                         </div>`;
         searchList.insertAdjacentHTML('beforeend', element);
-        
     });
+
+    const autoCompleteList = document.querySelectorAll('.autoComplete');
+
+    autoCompleteList.forEach(autoComplete => {
+        autoComplete.addEventListener('click', event => {
+            const span = autoComplete.querySelector('span');
+            search(span.innerText);
+            displaySearchList(false);
+        })
+    });
+    
+    autoCompleteList.forEach(autoComplete => {
+        autoComplete.addEventListener('mouseenter', event => {
+
+            autoComplete.classList.add('active');
+        })
+    });
+
+    autoCompleteList.forEach(autoComplete => {
+        autoComplete.addEventListener('mouseleave', event => {
+            autoComplete.classList.remove('active');
+        })
+    });
+    
 }
 
 function enterKey() {
