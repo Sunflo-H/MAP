@@ -651,6 +651,7 @@ body {
 .marker-container:hover {
     color: #0475f4;
     cursor: pointer;
+    /* z-index: 100011; */
 }
 
 

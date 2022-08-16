@@ -301,7 +301,7 @@ function createMarker(data) {
     let icon;
     let content;
     let type = data.category_group_name; //주소, 장소, 음식점-카페 등등
-    console.log(type);
+
     if(type === undefined) { // 주소일때
         icon = `<i class="fa-solid fa-location-dot"></i>`; 
         content = `<div class="marker-container">
@@ -350,13 +350,9 @@ function createMarker(data) {
     });
     
     markers.push(marker);
-    
-    marker.addListener("click", function (event) {
-        console.log("마커 클릭");
-    });
 }
 
-function 마커삭제() {
+function removeMarker() {
     markers.forEach(marker => {
         marker.setMap(null);
     });
@@ -389,9 +385,28 @@ function categorySearch(event) {
     let callback = function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
             console.log(result);
+            removeMarker();
             result.forEach(data => {
                 createMarker(data);
             })
+            console.log(markers);
+            
+            const markerList = document.querySelectorAll('.marker-container');
+            console.log(markers.length);
+            console.log(markerList.length);
+            
+            for(let i = 0; i < markerList.length; i++){
+                markerList[i].addEventListener('mouseenter', event => {
+                    console.log(event.currentTarget.parentNode);
+                    event.currentTarget.parentNode.style.zIndex = 10001;
+                })
+
+                markerList[i].addEventListener('mouseleave', event => {
+                    console.log(event.currentTarget.parentNode);
+                    event.currentTarget.parentNode.style.zIndex = 10000;
+                })
+            }
+            // markerList.parentNode.style.zIndex = 100000;
         }
     };
     // 공공기관 코드 검색, 찾은 placeList는 callback으로 전달한다.
@@ -399,6 +414,7 @@ function categorySearch(event) {
         location: location,
         size: SEARCH_DATA_LENGTH
     });
+
 }
 
 const categoryList = document.querySelectorAll('.category');
@@ -504,7 +520,7 @@ function search(keyword) {
         console.log(data);
         if (data[0].length !== 0) {
             panTo(data[0][0].y, data[0][0].x);
-            마커삭제();
+            removeMarker();
             data[0].forEach(data => {
                 console.log(data);
                 createMarker(data);
@@ -512,7 +528,7 @@ function search(keyword) {
         }
         else if (data[0].length === 0 && data[1].length !== 0 ) {
             panTo(data[1][0].y, data[1][0].x);
-            마커삭제();
+            removeMarker();
             data[1].forEach(data => {
                 console.log(data);
                 createMarker(data);
