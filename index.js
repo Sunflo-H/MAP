@@ -297,10 +297,11 @@ function pageSetting(result) {
 }
 
 function createMarker(data) {
+    
     let icon;
     let content;
     let type = data.category_group_name; //주소, 장소, 음식점-카페 등등
-    
+    console.log(type);
     if(type === undefined) { // 주소일때
         icon = `<i class="fa-solid fa-location-dot"></i>`; 
         content = `<div class="marker-container">
@@ -332,6 +333,7 @@ function createMarker(data) {
                         <div class="marker-point"></div>
                     </div>`;
     }
+
     // 좌표, 마커의 내용(정보), 타입 - 아이콘모양
     let marker = new Tmapv2.InfoWindow();
     
@@ -378,19 +380,18 @@ function getUserLocation() {
 function categorySearch(event) {
     console.log("카테고리를 눌렀습니다. 해당 카테고리로 주변 탐색을 실행합니다.");
     let places = new kakao.maps.services.Places();
-    let categoryCode = event.currentTarget.parentNode.getAttribute('data-categoryCode');
+    let categoryCode = event.currentTarget.getAttribute('data-categoryCode');
     let lat = map.getCenter()._lat;
     let lng = map.getCenter()._lng;
     let location = new kakao.maps.LatLng(lat, lng);
-
-    console.log("asd");
 
     // 카테고리 검색 결과를 받을 콜백 함수
     let callback = function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
             console.log(result);
-            createNumberMarker(result);
-            displaySearchList(result);
+            result.forEach(data => {
+                createMarker(data);
+            })
         }
     };
     // 공공기관 코드 검색, 찾은 placeList는 callback으로 전달한다.
