@@ -574,10 +574,10 @@ function setAutoComplete(data) {
     data.forEach(data => {
         console.log(data);
         let element = `<div class="autoComplete">
-                            <i class="fa-solid fa-location-dot"></i> 
-                            <span>${data}</span>
+                            <i class="fa-solid fa-location-dot"></i><span>${data}</span>
                         </div>`;
         searchList.insertAdjacentHTML('beforeend', element);
+        
     });
 }
 
@@ -607,7 +607,7 @@ function upKey() {
             else if (standardChild.previousElementSibling === null) {
                 standardChild = searchList.lastElementChild;
                 standardChild.classList.add('active');
-                searchInMap.value = standardChild.innerText;        
+                searchInMap.value = standardChild.innerText;
             }
 
             return;
@@ -617,6 +617,9 @@ function upKey() {
 
     standardChild = searchList.lastElementChild;
     standardChild.classList.add('active');
+    console.log(standardChild.innerText);
+    console.log(standardChild.innerHTML);
+    console.log(standardChild.textContent);
     searchInMap.value = standardChild.innerText;
 }
 
