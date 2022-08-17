@@ -268,8 +268,6 @@ body {
     overflow: scroll;
     overflow-x: hidden;
     margin-top: 10px;
-
-    /* border:1px solid red; */
 }
 
 .recommend-lists-container::-webkit-scrollbar {
@@ -342,6 +340,15 @@ body {
     margin-top: 20px;
     height: 300px;
 }
+
+.info-container {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 10px);
+    background-color: white;
+    box-sizing: border-box;
+}
+
 
 /* 지도 */
 .map-container {
@@ -624,6 +631,7 @@ body {
     font-size: 14px;   
     white-space: nowrap;
 }
+
 .marker-place-name {
     /* min-width: 180px; */
     font-size: 14px;   
@@ -651,14 +659,7 @@ body {
 .marker-container:hover {
     color: #0475f4;
     cursor: pointer;
-    /* z-index: 100011; */
 }
-
-
-
-
-
-
 
 /* 메뉴 컨텐츠의 닫기버튼 */
 .curve {

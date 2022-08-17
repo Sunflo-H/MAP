@@ -372,7 +372,19 @@ function getUserLocation() {
 
 // init();
 
-// 검색 - 카테고리
+
+
+// 검색 기능 모음
+const body = document.querySelector('body');
+const searchInMenu = document.querySelector('.searchContent .search-container input');
+const searchInMap = document.querySelector('.interaction-container .search-container input');
+const categoryList = document.querySelectorAll('.category');
+
+
+const searchListState = (stateCheck)();
+const autoCompleteState = (stateCheck)();
+const historyState = (stateCheck)();
+
 function categorySearch(event) {
     console.log("카테고리를 눌렀습니다. 해당 카테고리로 주변 탐색을 실행합니다.");
     let places = new kakao.maps.services.Places();
@@ -384,29 +396,11 @@ function categorySearch(event) {
     // 카테고리 검색 결과를 받을 콜백 함수
     let callback = function (result, status) {
         if (status === kakao.maps.services.Status.OK) {
-            console.log(result);
             removeMarker();
             result.forEach(data => {
                 createMarker(data);
             })
-            console.log(markers);
-            
-            const markerList = document.querySelectorAll('.marker-container');
-            console.log(markers.length);
-            console.log(markerList.length);
-            
-            for(let i = 0; i < markerList.length; i++){
-                markerList[i].addEventListener('mouseenter', event => {
-                    console.log(event.currentTarget.parentNode);
-                    event.currentTarget.parentNode.style.zIndex = 10001;
-                })
-
-                markerList[i].addEventListener('mouseleave', event => {
-                    console.log(event.currentTarget.parentNode);
-                    event.currentTarget.parentNode.style.zIndex = 10000;
-                })
-            }
-            // markerList.parentNode.style.zIndex = 100000;
+            setMarkerEvent();
         }
     };
     // 공공기관 코드 검색, 찾은 placeList는 callback으로 전달한다.
@@ -414,27 +408,35 @@ function categorySearch(event) {
         location: location,
         size: SEARCH_DATA_LENGTH
     });
-
 }
 
-const categoryList = document.querySelectorAll('.category');
-console.log(categoryList);
+function setMarkerEvent() {
+    const markerList = document.querySelectorAll('.marker-container');
+            
+    for(let i = 0; i < markerList.length; i++){
+        console.log(markerList[i]);
+        markerList[i].addEventListener('mouseenter', event => {
+            event.currentTarget.parentNode.style.zIndex = 10001;
+        })
+
+        markerList[i].addEventListener('mouseleave', event => {
+            event.currentTarget.parentNode.style.zIndex = 10000;
+        })
+        
+        markerList[i].addEventListener('click', event => {
+            let lat = markers[i].getPosition()._lat;
+            let lng = markers[i].getPosition()._lng;
+            panTo(lat, lng);
+        })
+    }
+}
+
 
 categoryList.forEach(category => {
     category.addEventListener('click', event => {
        categorySearch(event);
-    })
+    });
 });
-
-// 검색 기능 모음
-const body = document.querySelector('body');
-const searchInMenu = document.querySelector('.searchContent .search-container input');
-const searchInMap = document.querySelector('.interaction-container .search-container input');
-
-
-const searchListState = (stateCheck)();
-const autoCompleteState = (stateCheck)();
-const historyState = (stateCheck)();
 
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
@@ -524,7 +526,8 @@ function search(keyword) {
             data[0].forEach(data => {
                 console.log(data);
                 createMarker(data);
-            })
+            });
+            setMarkerEvent();
         }
         else if (data[0].length === 0 && data[1].length !== 0 ) {
             panTo(data[1][0].y, data[1][0].x);
@@ -532,7 +535,8 @@ function search(keyword) {
             data[1].forEach(data => {
                 console.log(data);
                 createMarker(data);
-            })
+            });
+            setMarkerEvent();
         }
         else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
             alert('검색 결과가 없습니다.');
