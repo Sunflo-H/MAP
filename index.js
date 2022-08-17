@@ -344,12 +344,48 @@ function createMarker(data) {
         border: '0px solid #ff0000', //Popup의 테두리 border 설정.
         type: 2, //Popup의 type 설정.
         align: 17,
-        background:false,
+        background: false,
         offset: new Tmapv2.Point(33, 5),
         map: map //Popup이 표시될 맵 객체
     });
     
-    markers.push(marker);
+    let marekrObj = {
+        marker: marker,
+        info: data
+    }
+    markers.push(marekrObj);
+    console.log(markers.length);
+    // 여기까지가 맵에 인포윈도우를 세팅했어
+    // infoWindow에는 이벤트 등록이 안돼서
+    // div에 이벤트를 등록할거야
+    // const markerDivs = document.querySelectorAll('.marker-container');
+
+    // for(let i = 0; i < markerDivs.length; i++){
+    //     if(i === markers.length - 1){
+    //         markerDivs[i].addEventListener('click', event => {
+    //                 let lat = markers[i].marker.getPosition()._lat;
+    //                 let lng = markers[i].marker.getPosition()._lng;
+    //                 panTo(lat, lng);
+    //                 console.log(markers[i].marker);
+    //                 console.log(markers[i].info);
+    //                 let content = `<div class="marker-container">
+    //                                 <div class="marker-icon">구구구</i></div>
+    //                                 <div class="marker-address">
+    //                                     <div class="marker-place-name">구구구</div>
+    //                                     <div class="marker-place-category">구구구</div>
+    //                                 </div>
+    //                                 <div class="marker-point"></div>
+    //                             </div>`;
+            
+    //                 marker.setContent(content);
+    //             });
+    //     }
+        
+    // }
+    
+    
+
+    console.log(markers[0] === marker);
 }
 
 function removeMarker() {
@@ -411,22 +447,33 @@ function categorySearch(event) {
 }
 
 function setMarkerEvent() {
-    const markerList = document.querySelectorAll('.marker-container');
+    const markerDivs = document.querySelectorAll('.marker-container');
             
-    for(let i = 0; i < markerList.length; i++){
-        console.log(markerList[i]);
-        markerList[i].addEventListener('mouseenter', event => {
+    for(let i = 0; i < markerDivs.length; i++){
+        markerDivs[i].addEventListener('mouseenter', event => {
             event.currentTarget.parentNode.style.zIndex = 10001;
         })
 
-        markerList[i].addEventListener('mouseleave', event => {
+        markerDivs[i].addEventListener('mouseleave', event => {
             event.currentTarget.parentNode.style.zIndex = 10000;
         })
         
-        markerList[i].addEventListener('click', event => {
-            let lat = markers[i].getPosition()._lat;
-            let lng = markers[i].getPosition()._lng;
+        markerDivs[i].addEventListener('click', event => {
+            let lat = markers[i].marker.getPosition()._lat;
+            let lng = markers[i].marker.getPosition()._lng;
             panTo(lat, lng);
+            console.log(markers[i].marker);
+            console.log(markers[i].info);
+            let content = `<div class="marker-container">
+                            <div class="marker-icon">구구구</i></div>
+                            <div class="marker-address">
+                                <div class="marker-place-name">구구구</div>
+                                <div class="marker-place-category">구구구</div>
+                            </div>
+                            <div class="marker-point"></div>
+                        </div>`;
+
+            markers[i].marker.setContent(content);
         })
     }
 }
