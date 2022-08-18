@@ -335,18 +335,18 @@ function createMarker(data) {
     }
 
     // 좌표, 마커의 내용(정보), 타입 - 아이콘모양
-    let marker = new Tmapv2.InfoWindow();
+
     
 
-    marker = new Tmapv2.InfoWindow({
-        position: new Tmapv2.LatLng(data.y, data.x), //Popup 이 표출될 맵 좌표
-        content: content, //Popup 표시될 text
-        border: '0px solid #ff0000', //Popup의 테두리 border 설정.
-        type: 2, //Popup의 type 설정.
-        align: 17,
-        background: false,
-        offset: new Tmapv2.Point(33, 5),
-        map: map //Popup이 표시될 맵 객체
+    let marker = new Tmapv2.InfoWindow({
+            position: new Tmapv2.LatLng(data.y, data.x), //Popup 이 표출될 맵 좌표
+            content: content, //Popup 표시될 text
+            border: '0px solid #ff0000', //Popup의 테두리 border 설정.
+            type: 2, //Popup의 type 설정.
+            align: 17,
+            background: false,
+            offset: new Tmapv2.Point(33, 5),
+            map: map //Popup이 표시될 맵 객체
     });
     
     let marekrObj = {
@@ -354,38 +354,7 @@ function createMarker(data) {
         info: data
     }
     markers.push(marekrObj);
-    console.log(markers.length);
-    // 여기까지가 맵에 인포윈도우를 세팅했어
-    // infoWindow에는 이벤트 등록이 안돼서
-    // div에 이벤트를 등록할거야
-    // const markerDivs = document.querySelectorAll('.marker-container');
-
-    // for(let i = 0; i < markerDivs.length; i++){
-    //     if(i === markers.length - 1){
-    //         markerDivs[i].addEventListener('click', event => {
-    //                 let lat = markers[i].marker.getPosition()._lat;
-    //                 let lng = markers[i].marker.getPosition()._lng;
-    //                 panTo(lat, lng);
-    //                 console.log(markers[i].marker);
-    //                 console.log(markers[i].info);
-    //                 let content = `<div class="marker-container">
-    //                                 <div class="marker-icon">구구구</i></div>
-    //                                 <div class="marker-address">
-    //                                     <div class="marker-place-name">구구구</div>
-    //                                     <div class="marker-place-category">구구구</div>
-    //                                 </div>
-    //                                 <div class="marker-point"></div>
-    //                             </div>`;
-            
-    //                 marker.setContent(content);
-    //             });
-    //     }
-        
-    // }
     
-    
-
-    console.log(markers[0] === marker);
 }
 
 function removeMarker() {
@@ -459,11 +428,11 @@ function setMarkerEvent() {
         })
         
         markerDivs[i].addEventListener('click', event => {
+            // 이름, 주소, 전화번호, 상세보기
             let lat = markers[i].marker.getPosition()._lat;
             let lng = markers[i].marker.getPosition()._lng;
-            panTo(lat, lng);
-            console.log(markers[i].marker);
             console.log(markers[i].info);
+            
             let content = `<div class="marker-container">
                             <div class="marker-icon">구구구</i></div>
                             <div class="marker-address">
@@ -474,6 +443,9 @@ function setMarkerEvent() {
                         </div>`;
 
             markers[i].marker.setContent(content);
+            
+            panTo(lat, lng);
+
         })
     }
 }
