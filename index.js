@@ -19,7 +19,6 @@ const menuCircles = document.querySelectorAll('.menu-container .menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
 const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
-const menuContentContainer = document.querySelector('.menuContent-container');
 
 // 전역변수
 let map;
@@ -334,10 +333,6 @@ function createMarker(data) {
                     </div>`;
     }
 
-    // 좌표, 마커의 내용(정보), 타입 - 아이콘모양
-
-    
-
     let marker = new Tmapv2.InfoWindow({
             position: new Tmapv2.LatLng(data.y, data.x), //Popup 이 표출될 맵 좌표
             content: content, //Popup 표시될 text
@@ -352,7 +347,8 @@ function createMarker(data) {
     let marekrObj = {
         marker: marker,
         info: data
-    }
+    };
+
     markers.push(marekrObj);
     
 }
@@ -431,23 +427,37 @@ function setMarkerEvent() {
             // 이름, 주소, 전화번호, 상세보기
             let lat = markers[i].marker.getPosition()._lat;
             let lng = markers[i].marker.getPosition()._lng;
-            console.log(markers[i].info);
-            
-            let content = `<div class="marker-container">
-                            <div class="marker-icon">구구구</i></div>
-                            <div class="marker-address">
-                                <div class="marker-place-name">구구구</div>
-                                <div class="marker-place-category">구구구</div>
-                            </div>
-                            <div class="marker-point"></div>
-                        </div>`;
-
-            markers[i].marker.setContent(content);
             
             panTo(lat, lng);
 
+            const menuContentContainer = document.querySelector('.menuContent-container');
+            const searchContent = menuContentContainer.querySelector('.searchContent');
+            const infoContainer = searchContent.querySelector('.info-container');
+            
+            console.log(searchContent);
+            menuContentContainer.classList.add("menuContent-container-active");
+            curve.classList.remove('hide');
+
+            setTimeout(() => {
+                curve.style.opacity = "1";
+                curve.style.transform = "translateX(-5px)";
+            }, 1);
+            searchContent.classList.remove('hide');
+            infoContainer.classList.remove('hide');
+            setInfoContainer(markers[i].info);
         })
     }
+}
+
+function setInfoContainer(data) {
+    const infoContainer = document.querySelector('.menuContent-container .searchContent .info-container');
+    console.log(infoContainer);
+    let imgSrc = "/assets/img/searchInfo/음식점(실사).jpg";
+    let element = `<img src=${imgSrc} width="200px" height="100px">`;
+
+    infoContainer.insertAdjacentHTML('beforeend', element);
+
+
 }
 
 
@@ -755,6 +765,7 @@ function downKey() {
 
 // 메뉴 컨텐츠의 닫기버튼(곡선)
 curvePath.addEventListener('click', () => {
+    const menuContentContainer = document.querySelector('.menuContent-container');
     menuContentContainer.classList.remove("menuContent-container-active");
     curve.style.transform = "translateX(5px)";
     curve.style.opacity = "0";
@@ -764,6 +775,7 @@ curvePath.addEventListener('click', () => {
 });
 
 curveI.addEventListener('click', () => {
+    const menuContentContainer = document.querySelector('.menuContent-container');
     menuContentContainer.classList.remove("menuContent-container-active");
     curve.style.transform = "translateX(5px)";
     curve.style.opacity = "0";
@@ -780,18 +792,26 @@ menuIcons.forEach((icon, index) => {
     });
 });
 
+/**
+ * 마커 클릭시 상세정보를 보여줘
+ * 보여주는 공간을 만드는건 했어 (infoContainer)
+ * 클릭시 메뉴의 검색 컨텐츠가 열리게 해야돼
+ */
+
 menuCircles.forEach(((circle, index) => {
     circle.addEventListener('click', () => {
-        menuContentContainer.classList.add("menuContent-container-active");
+        const menuContentContainer = document.querySelector('.menuContent-container');
         let searchContainer = menuContentContainer.querySelector('.search-container');
         let divs = document.querySelectorAll('.menuContent-container > div');
-
+        
+        menuContentContainer.classList.add("menuContent-container-active");
         curve.classList.remove('hide');
 
         setTimeout(() => {
             curve.style.opacity = "1";
             curve.style.transform = "translateX(-5px)";
         }, 1);
+
         for (let i = 0; i < divs.length; i++) {
             if (i === index) divs[i].classList.remove('hide');
             else divs[i].classList.add('hide');
