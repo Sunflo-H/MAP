@@ -433,8 +433,8 @@ function setMarkerEvent() {
             const menuContentContainer = document.querySelector('.menuContent-container');
             const searchContent = menuContentContainer.querySelector('.searchContent');
             const infoContainer = searchContent.querySelector('.info-container');
-            
-            console.log(searchContent);
+           
+
             menuContentContainer.classList.add("menuContent-container-active");
             curve.classList.remove('hide');
 
@@ -442,6 +442,7 @@ function setMarkerEvent() {
                 curve.style.opacity = "1";
                 curve.style.transform = "translateX(-5px)";
             }, 1);
+
             searchContent.classList.remove('hide');
             infoContainer.classList.remove('hide');
             setInfoContainer(markers[i].info);
@@ -451,9 +452,20 @@ function setMarkerEvent() {
 
 function setInfoContainer(data) {
     const infoContainer = document.querySelector('.menuContent-container .searchContent .info-container');
-    console.log(infoContainer);
+    let name = data.place_name,
+        addressName = data.address_name,
+        roadAddress = data.road_address_name,
+        category = data.category_group_name,
+        id = data.id,
+        url = data.place_url;
+
     let imgSrc = "/assets/img/searchInfo/음식점(실사).jpg";
-    let element = `<img src=${imgSrc} width="200px" height="100px">`;
+
+    let element = `<img class="infoImage" src=${imgSrc} width="100%" height="100px">
+                    <div class="infoName">${name}</div>
+                    <div class="infoCategory">${category}</div>
+    
+    `;
 
     infoContainer.insertAdjacentHTML('beforeend', element);
 
