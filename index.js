@@ -45,6 +45,21 @@ function stateCheck() {
     }
 }
 
+function valueCheck() {
+    let value;
+    let boolean;
+
+    return {
+        getValue: function (param) {
+            return value;
+        },
+        setValue: function (param) {
+            value = param;
+        }
+
+    }
+}
+
 function init() {
     getUserLocation()
         .then(data => {
@@ -216,44 +231,45 @@ function reverseGeocoding(lat, lng, type) {
 }
 
 function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
-    
-        reverseGeocoding(lat, lng, "dong")
-        .then(data => {
-            const locationAddress = document.querySelector('.location-address');
-            const citySpan = locationAddress.querySelector('.city');
-            const dongSpan = locationAddress.querySelector('.dong');
-            const recommendList = document.querySelector('.recommend-lists-container');
 
-            let region = data.v2.results[1].region.area1.name,
-                city = data.v2.results[1].region.area2.name,
-                dong = data.v2.results[1].region.area3.name;
+    reverseGeocoding(lat, lng, "dong")
+    .then(data => {
+        const locationAddress = document.querySelector('.location-address');
+        const citySpan = locationAddress.querySelector('.city');
+        const dongSpan = locationAddress.querySelector('.dong');
+        const recommendList = document.querySelector('.recommend-lists-container');
 
-            if(citySpan.innerText !== city) cityIsChange = true;
-            else cityIsChange = false;
+        let region = data.v2.results[1].region.area1.name,
+            city = data.v2.results[1].region.area2.name,
+            dong = data.v2.results[1].region.area3.name;
 
-            citySpan.innerText = city;
-            dongSpan.innerText = dong;
-            // setCurrentLocation();
-            // setHotRestaurant();
-            if(cityIsChange) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
-                
-                while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
-                
-                fetch('/data/restaurant/seoul.json')
-                .then(res => res.json())
-                .then(data => {
-                    let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
-                    restaurantList.forEach((restaurant) => {
-                        let element = `<div class="recommend-list-container">
-                                            <div><img src=${restaurant.img}></div>
-                                            <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
-                                            <div>${restaurant.추천사유}</div>
-                                        </div>`
-                        recommendList.insertAdjacentHTML('beforeend', element);
-                    })
+        if(citySpan.innerText !== city) cityIsChange = true;
+        else cityIsChange = false;
+
+        citySpan.innerText = city;
+        dongSpan.innerText = dong;
+        // setCurrentLocation();
+        // setHotRestaurant();
+        if(cityIsChange) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
+            
+            while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
+            
+            fetch('/data/restaurant/seoul.json')
+            .then(res => res.json())
+            .then(data => {
+                let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
+                restaurantList.forEach((restaurant) => {
+                    let element = `<div class="recommend-list-container">
+                                        <div><img src=${restaurant.img}></div>
+                                        <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
+                                        <div>${restaurant.추천사유}</div>
+                                    </div>`
+                    recommendList.insertAdjacentHTML('beforeend', element);
                 })
-            }
-        });
+            })
+        }
+    });
+    mapCenter = map.getCenter();
 }
 
 function displayMap(lat, lng) {
@@ -284,7 +300,6 @@ function pageSetting(result) {
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
         let lng = event.latLng._lng;
-        // console.log(reverseGeocoding(lat, lng));
     });
 
     map.addListener('mouseup', (event) => {
@@ -354,7 +369,6 @@ function createMarker(data) {
 }
 
 function removeMarker() {
-    console.log(markers);
     markers.forEach(data => {
         data.marker.setMap(null);
     });
@@ -450,11 +464,10 @@ function setMarkerEvent() {
         })
     }
 }
+const categoryValue = (valueCheck)();
 
 function setInfoContainer(data) {
     const infoContainer = document.querySelector('.menuContent-container .searchContent .info-container');
-    
-    while(infoContainer.hasChildNodes()) infoContainer.removeChild(infoContainer.firstChild);
 
     let name = data.place_name,
         addressName = data.address_name,
@@ -463,11 +476,50 @@ function setInfoContainer(data) {
         id = data.id,
         url = data.place_url;
 
-    let imgSrc = "/assets/img/searchInfo/카페(사람).jpg";
+    let imgSrc;
 
-    let element = `<img class="infoImage" src=${imgSrc} width="100%" height="100px">
+    switch(category) {
+        case "음식점" : imgSrc = "/assets/img/searchInfo/음식점(사람).jpg"; break; 
+        case "카페" : imgSrc = "/assets/img/searchInfo/카페(사람).jpg"; break; 
+        case "편의점" : imgSrc = "/assets/img/searchInfo/편의점(장소).jpg"; break; 
+        case "대형마트" : imgSrc = "/assets/img/searchInfo/음식점(요리사).jpg"; break; 
+        case "숙박" : imgSrc = "/assets/img/searchInfo/카페(사람).jpg"; break; 
+        case "주유소,충전소" : imgSrc = "/assets/img/searchInfo/주유소.jpg"; break; 
+        case "주차장" : imgSrc = "/assets/img/searchInfo/카페(사람).jpg"; break; 
+        case "문화시설" : imgSrc = "/assets/img/searchInfo/문화시설.jpg"; break; 
+        case "관광명소" : imgSrc = "/assets/img/searchInfo/관광명소.jpg"; break; 
+        case "병원" : imgSrc = "/assets/img/searchInfo/병원.jpg"; break; 
+        case "은행" : imgSrc = "/assets/img/searchInfo/은행.jpg"; break; 
+        case "약국" : imgSrc = "/assets/img/searchInfo/약국.jpg"; break; 
+    }
+
+    let imgElement = `<div class="img-container">
+                        <img class="infoImage" src=${imgSrc}>
+                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                        </div>`
+
+    let element = `<div class="info-box">
                     <div class="infoName">${name}</div>
-                    <div class="infoCategory">${category}</div>`;
+                    <div class="infoCategory">${category}</div>
+                   </div>`;
+
+    if(categoryValue.getValue() === undefined) {
+        while(infoContainer.hasChildNodes()) infoContainer.removeChild(infoContainer.firstChild);
+        categoryValue.setValue(category);
+        infoContainer.insertAdjacentHTML('beforeend', imgElement);
+    }
+    else {
+        if(categoryValue.getValue() !== category) {
+            while(infoContainer.hasChildNodes()) infoContainer.removeChild(infoContainer.firstChild);
+            categoryValue.setValue(category);
+            infoContainer.insertAdjacentHTML('beforeend', imgElement);
+        }
+        else if(categoryValue.getValue() === category) {
+            console.log("실행됌");
+            const infoBox = infoContainer.querySelector('.info-box');
+            infoBox.remove();
+        }
+    }
 
     infoContainer.insertAdjacentHTML('beforeend', element);
 }
