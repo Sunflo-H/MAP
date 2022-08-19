@@ -354,8 +354,9 @@ function createMarker(data) {
 }
 
 function removeMarker() {
-    markers.forEach(marker => {
-        marker.setMap(null);
+    console.log(markers);
+    markers.forEach(data => {
+        data.marker.setMap(null);
     });
     markers = [];
 }
@@ -452,6 +453,9 @@ function setMarkerEvent() {
 
 function setInfoContainer(data) {
     const infoContainer = document.querySelector('.menuContent-container .searchContent .info-container');
+    
+    while(infoContainer.hasChildNodes()) infoContainer.removeChild(infoContainer.firstChild);
+
     let name = data.place_name,
         addressName = data.address_name,
         roadAddress = data.road_address_name,
@@ -459,17 +463,13 @@ function setInfoContainer(data) {
         id = data.id,
         url = data.place_url;
 
-    let imgSrc = "/assets/img/searchInfo/음식점(실사).jpg";
+    let imgSrc = "/assets/img/searchInfo/카페(사람).jpg";
 
     let element = `<img class="infoImage" src=${imgSrc} width="100%" height="100px">
                     <div class="infoName">${name}</div>
-                    <div class="infoCategory">${category}</div>
-    
-    `;
+                    <div class="infoCategory">${category}</div>`;
 
     infoContainer.insertAdjacentHTML('beforeend', element);
-
-
 }
 
 
