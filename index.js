@@ -47,7 +47,6 @@ function stateCheck() {
 
 function valueCheck() {
     let value;
-    let boolean;
 
     return {
         getValue: function (param) {
@@ -477,51 +476,77 @@ function setInfoContainer(data) {
         url = data.place_url;
 
     let imgSrc;
+    let imgElement
+
+    // 이미지 없는거
+    // 편의점, 마트 , 주차장
 
     switch(category) {
         case "음식점" : imgSrc = "/assets/img/searchInfo/음식점(사람).jpg"; break; 
         case "카페" : imgSrc = "/assets/img/searchInfo/카페(사람).jpg"; break; 
         case "편의점" : imgSrc = "/assets/img/searchInfo/편의점(장소).jpg"; break; 
-        case "대형마트" : imgSrc = "/assets/img/searchInfo/음식점(요리사).jpg"; break; 
-        case "숙박" : imgSrc = "/assets/img/searchInfo/카페(사람).jpg"; break; 
+        case "대형마트" : imgSrc = "/assets/img/searchInfo/음식점(사람2).jpg"; break; 
+        case "숙박" : imgSrc = "/assets/img/searchInfo/숙박.jpg"; break; 
         case "주유소,충전소" : imgSrc = "/assets/img/searchInfo/주유소.jpg"; break; 
         case "주차장" : imgSrc = "/assets/img/searchInfo/카페(사람).jpg"; break; 
         case "문화시설" : imgSrc = "/assets/img/searchInfo/문화시설.jpg"; break; 
         case "관광명소" : imgSrc = "/assets/img/searchInfo/관광명소.jpg"; break; 
         case "병원" : imgSrc = "/assets/img/searchInfo/병원.jpg"; break; 
         case "은행" : imgSrc = "/assets/img/searchInfo/은행.jpg"; break; 
-        case "약국" : imgSrc = "/assets/img/searchInfo/약국.jpg"; break; 
+        case "약국" : imgSrc = "/assets/img/searchInfo/_약국.jpg"; break; 
     }
 
-    let imgElement = `<div class="img-container">
-                        <img class="infoImage" src=${imgSrc}>
-                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
-                        </div>`
+    switch(category) {
+        case "음식점" :  
+        case "숙박" : 
+        case "주유소,충전소" : 
+        case "관광명소" : 
+        case "은행" : imgElement = `<div class="img-container">
+                                        <img class="infoImage size" src=${imgSrc}>
+                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                    </div>`;
+                      break;
+        
+        case "카페" : 
+        case "편의점" : 
+        case "대형마트" : 
+        case "주차장" : 
+        case "문화시설" : 
+        case "병원" : 
+        case "약국" : imgElement = `<div class="img-container">
+                                        <img class="infoImage" src=${imgSrc}>
+                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                    </div>`;
+                      break;
+
+    }
+
+    // let imgElement = `<div class="img-container">
+    //                     <img class="infoImage" src=${imgSrc}>
+    //                     <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+    //                     </div>`
 
     let element = `<div class="info-box">
                     <div class="infoName">${name}</div>
                     <div class="infoCategory">${category}</div>
                    </div>`;
 
-    if(categoryValue.getValue() === undefined) {
+    if(categoryValue.getValue() !== category) {
         while(infoContainer.hasChildNodes()) infoContainer.removeChild(infoContainer.firstChild);
         categoryValue.setValue(category);
         infoContainer.insertAdjacentHTML('beforeend', imgElement);
     }
-    else {
-        if(categoryValue.getValue() !== category) {
-            while(infoContainer.hasChildNodes()) infoContainer.removeChild(infoContainer.firstChild);
-            categoryValue.setValue(category);
-            infoContainer.insertAdjacentHTML('beforeend', imgElement);
-        }
-        else if(categoryValue.getValue() === category) {
-            console.log("실행됌");
-            const infoBox = infoContainer.querySelector('.info-box');
-            infoBox.remove();
-        }
+    else if(categoryValue.getValue() === category) {
+        const infoBox = infoContainer.querySelector('.info-box');
+        infoBox.remove();
     }
 
     infoContainer.insertAdjacentHTML('beforeend', element);
+
+    const button = infoContainer.querySelector('.button');
+    button.addEventListener('click', event => {
+        infoContainer.classList.add('hide');
+    })
 }
 
 
