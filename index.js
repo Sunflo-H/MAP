@@ -500,42 +500,49 @@ function setInfoContainer(data) {
         case "주유소,충전소" : 
         case "관광명소" : 
         case "은행" : imgElement = `<div class="img-container">
-                                        <img class="infoImage height" src=${imgSrc}>
-                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                        <img class="infoImage height120" src=${imgSrc}>
+                                        <div class="img-cover1"></div>
+                                        <div class="img-cover2">
+                                            <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                        </div>
                                     </div>`;
                       break;
+        case "편의점" : 
         case "주차장" : imgElement = `<div class="img-container">
                                             <img class="infoImage scale12" src=${imgSrc}>
-                                            <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                            <div class="img-cover1"></div>
+                                            <div class="img-cover2">
+                                                <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                            </div>
                                         </div>`;
                           break;
 
         case "대형마트" : 
         case "숙박" : imgElement = `<div class="img-container">
                                         <img class="infoImage height scale10" src=${imgSrc}>
-                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                        <div class="img-cover1"></div>
+                                        <div class="img-cover2">
+                                            <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                        </div>
                                     </div>`;
                     break;
         case "카페" : 
-        case "편의점" : 
+        
         case "문화시설" : 
         case "병원" : 
         case "약국" : imgElement = `<div class="img-container">
                                         <img class="infoImage" src=${imgSrc}>
-                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                        <div class="img-cover1"></div>
+                                        <div class="img-cover2">
+                                            <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                        </div>
                                     </div>`;
                       break;
-
     }
 
-    // let imgElement = `<div class="img-container">
-    //                     <img class="infoImage" src=${imgSrc}>
-    //                     <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
-    //                     </div>`
-
-    let element = `<div class="info-box">
-                    <div class="infoName">${name}</div>
-                    <div class="infoCategory">${category}</div>
+    let element = `<div class="detail-container">
+                    <div class="name">${name}</div>
+                    <div class="category">${category}</div>
                    </div>`;
 
     if(categoryValue.getValue() !== category) {
