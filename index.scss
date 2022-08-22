@@ -57,8 +57,7 @@ main {
     display: flex;
 }
 
-/* 메뉴 카테고리들 */
-
+/* 좌측 메뉴바 */
 .menuBar {
     width: 100px;
     height: 100%;
@@ -101,6 +100,11 @@ main {
         background-color: var(--sub);
     }
 
+    .menu-circle:hover {
+        background-color: var(--customGreen);
+        cursor: pointer;
+    }
+
     .menu-name {
         width: 100%;
         height: 20px;
@@ -116,15 +120,10 @@ main {
     .login-icon {
         color: white;
     }
-    
-    .menu-circle:hover {
-        background-color: var(--customGreen);
-        cursor: pointer;
-    }
+
 }
 
-/* 메뉴의 컨텐츠 */
-
+/* 메뉴바의 카테고리 클릭시 보여지는 컨텐츠 */
 .menuContent-container {
     position: absolute;
     top: 0px;
@@ -135,7 +134,7 @@ main {
     z-index: 2;
     transition-duration: 0.2s;
 
-    >div {
+    >.content-container {
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -143,102 +142,100 @@ main {
         padding-top: 10px;
         box-sizing: border-box;
     }
-}
 
-/* 검색 컨텐츠 - 검색바  */
+    /* 검색 컨텐츠 - 검색바  */
+    .searchContent {
+        .search-container {
+            height: 22px;
+            border: 2px solid var(--customGreen);
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 0px 10px;
 
-.searchContent {
-    .search-container {
-        height: 22px;
-        border: 2px solid var(--customGreen);
-        border-radius: 5px;
-        padding: 5px 10px;
-        margin: 0px 10px;
+            .icon-container {
+                display: inline-block;
+                height: 100%;
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--customGreen);
+            }
 
-        div {
-            display: inline-block;
-            height: 100%;
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--customGreen);
+            label:hover {
+                cursor: pointer;
+            }
+            
+            input {
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 170px;
+                height: 100%;
+                border: none;
+                outline: none;
+                font-weight: bold;
+            }
         }
 
-        label:hover {
-            cursor: pointer;
+        .location-container {
+            height: 58px;
+            padding: 5px 10px;
+            margin: 10px 10px 0px;
         }
 
-        input {
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 170px;
-            height: 100%;
-            border: none;
-            outline: none;
+        .location-wrapper {
+            display: flex;
+            height: 22px;
+            overflow: hidden;
+        }
+
+        .location-address {
+            font-family: 'Noto Sans KR', sans-serif;
             font-weight: bold;
+            font-size: 18px;
+            color: #333;
         }
 
+        .location-weather {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            font-weight: bold;
 
+            .temp {
+                font-size: 15px;
+                margin-left: 4px;
+            }
+        }
 
-    }
+        .location-dust {
+            flex-grow: 1;
+            height: 40px;
+            overflow: hidden;
+            margin-left: 7px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: bold;
+            transition-duration: 1s;
 
-    .location-container {
-        height: 58px;
-        padding: 5px 10px;
-        margin: 10px 10px 0px;
-    }
+            &.up {
+                transform: translateY(-20px);
+            }
+        }
 
-    .location-wrapper {
-        display: flex;
-        height: 22px;
-        overflow: hidden;
-    }
+        .dust {
+            text-align: center;
+            margin: auto;
+            font-size: 14px;
+        }
 
-    .location-address {
-        font-family: 'Noto Sans KR', sans-serif;
-        font-weight: bold;
-        font-size: 18px;
-        color: #333;
-    }
-
-    .location-weather {
-        font-family: 'Noto Sans KR', sans-serif;
-        font-size: 14px;
-        font-weight: bold;
-
-        .temp {
+        .rate {
             font-size: 15px;
-            margin-left: 4px;
+            font-weight: bold;
+            margin-left: 5px;
         }
-    }
-
-    .location-dust {
-        flex-grow: 1;
-        height: 40px;
-        overflow: hidden;
-        margin-left: 7px;
-        font-family: 'Noto Sans KR', sans-serif;
-        font-weight: bold;
-        transition-duration: 1s;
-
-        &.up {
-            transform: translateY(-20px);
-        }
-    }
-
-    .dust {
-        text-align: center;
-        margin: auto;
-        font-size: 14px;
-    }
-
-    .rate {
-        font-size: 15px;
-        font-weight: bold;
-        margin-left: 5px;
     }
 }
+
+
 
 /* 검색 컨텐츠 - 지역 정보 */
 

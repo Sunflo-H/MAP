@@ -57,7 +57,7 @@ main {
   display: flex;
 }
 
-/* 메뉴 카테고리들 */
+/* 좌측 메뉴바 */
 .menuBar {
   width: 100px;
   height: 100%;
@@ -95,6 +95,10 @@ main {
   box-sizing: border-box;
   background-color: var(--sub);
 }
+.menuBar .menu-circle:hover {
+  background-color: var(--customGreen);
+  cursor: pointer;
+}
 .menuBar .menu-name {
   width: 100%;
   height: 20px;
@@ -108,12 +112,8 @@ main {
 .menuBar .login-icon {
   color: white;
 }
-.menuBar .menu-circle:hover {
-  background-color: var(--customGreen);
-  cursor: pointer;
-}
 
-/* 메뉴의 컨텐츠 */
+/* 메뉴바의 카테고리 클릭시 보여지는 컨텐츠 */
 .menuContent-container {
   position: absolute;
   top: 0px;
@@ -123,8 +123,9 @@ main {
   background-color: white;
   z-index: 2;
   transition-duration: 0.2s;
+  /* 검색 컨텐츠 - 검색바  */
 }
-.menuContent-container > div {
+.menuContent-container > .content-container {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -132,16 +133,14 @@ main {
   padding-top: 10px;
   box-sizing: border-box;
 }
-
-/* 검색 컨텐츠 - 검색바  */
-.searchContent .search-container {
+.menuContent-container .searchContent .search-container {
   height: 22px;
   border: 2px solid var(--customGreen);
   border-radius: 5px;
   padding: 5px 10px;
   margin: 0px 10px;
 }
-.searchContent .search-container div {
+.menuContent-container .searchContent .search-container .icon-container {
   display: inline-block;
   height: 100%;
   position: relative;
@@ -149,10 +148,10 @@ main {
   transform: translateY(-50%);
   color: var(--customGreen);
 }
-.searchContent .search-container label:hover {
+.menuContent-container .searchContent .search-container label:hover {
   cursor: pointer;
 }
-.searchContent .search-container input {
+.menuContent-container .searchContent .search-container input {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
@@ -162,32 +161,32 @@ main {
   outline: none;
   font-weight: bold;
 }
-.searchContent .location-container {
+.menuContent-container .searchContent .location-container {
   height: 58px;
   padding: 5px 10px;
   margin: 10px 10px 0px;
 }
-.searchContent .location-wrapper {
+.menuContent-container .searchContent .location-wrapper {
   display: flex;
   height: 22px;
   overflow: hidden;
 }
-.searchContent .location-address {
+.menuContent-container .searchContent .location-address {
   font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
   font-size: 18px;
   color: #333;
 }
-.searchContent .location-weather {
+.menuContent-container .searchContent .location-weather {
   font-family: "Noto Sans KR", sans-serif;
   font-size: 14px;
   font-weight: bold;
 }
-.searchContent .location-weather .temp {
+.menuContent-container .searchContent .location-weather .temp {
   font-size: 15px;
   margin-left: 4px;
 }
-.searchContent .location-dust {
+.menuContent-container .searchContent .location-dust {
   flex-grow: 1;
   height: 40px;
   overflow: hidden;
@@ -196,15 +195,15 @@ main {
   font-weight: bold;
   transition-duration: 1s;
 }
-.searchContent .location-dust.up {
+.menuContent-container .searchContent .location-dust.up {
   transform: translateY(-20px);
 }
-.searchContent .dust {
+.menuContent-container .searchContent .dust {
   text-align: center;
   margin: auto;
   font-size: 14px;
 }
-.searchContent .rate {
+.menuContent-container .searchContent .rate {
   font-size: 15px;
   font-weight: bold;
   margin-left: 5px;
