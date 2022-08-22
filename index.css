@@ -1,14 +1,14 @@
 @charset "UTF-8";
 :root {
-  --naverGreen:#2DB400;
-  --customGreen:#36ee48;
-  --cacaoBlue:#258fff;
-  --customBlue:#004eff;
-  --seoulBlue:#558BCF;
-  --azure:#0099ff;
-  --grayBlue:#eceef9;
-  --main:#252f62;
-  --sub:#1b2251;
+  --naverGreen: #2DB400;
+  --customGreen: #36ee48;
+  --cacaoBlue: #258fff;
+  --customBlue: #004eff;
+  --seoulBlue: #558BCF;
+  --azure: #0099ff;
+  --grayBlue: #eceef9;
+  --main: #252f62;
+  --sub: #1b2251;
 }
 
 .hide {
@@ -51,43 +51,40 @@ body {
 }
 
 /* 메인 */
-.main-wrapper {
+main {
   width: 100%;
   height: 100%;
   display: flex;
 }
 
 /* 메뉴 카테고리들 */
-.menu-wrapper {
+.menuBar {
   width: 100px;
   height: 100%;
   box-sizing: border-box;
   background-color: var(--main);
   z-index: 3;
 }
-
-.menu-container {
+.menuBar .menu-category-container {
   width: 100%;
   list-style-type: none;
   padding: 0px;
   margin-top: 100px;
 }
-.menu-container li {
+.menuBar .menu-category-container li {
   color: white;
   margin-top: 30px;
 }
-.menu-container li:first-child {
+.menuBar .menu-category-container li:first-child {
   margin-top: 0px;
 }
-
-.menu-icon {
+.menuBar .menu-icon {
   width: 40px;
   height: 50px;
   margin: 0px auto;
   box-sizing: border-box;
 }
-
-.menu-circle {
+.menuBar .menu-circle {
   width: 40px;
   height: 40px;
   margin: 5px auto;
@@ -98,24 +95,20 @@ body {
   box-sizing: border-box;
   background-color: var(--sub);
 }
-
-.menu-name {
+.menuBar .menu-name {
   width: 100%;
   height: 20px;
   text-align: center;
   font-size: 14px;
   font-weight: bold;
 }
-
-.login-container {
+.menuBar .login-container {
   margin-top: 100px;
 }
-
-.login-icon {
+.menuBar .login-icon {
   color: white;
 }
-
-.menu-circle:hover {
+.menuBar .menu-circle:hover {
   background-color: var(--customGreen);
   cursor: pointer;
 }
@@ -460,21 +453,25 @@ body {
 }
 
 /* history, autoComplete는 나중에 합쳐도 되면 합치자. */
-.history, .autoComplete {
+.history,
+.autoComplete {
   padding-left: 20px;
   padding-bottom: 5px;
   padding-top: 5px;
 }
-.history i, .autoComplete i {
+.history i,
+.autoComplete i {
   color: var(--main);
   font-size: 14px;
 }
-.history span, .autoComplete span {
+.history span,
+.autoComplete span {
   padding-left: 5px;
   font-size: 14px;
   font-family: "Noto Sans KR", sans-serif;
 }
-.history:hover, .autoComplete:hover {
+.history:hover,
+.autoComplete:hover {
   background-color: rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
@@ -484,7 +481,7 @@ body {
 }
 
 /* 상호작용 중 검색카테고리 */
-.category-container {
+.interaction-container .category-container {
   position: relative;
   display: flex;
   height: 100%;
@@ -680,3 +677,5 @@ path {
 path:hover {
   cursor: pointer;
 }
+
+/*# sourceMappingURL=index.css.map */

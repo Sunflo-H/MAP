@@ -15,7 +15,7 @@ const curve = document.querySelector('.curve');
 const curvePath = document.querySelector('.curve path');
 const curveI = document.querySelector('.curve i');
 const menuIcons = document.querySelectorAll('.menu-icon');
-const menuCircles = document.querySelectorAll('.menu-container .menu-circle');
+const menuCircles = document.querySelectorAll('.menu-category-container .menu-circle');
 const menuI = document.querySelectorAll('.menu-circle span');
 const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
@@ -188,7 +188,11 @@ function getWeather(lat, lng) {
         })
     
 }
-
+/**
+ * 주소를 입력하면 좌표를 반환한다.
+ * @param {*} address 
+ * @returns 
+ */
 function geocoding(address) {
     return new Promise(resolve => {
         let callback = (status, response) => {
@@ -201,6 +205,15 @@ function geocoding(address) {
     })
 }
 
+/**
+ * 좌표와 타입을 입력하여 주소정보를 받아온다.
+ * @param {*} lat 위도 
+ * @param {*} lng 경도
+ * @param {*} type 빈칸 : 지번까지 얻지만 동은 구체적이지 않다. 
+ *               "dong" : 지번은 얻을 수 없지만 1동, 2동, 3동 등 구체적인 동 데이터를 얻는다.
+ * 
+ * @returns type에 따라 Promise로 값을 리턴
+ */
 function reverseGeocoding(lat, lng, type) {
     return new Promise(resolve => {
         let coords = new naver.maps.LatLng(lat, lng);
@@ -270,7 +283,11 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
     });
     mapCenter = map.getCenter();
 }
-
+/**
+ * 지도를 만들고, 첫 위치를 좌표로 정한다. 
+ * @param {*} lat 위도
+ * @param {*} lng 경도
+ */
 function displayMap(lat, lng) {
     const mapDiv = document.querySelector('.map');
     const center = new Tmapv2.LatLng(lat, lng); 
@@ -465,6 +482,10 @@ function setMarkerEvent() {
 }
 const categoryValue = (valueCheck)();
 
+/**
+ * 
+ * @param {*} data 
+ */
 function setInfoContainer(data) {
     const infoContainer = document.querySelector('.menuContent-container .searchContent .info-container');
 
