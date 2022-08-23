@@ -137,6 +137,7 @@ main {
   /* 검색 컨텐츠 - 검색바  */
   /* 검색 컨텐츠 - 지역 정보  */
   /* 검색 컨텐츠 - 맛집, 검색한 정보 */
+  /* 클릭한 장소의 상세한 정보 */
 }
 .menuContent-container .searchContent .search-container {
   height: 22px;
@@ -218,6 +219,7 @@ main {
   overflow: hidden;
   margin-left: 10px;
   box-sizing: border-box;
+  /* 맛집 */
 }
 .menuContent-container .searchContent .recommendAndResult-container .recommend-container {
   height: 100%;
@@ -309,9 +311,7 @@ main {
   margin-top: 20px;
   height: 300px;
 }
-
-/* 클릭한 장소의 상세한 정보 */
-.info-container {
+.menuContent-container .searchContent .placeInfo-container {
   position: absolute;
   top: 60px;
   left: 260px;
@@ -323,18 +323,18 @@ main {
   box-sizing: border-box;
   overflow: hidden;
 }
-.info-container .img-container {
+.menuContent-container .searchContent .placeInfo-container .img-container {
   position: relative;
   width: 100%;
   height: 100px;
   overflow: hidden;
 }
-.info-container .img-container img {
+.menuContent-container .searchContent .placeInfo-container .img-container img {
   width: 100%;
   height: 100%;
   transform: scale(1.3);
 }
-.info-container .img-container .img-cover1 {
+.menuContent-container .searchContent .placeInfo-container .img-container .img-cover1 {
   position: absolute;
   top: 0;
   left: 0;
@@ -343,14 +343,14 @@ main {
   background-color: var(--customBlue);
   opacity: 0.1;
 }
-.info-container .img-container .img-cover2 {
+.menuContent-container .searchContent .placeInfo-container .img-container .img-cover2 {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
-.info-container .img-container .img-cover2 .button {
+.menuContent-container .searchContent .placeInfo-container .img-container .img-cover2 .button {
   position: absolute;
   top: 0;
   right: 0;
@@ -361,18 +361,18 @@ main {
   margin-right: 10px;
   margin-top: 10px;
 }
-.info-container .img-container .img-cover2 .button span {
+.menuContent-container .searchContent .placeInfo-container .img-container .img-cover2 .button span {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 20px;
 }
-.info-container .img-container .img-cover2 .button:hover {
+.menuContent-container .searchContent .placeInfo-container .img-container .img-cover2 .button:hover {
   cursor: pointer;
   background-color: #f5f5f5;
 }
-.info-container .detail-container {
+.menuContent-container .searchContent .placeInfo-container .detail-container {
   width: 100%;
   height: 100%;
   border: 1px solid red;

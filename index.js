@@ -468,7 +468,7 @@ function setMarkerEvent() {
 
             const menuContentContainer = document.querySelector('.menuContent-container');
             const searchContent = menuContentContainer.querySelector('.searchContent');
-            const infoContainer = searchContent.querySelector('.info-container');
+            const infoContainer = searchContent.querySelector('.placeInfo-container');
            
 
             menuContentContainer.classList.add("menuContent-container-active");
@@ -485,6 +485,7 @@ function setMarkerEvent() {
         })
     }
 }
+
 const categoryValue = (valueCheck)();
 
 /**
@@ -492,7 +493,7 @@ const categoryValue = (valueCheck)();
  * @param {*} data 
  */
 function setInfoContainer(data) {
-    const infoContainer = document.querySelector('.menuContent-container .searchContent .info-container');
+    const infoContainer = document.querySelector('.menuContent-container .searchContent .placeInfo-container');
 
     let name = data.place_name,
         addressName = data.address_name,
@@ -504,6 +505,7 @@ function setInfoContainer(data) {
     let imgSrc;
     let imgElement
 
+    // 카테고리별 이미지 src
     switch(category) {
         case "음식점" : imgSrc = "/assets/img/searchInfo/음식점(요리사)s.jpg"; break; 
         case "카페" : imgSrc = "/assets/img/searchInfo/카페(사람)s.jpg"; break; 
@@ -519,7 +521,7 @@ function setInfoContainer(data) {
         case "약국" : imgSrc = "/assets/img/searchInfo/약국s.jpg"; break; 
     }
 
-    // 마트, 숙박, 주차장
+    // 이미지의 높이, 스케일 조절
     switch(category) {
         case "음식점" :  
         case "숙박" : 
