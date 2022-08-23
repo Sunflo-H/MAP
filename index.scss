@@ -143,8 +143,10 @@ main {
         box-sizing: border-box;
     }
 
-    /* 검색 컨텐츠 - 검색바  */
+    /* 검색 컨텐츠 */
     .searchContent {
+
+        /* 검색 컨텐츠 - 검색바  */
         .search-container {
             height: 22px;
             border: 2px solid var(--customGreen);
@@ -164,7 +166,7 @@ main {
             label:hover {
                 cursor: pointer;
             }
-            
+
             input {
                 position: relative;
                 top: 50%;
@@ -176,185 +178,184 @@ main {
                 font-weight: bold;
             }
         }
-
+        /* 검색 컨텐츠 - 지역 정보  */
         .location-container {
             height: 58px;
             padding: 5px 10px;
             margin: 10px 10px 0px;
+
+            .address-container {
+                font-family: 'Noto Sans KR', sans-serif;
+                font-weight: bold;
+                font-size: 18px;
+                color: #333;
+            }
+
+            .weather-container {
+                display: flex;
+                height: 22px;
+                overflow: hidden;
+
+                .weatherAndTemp-container {
+                    font-family: 'Noto Sans KR', sans-serif;
+                    font-size: 14px;
+                    font-weight: bold;
+        
+                    .temp {
+                        font-size: 15px;
+                        margin-left: 4px;
+                    }
+                }
+        
+                .dust-container {
+                    flex-grow: 1;
+                    height: 40px;
+                    overflow: hidden;
+                    margin-left: 7px;
+                    font-family: 'Noto Sans KR', sans-serif;
+                    font-weight: bold;
+                    transition-duration: 1s;
+        
+                    &.up {
+                        transform: translateY(-20px);
+                    }
+
+                    .dust {
+                        text-align: center;
+                        margin: auto;
+                        font-size: 14px;
+                    }
+
+                    .rate {
+                        font-size: 15px;
+                        font-weight: bold;
+                        margin-left: 5px;
+                    }
+                }
+            }
         }
 
-        .location-wrapper {
-            display: flex;
-            height: 22px;
+        /* 검색 컨텐츠 - 맛집, 검색한 정보 */
+        .recommendAndResult-container {
+            height: calc(100% - 100px);
             overflow: hidden;
+            margin-left: 10px;
         }
 
-        .location-address {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-weight: bold;
-            font-size: 18px;
-            color: #333;
-        }
+        .recommend-container {
+            height: 100%;
+            box-sizing: border-box;
+            margin-left: 10px;
 
-        .location-weather {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 14px;
-            font-weight: bold;
+            .border {
+                display: flex;
+                height: 20px;
+                margin-right: 10px;
 
-            .temp {
-                font-size: 15px;
-                margin-left: 4px;
+                span {
+                    font-size: 14px;
+                    font-weight: bold;
+                    font-family: 'Noto Sans KR', sans-serif;
+
+                    span {
+                        font-size: 14px;
+                        color: black;
+                        margin-left: 2px;
+                    }
+                }
+
+                div {
+                    flex-grow: 1;
+                    height: 0px;
+                    border-top: 2px solid black;
+                    margin-top: 10px;
+                    margin-left: 5px;
+                }
+            }
+
+            .recommend-lists-container {
+                height: calc(100% - 23px);
+                overflow: scroll;
+                overflow-x: hidden;
+                margin-top: 10px;
+    
+                &::-webkit-scrollbar {
+                    width: 5px;
+                }
+    
+                &::-webkit-scrollbar-thumb {
+                    background-color: #c4c6c8;
+                    border-radius: 10px;
+                }
+    
+                &::-webkit-scrollbar-track {
+                    background-color: #e9ecef;
+                }
+    
+                .recommend-list-container:first-child {
+                    margin-top: 5px;
+                }
+            }
+    
+            .recommend-list-container {
+                height: 210px;
+                padding-right: 15px;
+                margin-top: 20px;
+    
+                &:hover {
+                    cursor: pointer;
+                }
+    
+                div:first-child {
+                    width: 100%;
+                    height: 150px;
+                    border-radius: 10px;
+                    overflow: hidden;
+                }
+    
+                img {
+                    width: 100%;
+                    height: 100%;
+                    transition-duration: 0.5s;
+    
+                    &:hover {
+                        transform: scale(1.1);
+                    }
+                }
+    
+                div {
+                    &:nth-child(2) {
+                        color: #0475f4;
+                        font-family: 'Noto Sans KR', sans-serif;
+                        font-weight: bold;
+    
+                        span {
+                            color: rgba(0, 0, 0, 0.548);
+                            font-size: 14px;
+                        }
+                    }
+    
+                    &:last-child {
+                        font-size: 12px;
+                        margin-top: 5px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                }
             }
         }
 
-        .location-dust {
-            flex-grow: 1;
-            height: 40px;
-            overflow: hidden;
-            margin-left: 7px;
-            font-family: 'Noto Sans KR', sans-serif;
-            font-weight: bold;
-            transition-duration: 1s;
+        
 
-            &.up {
-                transform: translateY(-20px);
-            }
-        }
-
-        .dust {
-            text-align: center;
-            margin: auto;
-            font-size: 14px;
-        }
-
-        .rate {
-            font-size: 15px;
-            font-weight: bold;
-            margin-left: 5px;
+        .result-container {
+            margin-top: 20px;
+            height: 300px;
         }
     }
 }
 
 
-
-/* 검색 컨텐츠 - 지역 정보 */
-
-/* 검색 컨텐츠 - 맛집, 검색한 정보 */
-
-.searchResult-container {
-    height: calc(100% - 100px);
-    overflow: hidden;
-    margin-left: 10px;
-}
-
-.recommend-container {
-    height: 100%;
-    box-sizing: border-box;
-    margin-left: 10px;
-
-    .border {
-        display: flex;
-        height: 20px;
-        margin-right: 10px;
-
-        span {
-            font-size: 14px;
-            font-weight: bold;
-            font-family: 'Noto Sans KR', sans-serif;
-
-            span {
-                font-size: 14px;
-                color: black;
-                margin-left: 2px;
-            }
-        }
-
-        div {
-            flex-grow: 1;
-            height: 0px;
-            border-top: 2px solid black;
-            margin-top: 10px;
-            margin-left: 5px;
-        }
-    }
-}
-
-.recommend-lists-container {
-    height: calc(100% - 23px);
-    overflow: scroll;
-    overflow-x: hidden;
-    margin-top: 10px;
-
-    &::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: #c4c6c8;
-        border-radius: 10px;
-    }
-
-    &::-webkit-scrollbar-track {
-        background-color: #e9ecef;
-    }
-
-    .recommend-list-container:first-child {
-        margin-top: 5px;
-    }
-}
-
-.recommend-list-container {
-    height: 210px;
-    padding-right: 15px;
-    margin-top: 20px;
-
-    &:hover {
-        cursor: pointer;
-    }
-
-    div:first-child {
-        width: 100%;
-        height: 150px;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-        transition-duration: 0.5s;
-
-        &:hover {
-            transform: scale(1.1);
-        }
-    }
-
-    div {
-        &:nth-child(2) {
-            color: #0475f4;
-            font-family: 'Noto Sans KR', sans-serif;
-            font-weight: bold;
-
-            span {
-                color: rgba(0, 0, 0, 0.548);
-                font-size: 14px;
-            }
-        }
-
-        &:last-child {
-            font-size: 12px;
-            margin-top: 5px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    }
-}
-
-.result-container {
-    margin-top: 20px;
-    height: 300px;
-}
 
 /* 클릭한 장소의 상세한 정보 */
 

@@ -123,7 +123,7 @@ main {
   background-color: white;
   z-index: 2;
   transition-duration: 0.2s;
-  /* 검색 컨텐츠 - 검색바  */
+  /* 검색 컨텐츠 */
 }
 .menuContent-container > .content-container {
   display: flex;
@@ -132,6 +132,11 @@ main {
   height: 100vh;
   padding-top: 10px;
   box-sizing: border-box;
+}
+.menuContent-container .searchContent {
+  /* 검색 컨텐츠 - 검색바  */
+  /* 검색 컨텐츠 - 지역 정보  */
+  /* 검색 컨텐츠 - 맛집, 검색한 정보 */
 }
 .menuContent-container .searchContent .search-container {
   height: 22px;
@@ -166,27 +171,27 @@ main {
   padding: 5px 10px;
   margin: 10px 10px 0px;
 }
-.menuContent-container .searchContent .location-wrapper {
-  display: flex;
-  height: 22px;
-  overflow: hidden;
-}
-.menuContent-container .searchContent .location-address {
+.menuContent-container .searchContent .location-container .address-container {
   font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
   font-size: 18px;
   color: #333;
 }
-.menuContent-container .searchContent .location-weather {
+.menuContent-container .searchContent .location-container .weather-container {
+  display: flex;
+  height: 22px;
+  overflow: hidden;
+}
+.menuContent-container .searchContent .location-container .weather-container .weatherAndTemp-container {
   font-family: "Noto Sans KR", sans-serif;
   font-size: 14px;
   font-weight: bold;
 }
-.menuContent-container .searchContent .location-weather .temp {
+.menuContent-container .searchContent .location-container .weather-container .weatherAndTemp-container .temp {
   font-size: 15px;
   margin-left: 4px;
 }
-.menuContent-container .searchContent .location-dust {
+.menuContent-container .searchContent .location-container .weather-container .dust-container {
   flex-grow: 1;
   height: 40px;
   overflow: hidden;
@@ -195,116 +200,109 @@ main {
   font-weight: bold;
   transition-duration: 1s;
 }
-.menuContent-container .searchContent .location-dust.up {
+.menuContent-container .searchContent .location-container .weather-container .dust-container.up {
   transform: translateY(-20px);
 }
-.menuContent-container .searchContent .dust {
+.menuContent-container .searchContent .location-container .weather-container .dust-container .dust {
   text-align: center;
   margin: auto;
   font-size: 14px;
 }
-.menuContent-container .searchContent .rate {
+.menuContent-container .searchContent .location-container .weather-container .dust-container .rate {
   font-size: 15px;
   font-weight: bold;
   margin-left: 5px;
 }
-
-/* 검색 컨텐츠 - 지역 정보 */
-/* 검색 컨텐츠 - 맛집, 검색한 정보 */
-.searchResult-container {
+.menuContent-container .searchContent .recommendAndResult-container {
   height: calc(100% - 100px);
   overflow: hidden;
   margin-left: 10px;
 }
-
-.recommend-container {
+.menuContent-container .searchContent .recommend-container {
   height: 100%;
   box-sizing: border-box;
   margin-left: 10px;
 }
-.recommend-container .border {
+.menuContent-container .searchContent .recommend-container .border {
   display: flex;
   height: 20px;
   margin-right: 10px;
 }
-.recommend-container .border span {
+.menuContent-container .searchContent .recommend-container .border span {
   font-size: 14px;
   font-weight: bold;
   font-family: "Noto Sans KR", sans-serif;
 }
-.recommend-container .border span span {
+.menuContent-container .searchContent .recommend-container .border span span {
   font-size: 14px;
   color: black;
   margin-left: 2px;
 }
-.recommend-container .border div {
+.menuContent-container .searchContent .recommend-container .border div {
   flex-grow: 1;
   height: 0px;
   border-top: 2px solid black;
   margin-top: 10px;
   margin-left: 5px;
 }
-
-.recommend-lists-container {
+.menuContent-container .searchContent .recommend-container .recommend-lists-container {
   height: calc(100% - 23px);
   overflow: scroll;
   overflow-x: hidden;
   margin-top: 10px;
 }
-.recommend-lists-container::-webkit-scrollbar {
+.menuContent-container .searchContent .recommend-container .recommend-lists-container::-webkit-scrollbar {
   width: 5px;
 }
-.recommend-lists-container::-webkit-scrollbar-thumb {
+.menuContent-container .searchContent .recommend-container .recommend-lists-container::-webkit-scrollbar-thumb {
   background-color: #c4c6c8;
   border-radius: 10px;
 }
-.recommend-lists-container::-webkit-scrollbar-track {
+.menuContent-container .searchContent .recommend-container .recommend-lists-container::-webkit-scrollbar-track {
   background-color: #e9ecef;
 }
-.recommend-lists-container .recommend-list-container:first-child {
+.menuContent-container .searchContent .recommend-container .recommend-lists-container .recommend-list-container:first-child {
   margin-top: 5px;
 }
-
-.recommend-list-container {
+.menuContent-container .searchContent .recommend-container .recommend-list-container {
   height: 210px;
   padding-right: 15px;
   margin-top: 20px;
 }
-.recommend-list-container:hover {
+.menuContent-container .searchContent .recommend-container .recommend-list-container:hover {
   cursor: pointer;
 }
-.recommend-list-container div:first-child {
+.menuContent-container .searchContent .recommend-container .recommend-list-container div:first-child {
   width: 100%;
   height: 150px;
   border-radius: 10px;
   overflow: hidden;
 }
-.recommend-list-container img {
+.menuContent-container .searchContent .recommend-container .recommend-list-container img {
   width: 100%;
   height: 100%;
   transition-duration: 0.5s;
 }
-.recommend-list-container img:hover {
+.menuContent-container .searchContent .recommend-container .recommend-list-container img:hover {
   transform: scale(1.1);
 }
-.recommend-list-container div:nth-child(2) {
+.menuContent-container .searchContent .recommend-container .recommend-list-container div:nth-child(2) {
   color: #0475f4;
   font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
 }
-.recommend-list-container div:nth-child(2) span {
+.menuContent-container .searchContent .recommend-container .recommend-list-container div:nth-child(2) span {
   color: rgba(0, 0, 0, 0.548);
   font-size: 14px;
 }
-.recommend-list-container div:last-child {
+.menuContent-container .searchContent .recommend-container .recommend-list-container div:last-child {
   font-size: 12px;
   margin-top: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-.result-container {
+.menuContent-container .searchContent .result-container {
   margin-top: 20px;
   height: 300px;
 }

@@ -96,8 +96,10 @@ function init() {
 }
 
 function getWeather(lat, lng) {
-    const weatherDiv = document.querySelector('.location-weather');
-    const dustDiv = document.querySelector('.location-dust');
+    const locationContainer = document.querySelector('.location-container');
+    const weatherContainer = locationContainer.querySelector('.weather-container');
+    const weatherDiv = weatherContainer.querySelector('.weatherAndTemp-container');
+    const dustDiv = weatherContainer.querySelector('.dust-container');
 
     let apiKey = '2bd8aa9e0a77682baadc650722225f4d',
         units = 'metric' // 섭씨 적용
@@ -228,7 +230,7 @@ function reverseGeocoding(lat, lng, type) {
         let option = {
             coords: coords,
             orders: orderTypes
-        }
+        };
 
         let callback = (status, response) => {
             if (status !== naver.maps.Service.Status.OK) {
@@ -239,16 +241,16 @@ function reverseGeocoding(lat, lng, type) {
         }
 
         naver.maps.Service.reverseGeocode(option, callback);
-    })
+    });
 }
 
 function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
 
     reverseGeocoding(lat, lng, "dong")
     .then(data => {
-        const locationAddress = document.querySelector('.location-address');
-        const citySpan = locationAddress.querySelector('.city');
-        const dongSpan = locationAddress.querySelector('.dong');
+        const addressContainer = document.querySelector('.address-container');
+        const citySpan = addressContainer.querySelector('.city');
+        const dongSpan = addressContainer.querySelector('.dong');
         const recommendList = document.querySelector('.recommend-lists-container');
 
         let region = data.v2.results[1].region.area1.name,
