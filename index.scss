@@ -352,12 +352,6 @@ main {
                 height: 300px;
             }
         }
-
-        
-
-        
-
-        
     }
 }
 
@@ -444,7 +438,7 @@ main {
     }
 }
 
-/* 지도 */
+/* 지도 컨테이너*/
 
 .map-container {
     background-color: #fbfdff;
@@ -453,222 +447,220 @@ main {
     border-radius: 2px 0px 0px 2px;
     padding: 0px 0px 0px 1px;
     box-sizing: border-box;
-}
 
-.map {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
-/* 지도 내 상호작용들 */
-
-.interaction-container {
-    display: flex;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1;
-
-    .search-container {
+    /* 지도 */
+    .map {
         position: relative;
-        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
-        border-radius: 5px;
-        background-color: white;
-        width: 230px;
-        height: 36px;
-        padding: 6px 10px;
-        box-sizing: border-box;
-
-        .label-container {
-            display: inline-block;
-            width: 30px;
-            text-align: center;
-
-            /* 세로 가운데 정렬 */
-            position: relative;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        label:hover {
-            cursor: pointer;
-        }
-
-        i {
-            color: var(--main);
-        }
-
-        input[type="text"] {
-            padding: 0;
-            border: none;
-            box-sizing: border-box;
-            width: 160px;
-            outline: none;
-            font-weight: bold;
-            position: relative;
-            top: 50%;
-            transform: translateY(-75%);
-        }
-    }
-}
-
-/* 상호작용 중 검색기능 */
-
-.searchList {
-    position: absolute;
-    top: 34px;
-    left: 0px;
-    width: 100%;
-    background-color: white;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
-    border-radius: 0px 0px 5px 5px;
-}
-
-/* history, autoComplete는 나중에 합쳐도 되면 합치자. */
-
-.history,
-.autoComplete {
-    padding-left: 20px;
-    padding-bottom: 5px;
-    padding-top: 5px;
-
-    i {
-        color: var(--main);
-        font-size: 14px;
-    }
-
-    span {
-        padding-left: 5px;
-        font-size: 14px;
-        font-family: 'Noto Sans KR', sans-serif;
-    }
-
-    &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-        cursor: pointer;
-    }
-}
-
-.no-history {
-    padding-left: 40px;
-}
-
-/* 상호작용 중 검색카테고리 */
-.interaction-container {
-    .category-container {
-        position: relative;
-        display: flex;
+        width: 100%;
         height: 100%;
-        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
-        border-radius: 5px;
-        background-color: white;
-        margin-left: 20px;
-    }
-}
+        overflow: hidden;
 
+        /* 지도 내 상호작용들 */
+        .interaction-container {
+            display: flex;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
 
-.category {
-    padding: 6px 10px;
-    font-weight: bold;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-weight: 600;
+            /* 상호작용 중 검색기능 */
+            .search-container {
+                position: relative;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+                border-radius: 5px;
+                background-color: white;
+                width: 230px;
+                height: 36px;
+                padding: 6px 10px;
+                box-sizing: border-box;
 
-    &:hover {
-        cursor: pointer;
+                .label-container {
+                    display: inline-block;
+                    width: 30px;
+                    text-align: center;
 
-        /* color: var(--naverGreen); */
-        color: var(--cacaoBlue);
-    }
+                    position: relative;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
 
-    i {
-        margin-right: 5px;
-    }
+                label:hover {
+                    cursor: pointer;
+                }
 
-    &.food i {
-        color: coral;
-    }
+                i {
+                    color: var(--main);
+                }
 
-    &.shop i {
-        color: var(--azure);
-    }
+                input[type="text"] {
+                    padding: 0;
+                    border: none;
+                    box-sizing: border-box;
+                    width: 160px;
+                    outline: none;
+                    font-weight: bold;
+                    position: relative;
+                    top: 50%;
+                    transform: translateY(-75%);
+                }
 
-    &.hospital i {
-        color: darksalmon;
-    }
+                .searchList {
+                    position: absolute;
+                    top: 34px;
+                    left: 0px;
+                    width: 100%;
+                    background-color: white;
+                    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+                    border-radius: 0px 0px 5px 5px;
 
-    &.etc {
-        &:nth-child(1) i {
-            color: burlywood;
+                    /* history, autoComplete는 나중에 합쳐도 되면 합치자. */
+                    .history,
+                    .autoComplete {
+                        padding-left: 20px;
+                        padding-bottom: 5px;
+                        padding-top: 5px;
+
+                        i {
+                            color: var(--main);
+                            font-size: 14px;
+                        }
+
+                        span {
+                            padding-left: 5px;
+                            font-size: 14px;
+                            font-family: 'Noto Sans KR', sans-serif;
+                        }
+
+                        &:hover {
+                            background-color: rgba(0, 0, 0, 0.05);
+                            cursor: pointer;
+                        }
+                    }
+
+                    .no-history {
+                        padding-left: 40px;
+                    }
+                }
+            }
+
+            /* 상호작용 중 카테고리로 검색기능 */
+            .category-container {
+                position: relative;
+                display: flex;
+                height: 100%;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+                border-radius: 5px;
+                background-color: white;
+                margin-left: 20px;
+
+                .category {
+                    padding: 6px 10px;
+                    font-weight: bold;
+                    font-family: 'Noto Sans KR', sans-serif;
+                    font-weight: 600;
+                
+                    &:hover {
+                        cursor: pointer;
+                
+                        /* color: var(--naverGreen); */
+                        color: var(--cacaoBlue);
+                    }
+                
+                    i {
+                        margin-right: 5px;
+                    }
+                
+                    &.food i {
+                        color: coral;
+                    }
+                
+                    &.shop i {
+                        color: var(--azure);
+                    }
+                
+                    &.hospital i {
+                        color: darksalmon;
+                    }
+                
+                    &.etc {
+                        &:nth-child(1) i {
+                            color: burlywood;
+                        }
+                
+                        &:nth-child(2) i {
+                            color: #2DB400;
+                        }
+                
+                        &:nth-child(3) i {
+                            color: orchid;
+                        }
+                
+                        &:nth-child(4) i {
+                            color: gold;
+                        }
+                
+                        &:nth-child(5) i {
+                            color: #2DB400;
+                        }
+                
+                        &:nth-child(6) i {
+                            color: tomato;
+                        }
+                    }
+                }
+                
+                .etc-btn {
+                    padding: 6px 10px;
+                    flex-grow: 1;
+                    text-align: center;
+                    border-left: 1px solid rgba(196, 194, 194, 0.403);
+                    border-radius: 0px 5px 5px 0px;
+                    z-index: 1;
+                }
+
+                .etc-btn:hover {
+                    cursor: pointer;
+                }
+
+                .etc-container {
+                    position: absolute;
+                    left: 125px;
+                    top: 33px;
+
+                    .etc-btn-trigger {
+                        position: absolute;
+                        top: -33px;
+                        left: 190px;
+                        width: 35px;
+                        height: 33px;
+                        border-radius: 0px 5px 5px 0px;
+                        z-index: 2;
+                    }
+                    
+                    .etc-btn-trigger:hover {
+                        cursor: pointer;
+                    }
+                    
+                    .etc-category-container {
+                        display: flex;
+                        flex-direction: column;
+                        width: 220px;
+                        height: 165px;
+                        flex-wrap: wrap;
+                        margin-top: 7px;
+                        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
+                        background-color: white;
+                        border-radius: 5px;
+                        padding: 5px 0px 5px 5px;
+
+                        .category {
+                            margin-top: 5px;
+                        }
+                    }
+                }
+            }
         }
-
-        &:nth-child(2) i {
-            color: #2DB400;
-        }
-
-        &:nth-child(3) i {
-            color: orchid;
-        }
-
-        &:nth-child(4) i {
-            color: gold;
-        }
-
-        &:nth-child(5) i {
-            color: #2DB400;
-        }
-
-        &:nth-child(6) i {
-            color: tomato;
-        }
     }
-}
-
-.etc-btn {
-    padding: 6px 10px;
-    flex-grow: 1;
-    text-align: center;
-    border-left: 1px solid rgba(196, 194, 194, 0.403);
-    border-radius: 0px 5px 5px 0px;
-    z-index: 1;
-}
-
-.etc-container {
-    position: absolute;
-    left: 125px;
-    top: 33px;
-}
-
-.etc-btn-trigger {
-    position: absolute;
-    top: -33px;
-    left: 190px;
-    width: 35px;
-    height: 33px;
-    border-radius: 0px 5px 5px 0px;
-    z-index: 2;
-}
-
-.etc-container>div:first-child:hover {
-    cursor: pointer;
-}
-
-.etc-category-container {
-    display: flex;
-    flex-direction: column;
-    width: 220px;
-    height: 165px;
-    flex-wrap: wrap;
-    margin-top: 7px;
-    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
-    background-color: white;
-    border-radius: 5px;
-    padding: 5px 0px 5px 5px;
-}
-
-.etc-container .category {
-    margin-top: 5px;
 }
 
 /* 지도의 커스텀마커 */

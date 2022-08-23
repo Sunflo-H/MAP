@@ -379,7 +379,7 @@ main {
   box-sizing: border-box;
   padding-top: 20px;
 }
-/* 지도 */
+/* 지도 컨테이너*/
 .map-container {
   background-color: #fbfdff;
   width: calc(100% - 100px);
@@ -387,24 +387,25 @@ main {
   border-radius: 2px 0px 0px 2px;
   padding: 0px 0px 0px 1px;
   box-sizing: border-box;
+  /* 지도 */
 }
-
-.map {
+.map-container .map {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  /* 지도 내 상호작용들 */
 }
-
-/* 지도 내 상호작용들 */
-.interaction-container {
+.map-container .map .interaction-container {
   display: flex;
   position: absolute;
   top: 10px;
   left: 10px;
   z-index: 1;
+  /* 상호작용 중 검색기능 */
+  /* 상호작용 중 카테고리로 검색기능 */
 }
-.interaction-container .search-container {
+.map-container .map .interaction-container .search-container {
   position: relative;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
   border-radius: 5px;
@@ -414,22 +415,21 @@ main {
   padding: 6px 10px;
   box-sizing: border-box;
 }
-.interaction-container .search-container .label-container {
+.map-container .map .interaction-container .search-container .label-container {
   display: inline-block;
   width: 30px;
   text-align: center;
-  /* 세로 가운데 정렬 */
   position: relative;
   top: 50%;
   transform: translateY(-50%);
 }
-.interaction-container .search-container label:hover {
+.map-container .map .interaction-container .search-container label:hover {
   cursor: pointer;
 }
-.interaction-container .search-container i {
+.map-container .map .interaction-container .search-container i {
   color: var(--main);
 }
-.interaction-container .search-container input[type=text] {
+.map-container .map .interaction-container .search-container input[type=text] {
   padding: 0;
   border: none;
   box-sizing: border-box;
@@ -440,9 +440,7 @@ main {
   top: 50%;
   transform: translateY(-75%);
 }
-
-/* 상호작용 중 검색기능 */
-.searchList {
+.map-container .map .interaction-container .search-container .searchList {
   position: absolute;
   top: 34px;
   left: 0px;
@@ -450,38 +448,34 @@ main {
   background-color: white;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
   border-radius: 0px 0px 5px 5px;
+  /* history, autoComplete는 나중에 합쳐도 되면 합치자. */
 }
-
-/* history, autoComplete는 나중에 합쳐도 되면 합치자. */
-.history,
-.autoComplete {
+.map-container .map .interaction-container .search-container .searchList .history,
+.map-container .map .interaction-container .search-container .searchList .autoComplete {
   padding-left: 20px;
   padding-bottom: 5px;
   padding-top: 5px;
 }
-.history i,
-.autoComplete i {
+.map-container .map .interaction-container .search-container .searchList .history i,
+.map-container .map .interaction-container .search-container .searchList .autoComplete i {
   color: var(--main);
   font-size: 14px;
 }
-.history span,
-.autoComplete span {
+.map-container .map .interaction-container .search-container .searchList .history span,
+.map-container .map .interaction-container .search-container .searchList .autoComplete span {
   padding-left: 5px;
   font-size: 14px;
   font-family: "Noto Sans KR", sans-serif;
 }
-.history:hover,
-.autoComplete:hover {
+.map-container .map .interaction-container .search-container .searchList .history:hover,
+.map-container .map .interaction-container .search-container .searchList .autoComplete:hover {
   background-color: rgba(0, 0, 0, 0.05);
   cursor: pointer;
 }
-
-.no-history {
+.map-container .map .interaction-container .search-container .searchList .no-history {
   padding-left: 40px;
 }
-
-/* 상호작용 중 검색카테고리 */
-.interaction-container .category-container {
+.map-container .map .interaction-container .category-container {
   position: relative;
   display: flex;
   height: 100%;
@@ -490,50 +484,48 @@ main {
   background-color: white;
   margin-left: 20px;
 }
-
-.category {
+.map-container .map .interaction-container .category-container .category {
   padding: 6px 10px;
   font-weight: bold;
   font-family: "Noto Sans KR", sans-serif;
   font-weight: 600;
 }
-.category:hover {
+.map-container .map .interaction-container .category-container .category:hover {
   cursor: pointer;
   /* color: var(--naverGreen); */
   color: var(--cacaoBlue);
 }
-.category i {
+.map-container .map .interaction-container .category-container .category i {
   margin-right: 5px;
 }
-.category.food i {
+.map-container .map .interaction-container .category-container .category.food i {
   color: coral;
 }
-.category.shop i {
+.map-container .map .interaction-container .category-container .category.shop i {
   color: var(--azure);
 }
-.category.hospital i {
+.map-container .map .interaction-container .category-container .category.hospital i {
   color: darksalmon;
 }
-.category.etc:nth-child(1) i {
+.map-container .map .interaction-container .category-container .category.etc:nth-child(1) i {
   color: burlywood;
 }
-.category.etc:nth-child(2) i {
+.map-container .map .interaction-container .category-container .category.etc:nth-child(2) i {
   color: #2DB400;
 }
-.category.etc:nth-child(3) i {
+.map-container .map .interaction-container .category-container .category.etc:nth-child(3) i {
   color: orchid;
 }
-.category.etc:nth-child(4) i {
+.map-container .map .interaction-container .category-container .category.etc:nth-child(4) i {
   color: gold;
 }
-.category.etc:nth-child(5) i {
+.map-container .map .interaction-container .category-container .category.etc:nth-child(5) i {
   color: #2DB400;
 }
-.category.etc:nth-child(6) i {
+.map-container .map .interaction-container .category-container .category.etc:nth-child(6) i {
   color: tomato;
 }
-
-.etc-btn {
+.map-container .map .interaction-container .category-container .etc-btn {
   padding: 6px 10px;
   flex-grow: 1;
   text-align: center;
@@ -541,14 +533,15 @@ main {
   border-radius: 0px 5px 5px 0px;
   z-index: 1;
 }
-
-.etc-container {
+.map-container .map .interaction-container .category-container .etc-btn:hover {
+  cursor: pointer;
+}
+.map-container .map .interaction-container .category-container .etc-container {
   position: absolute;
   left: 125px;
   top: 33px;
 }
-
-.etc-btn-trigger {
+.map-container .map .interaction-container .category-container .etc-container .etc-btn-trigger {
   position: absolute;
   top: -33px;
   left: 190px;
@@ -557,12 +550,10 @@ main {
   border-radius: 0px 5px 5px 0px;
   z-index: 2;
 }
-
-.etc-container > div:first-child:hover {
+.map-container .map .interaction-container .category-container .etc-container .etc-btn-trigger:hover {
   cursor: pointer;
 }
-
-.etc-category-container {
+.map-container .map .interaction-container .category-container .etc-container .etc-category-container {
   display: flex;
   flex-direction: column;
   width: 220px;
@@ -574,8 +565,7 @@ main {
   border-radius: 5px;
   padding: 5px 0px 5px 5px;
 }
-
-.etc-container .category {
+.map-container .map .interaction-container .category-container .etc-container .etc-category-container .category {
   margin-top: 5px;
 }
 
