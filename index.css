@@ -579,8 +579,11 @@ main {
   padding: 5px;
   box-sizing: border-box;
 }
-
-.marker-icon {
+.marker-container i {
+  color: white;
+  font-size: 16px;
+}
+.marker-container .icon {
   min-width: 28px;
   max-width: 28px;
   height: 28px;
@@ -589,39 +592,28 @@ main {
   text-align: center;
   line-height: 30px;
 }
-
-.marker-container i {
-  color: white;
-  font-size: 16px;
-}
-
-.marker-address {
+.marker-container .markerInfo-container {
   padding: 0px 10px;
   font-weight: bold;
   font-family: "Noto Sans KR", sans-serif;
   line-height: 15px;
 }
-
-.marker-address-name {
+.marker-container .addressName {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
   white-space: nowrap;
 }
-
-.marker-place-name {
-  /* min-width: 180px; */
+.marker-container .placeName {
   font-size: 14px;
   white-space: nowrap;
 }
-
-.marker-place-category {
+.marker-container .placeCategory {
   font-size: 10px;
   color: rgba(0, 0, 0, 0.558);
 }
-
-.marker-point {
+.marker-container .marker-point {
   position: absolute;
   top: 39px;
   left: 30px;
@@ -632,7 +624,6 @@ main {
   border-bottom: 1px solid #0475f4;
   transform: rotate(45deg);
 }
-
 .marker-container:hover {
   color: #0475f4;
   cursor: pointer;
@@ -648,6 +639,14 @@ main {
   z-index: 3;
   opacity: 0;
 }
+.curve path {
+  fill: #fbfdff;
+  stroke-width: "1";
+  stroke-linecap: "round";
+}
+.curve path:hover {
+  cursor: pointer;
+}
 .curve span {
   position: absolute;
   top: 40px;
@@ -656,15 +655,6 @@ main {
   color: gray;
 }
 .curve span:hover {
-  cursor: pointer;
-}
-
-path {
-  fill: #fbfdff;
-  stroke-width: "1";
-  stroke-linecap: "round";
-}
-path:hover {
   cursor: pointer;
 }
 

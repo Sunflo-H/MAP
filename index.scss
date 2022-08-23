@@ -664,7 +664,6 @@ main {
 }
 
 /* 지도의 커스텀마커 */
-
 .marker-container {
     display: flex;
     height: 40px;
@@ -673,65 +672,66 @@ main {
     background-color: white;
     padding: 5px;
     box-sizing: border-box;
+
+    i {
+        color:white;
+        font-size: 16px;
+    }
+
+    .icon {
+        min-width: 28px;
+        max-width: 28px;
+        height: 28px;
+        border-radius: 100px;
+        background-color: #0475f4;
+        text-align: center;
+        line-height: 30px;
+    }
+    
+    .markerInfo-container {
+        padding: 0px 10px;
+        font-weight: bold;
+        font-family: 'Noto Sans KR', sans-serif;
+        line-height: 15px;
+    }
+    
+    .addressName {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        white-space: nowrap;
+    }
+    
+    .placeName {
+        font-size: 14px;
+        white-space: nowrap;
+    }
+    
+    .placeCategory {
+        font-size: 10px;
+        color: rgba(0, 0, 0, 0.558);
+    }
+    
+    .marker-point {
+        position: absolute;
+        top: 39px;
+        left: 30px;
+        width: 5px;
+        height: 5px;
+        background-color: white;
+        border-right: 1px solid #0475f4;
+        border-bottom: 1px solid #0475f4;
+        transform: rotate(45deg);
+    }
+    
+    &:hover {
+        color: #0475f4;
+        cursor: pointer;
+    }
 }
 
-.marker-icon {
-    min-width: 28px;
-    max-width: 28px;
-    height: 28px;
-    border-radius: 100px;
-    background-color: #0475f4;
-    text-align: center;
-    line-height: 30px;
-}
 
-.marker-container i {
-    color: white;
-    font-size: 16px;
-}
-
-.marker-address {
-    padding: 0px 10px;
-    font-weight: bold;
-    font-family: 'Noto Sans KR', sans-serif;
-    line-height: 15px;
-}
-
-.marker-address-name {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-.marker-place-name {
-    /* min-width: 180px; */
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-.marker-place-category {
-    font-size: 10px;
-    color: rgba(0, 0, 0, 0.558);
-}
-
-.marker-point {
-    position: absolute;
-    top: 39px;
-    left: 30px;
-    width: 5px;
-    height: 5px;
-    background-color: white;
-    border-right: 1px solid #0475f4;
-    border-bottom: 1px solid #0475f4;
-    transform: rotate(45deg);
-}
-
-.marker-container:hover {
-    color: #0475f4;
-    cursor: pointer;
-}
 
 /* 메뉴 컨텐츠의 닫기버튼 */
 
@@ -743,6 +743,16 @@ main {
     transition-timing-function: ease-out;
     z-index: 3;
     opacity: 0;
+    
+    path {
+        fill: #fbfdff;
+        stroke-width: "1";
+        stroke-linecap: "round";
+    
+        &:hover {
+            cursor: pointer;
+        }
+    }
 
     span {
         position: absolute;
@@ -755,14 +765,7 @@ main {
             cursor: pointer;
         }
     }
+
+    
 }
 
-path {
-    fill: #fbfdff;
-    stroke-width: "1";
-    stroke-linecap: "round";
-
-    &:hover {
-        cursor: pointer;
-    }
-}

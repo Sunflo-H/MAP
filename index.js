@@ -340,9 +340,9 @@ function createMarker(data) {
     if(type === undefined) { // 주소일때
         icon = `<i class="fa-solid fa-location-dot"></i>`; 
         content = `<div class="marker-container">
-                        <div class="marker-icon">${icon}</i></div>
-                        <div class="marker-address">
-                            <div class="marker-address-name">${data.address_name}</div>
+                        <div class="icon">${icon}</i></div>
+                        <div class="markerInfo-container">
+                            <div class="addressName">${data.address_name}</div>
                         </div>
                         <div class="marker-point"></div>
                     </div>`;
@@ -350,9 +350,9 @@ function createMarker(data) {
     else if(type === "") { // 장소일때
         icon = `<i class="fa-solid fa-location-dot"></i>`; 
         content = `<div class="marker-container">
-                        <div class="marker-icon">${icon}</i></div>
-                        <div class="marker-address">
-                            <div class="marker-address-name">${data.place_name}</div>
+                        <div class="icon">${icon}</i></div>
+                        <div class="markerInfo-container">
+                            <div class="addressName">${data.place_name}</div>
                         </div>
                         <div class="marker-point"></div>
                     </div>`;
@@ -360,10 +360,10 @@ function createMarker(data) {
     else { // 음식점, 카페, 마트 등등
         icon = `<i class="fa fa-cutlery">`; // 음식점일때
         content = `<div class="marker-container">
-                        <div class="marker-icon">${icon}</i></div>
-                        <div class="marker-address">
-                            <div class="marker-place-name">${data.place_name}</div>
-                            <div class="marker-place-category">${type}</div>
+                        <div class="icon">${icon}</i></div>
+                        <div class="markerInfo-container">
+                            <div class="placeName">${data.place_name}</div>
+                            <div class="placeCategory">${type}</div>
                         </div>
                         <div class="marker-point"></div>
                     </div>`;
