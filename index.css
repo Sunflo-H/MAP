@@ -113,13 +113,13 @@ main {
   color: white;
 }
 
-/* 메뉴바의 카테고리 클릭시 보여지는 컨텐츠 */
+/* 메뉴바의 카테고리를 클릭하면 보여지는 컨텐츠 */
 .menuContent-container {
   position: absolute;
   top: 0px;
   left: -150px;
   width: 250px;
-  height: 100%;
+  height: 100vh;
   background-color: white;
   z-index: 2;
   transition-duration: 0.2s;
@@ -217,92 +217,95 @@ main {
   height: calc(100% - 100px);
   overflow: hidden;
   margin-left: 10px;
+  box-sizing: border-box;
 }
-.menuContent-container .searchContent .recommend-container {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container {
   height: 100%;
   box-sizing: border-box;
   margin-left: 10px;
 }
-.menuContent-container .searchContent .recommend-container .border {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .border {
   display: flex;
   height: 20px;
   margin-right: 10px;
 }
-.menuContent-container .searchContent .recommend-container .border span {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .border span {
   font-size: 14px;
   font-weight: bold;
   font-family: "Noto Sans KR", sans-serif;
 }
-.menuContent-container .searchContent .recommend-container .border span span {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .border span span {
   font-size: 14px;
   color: black;
   margin-left: 2px;
 }
-.menuContent-container .searchContent .recommend-container .border div {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .border .line {
   flex-grow: 1;
   height: 0px;
   border-top: 2px solid black;
   margin-top: 10px;
   margin-left: 5px;
 }
-.menuContent-container .searchContent .recommend-container .recommend-lists-container {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container {
   height: calc(100% - 23px);
   overflow: scroll;
   overflow-x: hidden;
   margin-top: 10px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
 }
-.menuContent-container .searchContent .recommend-container .recommend-lists-container::-webkit-scrollbar {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container::-webkit-scrollbar {
   width: 5px;
 }
-.menuContent-container .searchContent .recommend-container .recommend-lists-container::-webkit-scrollbar-thumb {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container::-webkit-scrollbar-thumb {
   background-color: #c4c6c8;
   border-radius: 10px;
 }
-.menuContent-container .searchContent .recommend-container .recommend-lists-container::-webkit-scrollbar-track {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container::-webkit-scrollbar-track {
   background-color: #e9ecef;
 }
-.menuContent-container .searchContent .recommend-container .recommend-lists-container .recommend-list-container:first-child {
-  margin-top: 5px;
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container:first-child {
+  margin-top: 0px;
 }
-.menuContent-container .searchContent .recommend-container .recommend-list-container {
-  height: 210px;
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container {
+  height: 200px;
   padding-right: 15px;
   margin-top: 20px;
 }
-.menuContent-container .searchContent .recommend-container .recommend-list-container:hover {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container:hover {
   cursor: pointer;
 }
-.menuContent-container .searchContent .recommend-container .recommend-list-container div:first-child {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container:hover img {
+  transform: scale(1.1);
+}
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container .image-container {
   width: 100%;
   height: 150px;
   border-radius: 10px;
   overflow: hidden;
 }
-.menuContent-container .searchContent .recommend-container .recommend-list-container img {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container img {
   width: 100%;
   height: 100%;
   transition-duration: 0.5s;
 }
-.menuContent-container .searchContent .recommend-container .recommend-list-container img:hover {
-  transform: scale(1.1);
-}
-.menuContent-container .searchContent .recommend-container .recommend-list-container div:nth-child(2) {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container .nameAndCategory {
   color: #0475f4;
   font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
 }
-.menuContent-container .searchContent .recommend-container .recommend-list-container div:nth-child(2) span {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container .nameAndCategory span {
   color: rgba(0, 0, 0, 0.548);
   font-size: 14px;
 }
-.menuContent-container .searchContent .recommend-container .recommend-list-container div:last-child {
+.menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container .reason {
   font-size: 12px;
   margin-top: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.menuContent-container .searchContent .result-container {
+.menuContent-container .searchContent .recommendAndResult-container .result-container {
   margin-top: 20px;
   height: 300px;
 }

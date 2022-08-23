@@ -101,6 +101,9 @@ function getWeather(lat, lng) {
     const weatherDiv = weatherContainer.querySelector('.weatherAndTemp-container');
     const dustDiv = weatherContainer.querySelector('.dust-container');
 
+    console.log(weatherDiv);
+    console.log(dustDiv);
+
     let apiKey = '2bd8aa9e0a77682baadc650722225f4d',
         units = 'metric' // 섭씨 적용
     let weatherData = fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=${units}&appid=${apiKey}`)
@@ -184,7 +187,6 @@ function getWeather(lat, lng) {
             }
 
             setInterval(() => {
-                const dustDiv = document.querySelector('.location-dust');
                 dustDiv.classList.toggle('up');
             },5000);
         })
@@ -251,7 +253,7 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
         const addressContainer = document.querySelector('.address-container');
         const citySpan = addressContainer.querySelector('.city');
         const dongSpan = addressContainer.querySelector('.dong');
-        const recommendList = document.querySelector('.recommend-lists-container');
+        const recommendList = document.querySelector('.itemList-container');
 
         let region = data.v2.results[1].region.area1.name,
             city = data.v2.results[1].region.area2.name,
@@ -273,10 +275,10 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
             .then(data => {
                 let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
                 restaurantList.forEach((restaurant) => {
-                    let element = `<div class="recommend-list-container">
-                                        <div><img src=${restaurant.img}></div>
-                                        <div>${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
-                                        <div>${restaurant.추천사유}</div>
+                    let element = `<div class="item-container">
+                                        <div class="image-container"><img src=${restaurant.img}></div>
+                                        <div class="nameAndCategory">${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
+                                        <div class="reason">${restaurant.추천사유}</div>
                                     </div>`
                     recommendList.insertAdjacentHTML('beforeend', element);
                 })
@@ -285,6 +287,7 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
     });
     mapCenter = map.getCenter();
 }
+
 /**
  * 지도를 만들고, 첫 위치를 좌표로 정한다. 
  * @param {*} lat 위도
