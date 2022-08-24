@@ -4,7 +4,7 @@ const RADIUS = {
     LV3: 15000,
     LV4: 20000
 }
-const SEARCH_DATA_LENGTH = 15;
+const SEARCH_DATA_LENGTH = 15; // 15가 MAX
 
 
 const mapContainer = document.querySelector('.map-container');
@@ -190,8 +190,8 @@ function getWeather(lat, lng) {
                 dustDiv.classList.toggle('up');
             },5000);
         })
-    
 }
+
 /**
  * 주소를 입력하면 좌표를 반환한다.
  * @param {*} address 
@@ -203,6 +203,7 @@ function geocoding(address) {
             if (status !== naver.maps.Service.Status.OK) {
                 return alert('Something wrong!');
             }
+            console.log(response);
             resolve(response);
         }
         naver.maps.Service.geocode({ query: address }, callback);
@@ -648,9 +649,12 @@ body.addEventListener('click',e => {
     displaySearchList(false);
 })
 
-
+/**
+ * 카카오가 제공하는 주소 데이터로부터 -keyword-와 글자가 일치하는 데이터를 가져온다.
+ * @param {*} keyword 일치하는지 찾아볼 단어
+ * @returns [구의동, 구의1동, 구의2동, ...]
+ */
 function getJsonAddr(keyword) {
-    // console.log("주소 데이터로부터 자동완성단어를 찾습니다. 검색어 : ", keyword);
     let result = fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${keyword}&size=5`, {
         headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
     })
@@ -662,86 +666,112 @@ function getJsonAddr(keyword) {
         });
     return result;
 }
-
+/**
+ * 자동완성 JSON파일에서 -keyword-와 글자가 일치하는 데이터들을 가져온다. 
+ * @param {*} keyword 일치하는지 찾아볼 단어
+ * @returns [강남, 강남식당, 강남포차, ...]
+ */
 function getJsonData(keyword) {
-    // console.log("제이슨 데이터로부터 자동완성단어를 찾습니다. 검색어 : ", keyword);
     let result = fetch('/data/restaurant.json')
         .then(res => res.json())
         .then(data => {
             let list = [];
             const restList = data.results[0].items.filter(restaurant => restaurant.name.substring(0, keyword.length) === keyword);
             restList.forEach(data => list.push(data.name));
+            // 엄청 많이 찾음 100개 넘어감
             return list;
         })
     return result;
 }
 
+/**
+ * 주소로검색, 키워드로검색 두 함수를 한번에 사용하여 검색한다.
+ * @param {*} keyword 입력한 단어
+ * @returns 두 검색방법으로 찾은 데이터
+ */
 function search(keyword) {
-    Promise.all([searchByAddr(keyword), searchByKeyword(keyword)])
-    .then(data => {
-        console.log(data);
-        if (data[0].length !== 0) {
-            panTo(data[0][0].y, data[0][0].x);
-            removeMarker();
-            data[0].forEach(data => {
-                console.log(data);
-                createMarker(data);
-            });
-            setMarkerEvent();
-        }
-        else if (data[0].length === 0 && data[1].length !== 0 ) {
-            panTo(data[1][0].y, data[1][0].x);
-            removeMarker();
-            data[1].forEach(data => {
-                console.log(data);
-                createMarker(data);
-            });
-            setMarkerEvent();
-        }
-        else if (data[0].length === 0 && data[1].length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
-            alert('검색 결과가 없습니다.');
-        }
-    })
+    let data = Promise.all([searchByAddr(keyword), searchByKeyword(keyword)]).then(data => data);
+
+    return data;
 }
 
+/**
+ * 주소로 검색하여 장소(주소)에 대한 정보를 얻는다.
+ * @param {*} addr 검색할 주소
+ * @returns [구의동, 구의1동, 구의2동, ...]
+ * @주소데이터 주소명, 도로명, 분리된 주소명, 분리된 도로명, x, y
+ */
 function searchByAddr(addr) {
-    // 카카오 검색
-    // 주소-좌표 변환 객체를 생성합니다
-    var geocoder = new kakao.maps.services.Geocoder();
-
-    // 주소로 좌표를 검색합니다
     let placeList = new Promise((resolve, reject) => {
-        geocoder.addressSearch(addr, (result, status) => {
-            // 정상적으로 검색이 완료됐으면 
+
+        // 주소-좌표 변환 객체를 생성합니다
+        let geocoder = new kakao.maps.services.Geocoder();
+
+        const callback = (result, status) => {
             if (status === kakao.maps.services.Status.OK) {
-                console.log("주소로 검색 결과 : ", result);
-                resolve(result);
-            } else {
-                console.log("검색 실패 주소가 아닙니다. reulst는 공백입니다.");
                 resolve(result);
             }
-        }, {
-            size: SEARCH_DATA_LENGTH
-        });
-    })
+        };
+
+        geocoder.addressSearch(addr, callback, {size: SEARCH_DATA_LENGTH});
+    });
     return placeList;
 }
 
+/**
+ * 키워드로 검색하여 장소(주소)에 대한 정보를 얻는다.
+ * @param {*} keyword 검색할 키워드
+ * @returns [롯데리아1, 롯데리아2, 롯데리아3, ...]
+ * @장소데이터 주소명, 카테고리, 카테고리CODE, 장소명, id, 상세페이지url, 도로명, x, y
+ */
 function searchByKeyword(keyword) {
-    console.log("키워드로 검색 실행 , 검색어 :", keyword);
     const lat = map.getCenter()._lat;
     const lng = map.getCenter()._lng;
 
-    let placeList = fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?y=${lat}&x=${lng}&radius=${RADIUS.LV4}&query=${keyword}&size=${SEARCH_DATA_LENGTH}`, {
-        headers: { Authorization: `KakaoAK 621a24687f9ad83f695acc0438558af2` }
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("키워드로 검색 결과 :", data);
-            return data.documents;
-        })
-        .catch((error) => console.log("error:" + error));
+    let placeList = new Promise((resolve, reject) => {
+        let places = new kakao.maps.services.Places();
+
+        const callback = (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+                resolve(result);
+            }
+        };
+
+        let option = {
+            x: lng,
+            y: lat,
+            radius: RADIUS.LV4,
+            size: SEARCH_DATA_LENGTH
+        }
+        places.keywordSearch(keyword, callback, option);
+    });
     return placeList;
+}
+
+function searchAddrFromCoords(coords, callback) {
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    const cb = (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+            console.log(result);
+        }  
+    }
+
+    // 좌표로 행정동 주소 정보를 요청합니다
+    geocoder.coord2RegionCode(coords._lng, coords._lat, cb);         
+}
+
+function searchDetailAddrFromCoords(coords, callback) {
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    const cb = (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+            console.log(result);
+        }  
+    }
+
+    // 좌표로 법정동 상세 주소 정보를 요청합니다
+    geocoder.coord2Address(coords._lng, coords._lat, cb);
 }
 
 function displaySearchList(isTrue) {
@@ -819,7 +849,32 @@ function setAutoComplete(data) {
 }
 
 function enterKey() {
-    search(searchInMap.value);
+    search(searchInMap.value)
+    .then(data => {
+        console.log(data);
+        const addressSearch = data[0];
+        const keywordSearch = data[1];
+        if (addressSearch.length !== 0) {
+            panTo(addressSearch[0].y, addressSearch[0].x);
+            removeMarker();
+            addressSearch.forEach(data => {
+                createMarker(data);
+            });
+            setMarkerEvent();
+            return data;
+        }
+        else if (addressSearch.length === 0 && data[1].length !== 0 ) {
+            panTo(keywordSearch[0].y, keywordSearch[0].x);
+            removeMarker();
+            keywordSearch.forEach(data => {
+                createMarker(data);
+            });
+            setMarkerEvent();
+        }
+        else if (addressSearch.length === 0 && keywordSearch.length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
+            alert('검색 결과가 없습니다.');
+        }
+    });
     displaySearchList(false);
 } 
 
