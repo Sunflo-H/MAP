@@ -23,7 +23,7 @@ const etcContainer = document.querySelector('.etc-container');
 // 전역변수
 let map;
 let markers = [];
-let cityIsChange;
+// let cityIsChange;
 let mapCenter;
 
 // 즉시실행함수로 전역변수를 최소화
@@ -31,16 +31,12 @@ function stateCheck() {
     let state;
 
     return {
-        value: function () {
+        getState: function () {
             return state;
         },
 
-        true: function () {
-            state = true;
-        },
-
-        false: function () {
-            state = false;
+        setState: function (boolean) {
+            state = boolean;
         }
     }
 }
@@ -49,7 +45,7 @@ function valueCheck() {
     let value;
 
     return {
-        getValue: function (param) {
+        getValue: function () {
             return value;
         },
         setValue: function (param) {
@@ -57,42 +53,6 @@ function valueCheck() {
         }
 
     }
-}
-
-function init() {
-    getUserLocation()
-        .then(data => {
-            let lat = data.coords.latitude; // 위도 (남북)
-            let lng = data.coords.longitude; // 경도 (동서)
-            console.log(lat, lng);
-            getWeather(lat, lng);
-            displayMap(lat, lng); // 현재 위치를 중심으로 맵을 표시합니다.
-            // 지도 생성후 사용되는 함수들
-            setCurrentLocation();
-            hotRestaurant();
-
-            //tmap 클릭 이벤트
-            map.addListener('click', (event) => {
-                let lat = event.latLng._lat;
-                let lng = event.latLng._lng;
-                console.log(reverseGeocoding(lat, lng));
-            });
-            // 지도에 마커 생성
-            // createMarkerByCoords(lat, lng);
-
-            map.addListener('drag', (event) => {
-                let lat = event.latLng._lat;
-                let lng = event.latLng._lng;
-                setCurrentLocation(lat, lng);
-            })
-            // reverseGeocoding(lat, lng)
-            //     .then(data => {
-            //         let currentLocation = data.v2.address.roadAddress; // 현재 위치
-            //         if (currentLocation === '') currentLocation = data.v2.address.jibunAddress; // 도로명주소가 없으면 지번주소로
-
-            //         displayMap(currentLocation); // 현재 위치를 중심으로 맵을 표시합니다.
-            //     });
-        })
 }
 
 function getWeather(lat, lng) {
@@ -192,98 +152,52 @@ function getWeather(lat, lng) {
         })
 }
 
-/**
- * 주소를 입력하면 좌표를 반환한다.
- * @param {*} address 
- * @returns 
- */
-function geocoding(address) {
-    return new Promise(resolve => {
-        let callback = (status, response) => {
-            if (status !== naver.maps.Service.Status.OK) {
-                return alert('Something wrong!');
-            }
-            console.log(response);
-            resolve(response);
-        }
-        naver.maps.Service.geocode({ query: address }, callback);
+const cityIsChange = (stateCheck)(); 
+
+function setCurrentLocation(city, dong) {
+    const citySpan = document.querySelector('.address-container .city');
+    const dongSpan = document.querySelector('.address-container .dong');
+
+    citySpan.innerText = city;
+    dongSpan.innerText = dong;
+}
+
+function setRecommendList(region, city) {
+    const recommendList = document.querySelector('.itemList-container');
+
+    while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
+            
+    fetch('/data/restaurant/seoul.json')
+    .then(res => res.json())
+    .then(data => {
+        let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
+        restaurantList.forEach((restaurant) => {
+            let element = `<div class="item-container">
+                                <div class="image-container"><img src=${restaurant.img}></div>
+                                <div class="nameAndCategory">${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
+                                <div class="reason">${restaurant.추천사유}</div>
+                            </div>`
+            recommendList.insertAdjacentHTML('beforeend', element);
+        })
     })
 }
 
-/**
- * 좌표와 타입을 입력하여 주소정보를 받아온다.
- * @param {*} lat 위도 
- * @param {*} lng 경도
- * @param {*} type 빈칸 : 지번까지 얻지만 동은 구체적이지 않다. 
- *               "dong" : 지번은 얻을 수 없지만 1동, 2동, 3동 등 구체적인 동 데이터를 얻는다.
- * 
- * @returns type에 따라 Promise로 값을 리턴
- */
-function reverseGeocoding(lat, lng, type) {
-    return new Promise(resolve => {
-        let coords = new naver.maps.LatLng(lat, lng);
-
-        let orderTypes = [
-            naver.maps.Service.OrderType.ADDR,
-            naver.maps.Service.OrderType.ROAD_ADDR
-        ];
-
-        if (type === "dong") orderTypes = [...orderTypes, naver.maps.Service.OrderType.ADM_CODE]
-    
-        let option = {
-            coords: coords,
-            orders: orderTypes
-        };
-
-        let callback = (status, response) => {
-            if (status !== naver.maps.Service.Status.OK) {
-                console.log(status);
-                return alert('Something wrong!');
-            }
-            resolve(response);
-        }
-
-        naver.maps.Service.reverseGeocode(option, callback);
-    });
-}
-
 function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
-
-    reverseGeocoding(lat, lng, "dong")
+    searchAddrFromCoords(lat, lng)
     .then(data => {
-        const addressContainer = document.querySelector('.address-container');
-        const citySpan = addressContainer.querySelector('.city');
-        const dongSpan = addressContainer.querySelector('.dong');
-        const recommendList = document.querySelector('.itemList-container');
+        const citySpan = document.querySelector('.address-container .city');
 
-        let region = data.v2.results[1].region.area1.name,
-            city = data.v2.results[1].region.area2.name,
-            dong = data.v2.results[1].region.area3.name;
+        let region = data[1].region_1depth_name;
+        let city = data[1].region_2depth_name;
+        let dong = data[1].region_3depth_name;
 
-        if(citySpan.innerText !== city) cityIsChange = true;
-        else cityIsChange = false;
-
-        citySpan.innerText = city;
-        dongSpan.innerText = dong;
-        // setCurrentLocation();
-        // setHotRestaurant();
-        if(cityIsChange) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
-            
-            while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
-            
-            fetch('/data/restaurant/seoul.json')
-            .then(res => res.json())
-            .then(data => {
-                let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
-                restaurantList.forEach((restaurant) => {
-                    let element = `<div class="item-container">
-                                        <div class="image-container"><img src=${restaurant.img}></div>
-                                        <div class="nameAndCategory">${restaurant.식당상호} <span>${restaurant.음식종류}</span></div>
-                                        <div class="reason">${restaurant.추천사유}</div>
-                                    </div>`
-                    recommendList.insertAdjacentHTML('beforeend', element);
-                })
-            })
+        if(citySpan.innerText !== city) cityIsChange.setState(true);
+        else cityIsChange.setState(false);
+        
+        setCurrentLocation(city, dong);
+        
+        if(cityIsChange.getState()) { // city의 값이 변경되면 맛집리스트를 다시 불러온다.
+            setRecommendList(region, city);
         }
     });
     mapCenter = map.getCenter();
@@ -407,10 +321,6 @@ function getUserLocation() {
         navigator.geolocation.getCurrentPosition(resolve, reject); // succes, error
     });
 }
-
-// init();
-
-
 
 // 검색 기능 모음
 const body = document.querySelector('body');
@@ -602,10 +512,10 @@ categoryList.forEach(category => {
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
-        if (searchListState.value() === true) upKey();
+        if (searchListState.getState() === true) upKey();
     }
     else if (e.keyCode === 40) {
-        if (searchListState.value() === true) downKey();
+        if (searchListState.getState() === true) downKey();
     }
     else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
 })
@@ -733,12 +643,11 @@ function searchByKeyword(keyword) {
     let placeList = new Promise((resolve, reject) => {
         let places = new kakao.maps.services.Places();
 
-        const callback = (result, status) => {
+        const getResult = (result, status) => {
             if (status === kakao.maps.services.Status.OK) {
-                console.log(result);
                 resolve(result);
-            }
-        };
+            }  
+        }
 
         let option = {
             x: lng,
@@ -746,35 +655,43 @@ function searchByKeyword(keyword) {
             radius: RADIUS.LV4,
             size: SEARCH_DATA_LENGTH
         }
-        places.keywordSearch(keyword, callback, option);
+        places.keywordSearch(keyword, getResult, option);
     });
     return placeList;
 }
 
-function searchAddrFromCoords(coords, callback) {
-    var geocoder = new kakao.maps.services.Geocoder();
+function searchAddrFromCoords(lat, lng) {
+    let addrList = new Promise((resolve, reject) => {
+        var geocoder = new kakao.maps.services.Geocoder();
 
-    const cb = (result, status) => {
-        if (status === kakao.maps.services.Status.OK) {
-            console.log(result);
-        }  
-    }
+        const getResult = (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+                resolve(result);
+            }  
+        };
+    
+        // 좌표로 행정동 주소 정보를 요청합니다
+        geocoder.coord2RegionCode(lng, lat, getResult);         
+    });
 
-    // 좌표로 행정동 주소 정보를 요청합니다
-    geocoder.coord2RegionCode(coords._lng, coords._lat, cb);         
+    return addrList;
 }
 
-function searchDetailAddrFromCoords(coords, callback) {
-    var geocoder = new kakao.maps.services.Geocoder();
+function searchDetailAddrFromCoords(lat, lng) {
+    let detailAddrList = new Promise((resolve, reject) => {
+        var geocoder = new kakao.maps.services.Geocoder();
 
-    const cb = (result, status) => {
-        if (status === kakao.maps.services.Status.OK) {
-            console.log(result);
-        }  
-    }
+        const getResult = (result, status) => {
+            if (status === kakao.maps.services.Status.OK) {
+                resolve(result);
+            }  
+        };
+    
+        // 좌표로 법정동 상세 주소 정보를 요청합니다
+        geocoder.coord2Address(lng, lat, getResult);        
+    });
 
-    // 좌표로 법정동 상세 주소 정보를 요청합니다
-    geocoder.coord2Address(coords._lng, coords._lat, cb);
+    return detailAddrList;
 }
 
 function displaySearchList(isTrue) {
@@ -782,11 +699,11 @@ function displaySearchList(isTrue) {
     
     if(isTrue) {
         searchList.classList.remove('hide');
-        searchListState.true();
+        searchListState.setState(true);
     }
     else {
         searchList.classList.add('hide');
-        searchListState.false();
+        searchListState.setState(false);
     }
 }
 
@@ -855,26 +772,30 @@ function enterKey() {
     search(searchInMap.value)
     .then(data => {
         console.log(data);
-        const addressSearch = data[0];
-        const keywordSearch = data[1];
-        if (addressSearch.length !== 0) {
-            panTo(addressSearch[0].y, addressSearch[0].x);
+        const addressSearchData = data[0];
+        const keywordSearchData = data[1];
+
+        // 주소검색 결과만 있는경우
+        if (addressSearchData.length !== 0) {
+            panTo(addressSearchData[0].y, addressSearchData[0].x);
             removeMarker();
-            addressSearch.forEach(data => {
+            addressSearchData.forEach(data => {
                 createMarker(data);
             });
             setMarkerEvent();
             return data;
         }
-        else if (addressSearch.length === 0 && keywordSearch.length !== 0 ) {
-            panTo(keywordSearch[0].y, keywordSearch[0].x);
+        // 키워드검색 결과만 있는경우
+        else if (addressSearchData.length === 0 && keywordSearchData.length !== 0 ) {
+            panTo(keywordSearchData[0].y, keywordSearchData[0].x);
             removeMarker();
-            keywordSearch.forEach(data => {
+            keywordSearchData.forEach(data => {
                 createMarker(data);
             });
             setMarkerEvent();
         }
-        else if (addressSearch.length === 0 && keywordSearch.length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
+        // 모두 없는 경우
+        else if (addressSearchData.length === 0 && keywordSearchData.length === 0) { // 주소데이터, 키워드데이터 둘다 없다면
             alert('검색 결과가 없습니다.');
         }
     });
