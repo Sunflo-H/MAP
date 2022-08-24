@@ -691,7 +691,7 @@ function getJsonData(keyword) {
  */
 function search(keyword) {
     let data = Promise.all([searchByAddr(keyword), searchByKeyword(keyword)]).then(data => data);
-
+    console.log(data);
     return data;
 }
 
@@ -709,8 +709,10 @@ function searchByAddr(addr) {
 
         const callback = (result, status) => {
             if (status === kakao.maps.services.Status.OK) {
-                resolve(result);
+                console.log(result);
             }
+            console.log(status);
+            resolve(result);
         };
 
         geocoder.addressSearch(addr, callback, {size: SEARCH_DATA_LENGTH});
@@ -733,6 +735,7 @@ function searchByKeyword(keyword) {
 
         const callback = (result, status) => {
             if (status === kakao.maps.services.Status.OK) {
+                console.log(result);
                 resolve(result);
             }
         };
@@ -863,7 +866,7 @@ function enterKey() {
             setMarkerEvent();
             return data;
         }
-        else if (addressSearch.length === 0 && data[1].length !== 0 ) {
+        else if (addressSearch.length === 0 && keywordSearch.length !== 0 ) {
             panTo(keywordSearch[0].y, keywordSearch[0].x);
             removeMarker();
             keywordSearch.forEach(data => {
