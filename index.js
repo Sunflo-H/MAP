@@ -23,7 +23,6 @@ const etcContainer = document.querySelector('.etc-container');
 // 전역변수
 let map;
 let markers = [];
-// let cityIsChange;
 let mapCenter;
 
 // 즉시실행함수로 전역변수를 최소화
@@ -55,14 +54,13 @@ function valueCheck() {
     }
 }
 
+const cityIsChange = (stateCheck)(); 
+
 function getWeather(lat, lng) {
     const locationContainer = document.querySelector('.location-container');
     const weatherContainer = locationContainer.querySelector('.weather-container');
     const weatherDiv = weatherContainer.querySelector('.weatherAndTemp-container');
     const dustDiv = weatherContainer.querySelector('.dust-container');
-
-    console.log(weatherDiv);
-    console.log(dustDiv);
 
     let apiKey = '2bd8aa9e0a77682baadc650722225f4d',
         units = 'metric' // 섭씨 적용
@@ -152,8 +150,11 @@ function getWeather(lat, lng) {
         })
 }
 
-const cityIsChange = (stateCheck)(); 
-
+/**
+ * 주소 정보를 받아 현재 위치 정보를 세팅한다.
+ * @param {*} city 두번째 주소 : ~구
+ * @param {*} dong 세번째 주소 : ~동
+ */
 function setCurrentLocation(city, dong) {
     const citySpan = document.querySelector('.address-container .city');
     const dongSpan = document.querySelector('.address-container .dong');
@@ -162,6 +163,11 @@ function setCurrentLocation(city, dong) {
     dongSpan.innerText = dong;
 }
 
+/**
+ * 주소 정보를 받아 추천리스트를 세팅한다..
+ * @param {*} region 첫번째 주소 : ~시, ~도
+ * @param {*} city   두번째 주소 : ~동
+ */
 function setRecommendList(region, city) {
     const recommendList = document.querySelector('.itemList-container');
 
@@ -179,9 +185,14 @@ function setRecommendList(region, city) {
                             </div>`
             recommendList.insertAdjacentHTML('beforeend', element);
         })
-    })
+    });
 }
 
+/**
+ * 좌표를 받아 해당 좌표의 정보들로 검색컨텐츠를 보여준다.
+ * @param {*} lat 위도 y
+ * @param {*} lng 경도 x
+ */
 function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
     searchAddrFromCoords(lat, lng)
     .then(data => {
@@ -204,11 +215,11 @@ function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter().
 }
 
 /**
- * 지도를 만들고, 첫 위치를 좌표로 정한다. 
- * @param {*} lat 위도
- * @param {*} lng 경도
+ * 좌표를 기준으로 지도를 생성한다.
+ * @param {*} lat 위도 y
+ * @param {*} lng 경도 x
  */
-function displayMap(lat, lng) {
+function createMap(lat, lng) {
     const mapDiv = document.querySelector('.map');
     const center = new Tmapv2.LatLng(lat, lng); 
 
@@ -229,7 +240,7 @@ function pageSetting(result) {
     let lat = result.coords.latitude; // 위도 (남북)
     let lng = result.coords.longitude; // 경도 (동서)
     getWeather(lat, lng);
-    displayMap(lat, lng); // 지도 생성
+    createMap(lat, lng); // 지도 생성
 
     displaySearchContent();
 
@@ -607,9 +618,8 @@ function search(keyword) {
 
 /**
  * 주소로 검색하여 장소(주소)에 대한 정보를 얻는다.
- * @param {*} addr 검색할 주소
- * @returns [구의동, 구의1동, 구의2동, ...]
- * @주소데이터 주소명, 도로명, 분리된 주소명, 분리된 도로명, x, y
+ * @param {*} addr 검색할 주소 ex)구의동
+ * @returns promise [주소데이터1, 주소데이터2 ...]
  */
 function searchByAddr(addr) {
     let placeList = new Promise((resolve, reject) => {
@@ -632,9 +642,8 @@ function searchByAddr(addr) {
 
 /**
  * 키워드로 검색하여 장소(주소)에 대한 정보를 얻는다.
- * @param {*} keyword 검색할 키워드
- * @returns [롯데리아1, 롯데리아2, 롯데리아3, ...]
- * @장소데이터 주소명, 카테고리, 카테고리CODE, 장소명, id, 상세페이지url, 도로명, x, y
+ * @param {*} keyword 검색할 키워드 ex)롯데리아
+ * @returns promise [장소데이터1, 장소데이터2, ...]
  */
 function searchByKeyword(keyword) {
     const lat = map.getCenter()._lat;
@@ -660,25 +669,38 @@ function searchByKeyword(keyword) {
     return placeList;
 }
 
+
+/**
+ * 좌표로 행정동 주소 정보를 요청합니다. 동까지의 주소 정보를 얻는다.
+ * @param {*} lat 위도 y
+ * @param {*} lng 경도 x
+ * @returns promise [{기본주소(서울 광진구 구의동)}, {상세주소(서울 광진구 구의2동)}]
+ */
 function searchAddrFromCoords(lat, lng) {
-    let addrList = new Promise((resolve, reject) => {
+    let addr = new Promise((resolve, reject) => {
         var geocoder = new kakao.maps.services.Geocoder();
 
         const getResult = (result, status) => {
             if (status === kakao.maps.services.Status.OK) {
+                console.log(result);
                 resolve(result);
             }  
         };
     
-        // 좌표로 행정동 주소 정보를 요청합니다
         geocoder.coord2RegionCode(lng, lat, getResult);         
     });
 
-    return addrList;
+    return addr;
 }
 
+/**
+ * 좌표로 법정동 상세 주소 정보를 요청합니다
+ * @param {*} lat 위도 y
+ * @param {*} lng 경도 x
+ * @returns promise [{지번주소, 도로명주소}]
+ */
 function searchDetailAddrFromCoords(lat, lng) {
-    let detailAddrList = new Promise((resolve, reject) => {
+    let detailAddr = new Promise((resolve, reject) => {
         var geocoder = new kakao.maps.services.Geocoder();
 
         const getResult = (result, status) => {
@@ -686,12 +708,11 @@ function searchDetailAddrFromCoords(lat, lng) {
                 resolve(result);
             }  
         };
-    
-        // 좌표로 법정동 상세 주소 정보를 요청합니다
+
         geocoder.coord2Address(lng, lat, getResult);        
     });
 
-    return detailAddrList;
+    return detailAddr;
 }
 
 function displaySearchList(isTrue) {
