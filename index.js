@@ -234,9 +234,13 @@ function createMap(lat, lng) {
 }
 
 //! if promise가 아니라면?
-navigator.geolocation.getCurrentPosition(pageSetting);
+// navigator.geolocation.getCurrentPosition(pageSetting);
+let watchId = navigator.geolocation.watchPosition(pageSetting, error, {enableHighAccuracy: true});
+function error() {
 
+}
 function pageSetting(result) {
+    navigator.geolocation.clearWatch(watchId)
     let lat = result.coords.latitude; // 위도 (남북)
     let lng = result.coords.longitude; // 경도 (동서)
     getWeather(lat, lng);
@@ -312,7 +316,6 @@ function createMarker(data) {
     };
 
     markers.push(marekrObj);
-    
 }
 
 function removeMarker() {
@@ -321,10 +324,13 @@ function removeMarker() {
     });
     markers = [];
 }
-
+/**
+ * 좌표로 지도가 부드럽게 이동한다.
+ * @param {*} lat 위도 y
+ * @param {*} lng 경도 x
+ */
 function panTo(lat, lng) {
     map.panTo(new Tmapv2.LatLng(lat, lng));
-    displaySearchContent(lat, lng);
 }
 
 function getUserLocation() {
@@ -345,7 +351,6 @@ const autoCompleteState = (stateCheck)();
 const historyState = (stateCheck)();
 
 function categorySearch(event) {
-    console.log("카테고리를 눌렀습니다. 해당 카테고리로 주변 탐색을 실행합니다.");
     let places = new kakao.maps.services.Places();
     let categoryCode = event.currentTarget.getAttribute('data-categoryCode');
     let lat = map.getCenter()._lat;
@@ -387,10 +392,11 @@ function setMarkerEvent() {
             let lng = markers[i].marker.getPosition()._lng;
             
             panTo(lat, lng);
+            displaySearchContent(lat, lng);
 
             const menuContentContainer = document.querySelector('.menuContent-container');
             const searchContent = menuContentContainer.querySelector('.searchContent');
-            const infoContainer = searchContent.querySelector('.placeInfo-container');
+            const placeInfoContainer = searchContent.querySelector('.placeInfo-container');
            
 
             menuContentContainer.classList.add("menuContent-container-active");
@@ -402,8 +408,8 @@ function setMarkerEvent() {
             }, 1);
 
             searchContent.classList.remove('hide');
-            infoContainer.classList.remove('hide');
-            setInfoContainer(markers[i].info);
+            placeInfoContainer.classList.remove('hide');
+            setPlaceInfoContainer(markers[i].info);
         })
     }
 }
@@ -414,9 +420,13 @@ const categoryValue = (valueCheck)();
  * 
  * @param {*} data 
  */
-function setInfoContainer(data) {
-    const infoContainer = document.querySelector('.menuContent-container .searchContent .placeInfo-container');
+function setPlaceInfoContainer(data) {
+    const placeInfoContainer = document.querySelector('.menuContent-container .searchContent .placeInfo-container');
+    const imgContainer = placeInfoContainer.querySelector('.img-container');
+    const nameAndCategoryContainer = placeInfoContainer.querySelector('.nameAndCategory-container');
+    const detailContainer = placeInfoContainer.querySelector('.detail-container');
 
+    console.log(nameAndCategoryContainer);
     let name = data.place_name,
         addressName = data.address_name,
         roadAddress = data.road_address_name,
@@ -425,7 +435,9 @@ function setInfoContainer(data) {
         url = data.place_url;
 
     let imgSrc;
-    let imgElement
+    let imgElement;
+    let nameAndCategoryElement = `<div class="name">${name}</div>
+                                  <div class="category">${category}</div>`;
 
     // 카테고리별 이미지 src
     switch(category) {
@@ -449,68 +461,55 @@ function setInfoContainer(data) {
         case "숙박" : 
         case "주유소,충전소" : 
         case "관광명소" : 
-        case "은행" : imgElement = `<div class="img-container">
-                                        <img class="infoImage height120" src=${imgSrc}>
-                                        <div class="img-cover1"></div>
-                                        <div class="img-cover2">
-                                            <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
-                                        </div>
+        case "은행" : imgElement = `<img class="infoImage height120" src=${imgSrc}>
+                                    <div class="img-cover1"></div>
+                                    <div class="img-cover2">
+                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
                                     </div>`;
                       break;
         case "편의점" : 
-        case "주차장" : imgElement = `<div class="img-container">
-                                            <img class="infoImage scale12" src=${imgSrc}>
-                                            <div class="img-cover1"></div>
-                                            <div class="img-cover2">
-                                                <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
-                                            </div>
-                                        </div>`;
-                          break;
-
+        case "주차장" : imgElement = `<img class="infoImage scale12" src=${imgSrc}>
+                                      <div class="img-cover1"></div>  
+                                      <div class="img-cover2">
+                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
+                                      </div>`;
+                        break;
         case "대형마트" : 
-        case "숙박" : imgElement = `<div class="img-container">
-                                        <img class="infoImage height scale10" src=${imgSrc}>
-                                        <div class="img-cover1"></div>
-                                        <div class="img-cover2">
-                                            <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
-                                        </div>
+        case "숙박" : imgElement = `<img class="infoImage height scale10" src=${imgSrc}>
+                                    <div class="img-cover1"></div>
+                                    <div class="img-cover2">
+                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
                                     </div>`;
-                    break;
+                       break;
         case "카페" : 
-        
         case "문화시설" : 
         case "병원" : 
-        case "약국" : imgElement = `<div class="img-container">
-                                        <img class="infoImage" src=${imgSrc}>
-                                        <div class="img-cover1"></div>
-                                        <div class="img-cover2">
-                                            <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
-                                        </div>
+        case "약국" : imgElement = `<img class="infoImage" src=${imgSrc}>
+                                    <div class="img-cover1"></div>
+                                    <div class="img-cover2">
+                                        <div class="button"><span><i class="fa-solid fa-xmark"></i></span></div>
                                     </div>`;
                       break;
     }
 
-    let element = `<div class="detail-container">
-                    <div class="name">${name}</div>
-                    <div class="category">${category}</div>
-                   </div>`;
-
+    // 카테고리가 바뀌었다면 img를 바꾼다.
     if(categoryValue.getValue() !== category) {
-        while(infoContainer.hasChildNodes()) infoContainer.removeChild(infoContainer.firstChild);
+        while(imgContainer.hasChildNodes()) imgContainer.removeChild(imgContainer.firstChild);
         categoryValue.setValue(category);
-        infoContainer.insertAdjacentHTML('beforeend', imgElement);
+        imgContainer.insertAdjacentHTML('beforeend', imgElement);
     }
-    else if(categoryValue.getValue() === category) {
-        const infoBox = infoContainer.querySelector('.info-box');
-        infoBox.remove();
-    }
+    const button = placeInfoContainer.querySelector('.button');
 
-    infoContainer.insertAdjacentHTML('beforeend', element);
-
-    const button = infoContainer.querySelector('.button');
     button.addEventListener('click', event => {
-        infoContainer.classList.add('hide');
-    })
+        placeInfoContainer.classList.add('hide');
+    });
+
+
+    while(nameAndCategoryContainer.hasChildNodes()) nameAndCategoryContainer.removeChild(nameAndCategoryContainer.firstChild);
+
+    nameAndCategoryContainer.insertAdjacentHTML('beforeend', nameAndCategoryElement);
+
+    
 }
 
 
@@ -682,7 +681,6 @@ function searchAddrFromCoords(lat, lng) {
 
         const getResult = (result, status) => {
             if (status === kakao.maps.services.Status.OK) {
-                console.log(result);
                 resolve(result);
             }  
         };
@@ -785,10 +783,13 @@ function setAutoComplete(data) {
         autoComplete.addEventListener('mouseleave', event => {
             autoComplete.classList.remove('active');
         })
-    });
-    
+    });    
 }
 
+/**
+ * enter를 눌렀을때 실행되는 함수.
+ * search를 실행하여 검색 결과로 마커, 검색컨텐츠를 세팅한다.
+ */
 function enterKey() {
     search(searchInMap.value)
     .then(data => {
@@ -799,6 +800,7 @@ function enterKey() {
         // 주소검색 결과만 있는경우
         if (addressSearchData.length !== 0) {
             panTo(addressSearchData[0].y, addressSearchData[0].x);
+            displaySearchContent(addressSearchData[0].y, addressSearchData[0].x);
             removeMarker();
             addressSearchData.forEach(data => {
                 createMarker(data);
@@ -809,6 +811,7 @@ function enterKey() {
         // 키워드검색 결과만 있는경우
         else if (addressSearchData.length === 0 && keywordSearchData.length !== 0 ) {
             panTo(keywordSearchData[0].y, keywordSearchData[0].x);
+            displaySearchContent(keywordSearchData[0].y, keywordSearchData[0].x);
             removeMarker();
             keywordSearchData.forEach(data => {
                 createMarker(data);
@@ -854,9 +857,6 @@ function upKey() {
 
     standardChild = searchList.lastElementChild;
     standardChild.classList.add('active');
-    console.log(standardChild.innerText);
-    console.log(standardChild.innerHTML);
-    console.log(standardChild.textContent);
     searchInMap.value = standardChild.innerText;
 }
 
@@ -922,12 +922,6 @@ menuIcons.forEach((icon, index) => {
         curve.style.top = index * 100 + height + "px"
     });
 });
-
-/**
- * 마커 클릭시 상세정보를 보여줘
- * 보여주는 공간을 만드는건 했어 (infoContainer)
- * 클릭시 메뉴의 검색 컨텐츠가 열리게 해야돼
- */
 
 menuCircles.forEach(((circle, index) => {
     circle.addEventListener('click', () => {

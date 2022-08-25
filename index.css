@@ -2,6 +2,7 @@
 :root {
   --naverGreen: #2DB400;
   --customGreen: #36ee48;
+  --naverBlue: #0475f4;
   --cacaoBlue: #258fff;
   --customBlue: #004eff;
   --seoulBlue: #558BCF;
@@ -9,6 +10,7 @@
   --grayBlue: #eceef9;
   --main: #252f62;
   --sub: #1b2251;
+  --subFontColor: #70757A;
 }
 
 .hide {
@@ -372,13 +374,69 @@ main {
   cursor: pointer;
   background-color: #f5f5f5;
 }
+.menuContent-container .searchContent .placeInfo-container .nameAndCategory-container {
+  padding-top: 10px;
+  padding-left: 20px;
+}
+.menuContent-container .searchContent .placeInfo-container .nameAndCategory-container .name {
+  font-size: 20px;
+  font-weight: bold;
+}
+.menuContent-container .searchContent .placeInfo-container .nameAndCategory-container .category {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--subFontColor);
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container {
+  display: flex;
+  height: 70px;
+  margin-top: 10px;
+  padding: 5px 15px;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container .icon-container {
+  height: 100%;
+  padding-top: 5px;
+  box-sizing: border-box;
+  color: var(--naverBlue);
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container .icon-container .circle {
+  position: relative;
+  border: 1px solid var(--naverBlue);
+  border-radius: 999px;
+  width: 30px;
+  height: 30px;
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container .icon-container .circle i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container .icon-container .circle:hover {
+  background-color: var(--naverBlue);
+  color: white;
+  cursor: pointer;
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container .icon-container .circle.route {
+  transform: rotateY(180deg);
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container .icon-container .text {
+  margin-top: 2px;
+  text-align: center;
+  font-size: 12px;
+}
 .menuContent-container .searchContent .placeInfo-container .detail-container {
   width: 100%;
-  height: 100%;
-  border: 1px solid red;
   box-sizing: border-box;
-  padding-top: 20px;
+  padding-top: 10px;
 }
+
 /* 지도 컨테이너*/
 .map-container {
   background-color: #fbfdff;
@@ -611,7 +669,7 @@ main {
 }
 .marker-container .placeCategory {
   font-size: 10px;
-  color: rgba(0, 0, 0, 0.558);
+  color: var(--subFontColor);
 }
 .marker-container .marker-point {
   position: absolute;
