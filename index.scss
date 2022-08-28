@@ -149,39 +149,6 @@ main {
     /* 검색 컨텐츠 */
     .searchContent {
 
-        /* 검색 컨텐츠 - 검색바  */
-        .search-container {
-            height: 22px;
-            border: 2px solid var(--customGreen);
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin: 0px 10px;
-
-            .icon-container {
-                display: inline-block;
-                height: 100%;
-                position: relative;
-                top: 50%;
-                transform: translateY(-50%);
-                color: var(--customGreen);
-            }
-
-            label:hover {
-                cursor: pointer;
-            }
-
-            input {
-                position: relative;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 170px;
-                height: 100%;
-                border: none;
-                outline: none;
-                font-weight: bold;
-            }
-        }
-
         /* 검색 컨텐츠 - 지역 정보  */
         .location-container {
             height: 58px;

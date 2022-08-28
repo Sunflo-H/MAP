@@ -136,38 +136,9 @@ main {
   box-sizing: border-box;
 }
 .menuContent-container .searchContent {
-  /* 검색 컨텐츠 - 검색바  */
   /* 검색 컨텐츠 - 지역 정보  */
   /* 검색 컨텐츠 - 맛집, 검색한 정보 */
   /* 클릭한 장소의 정보 */
-}
-.menuContent-container .searchContent .search-container {
-  height: 22px;
-  border: 2px solid var(--customGreen);
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin: 0px 10px;
-}
-.menuContent-container .searchContent .search-container .icon-container {
-  display: inline-block;
-  height: 100%;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--customGreen);
-}
-.menuContent-container .searchContent .search-container label:hover {
-  cursor: pointer;
-}
-.menuContent-container .searchContent .search-container input {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 170px;
-  height: 100%;
-  border: none;
-  outline: none;
-  font-weight: bold;
 }
 .menuContent-container .searchContent .location-container {
   height: 58px;

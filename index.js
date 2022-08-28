@@ -546,61 +546,7 @@ function setPlaceInfoContainer(data) {
     console.log(data);
 }
 
-categoryList.forEach(category => {
-    category.addEventListener('click', event => {
-       categorySearch(event);
-    });
-});
 
-searchInMap.addEventListener('keyup', e => {
-    if (e.keyCode === 13) enterKey();
-    else if (e.keyCode === 38) {
-        if (searchListState.getState() === true) upKey();
-    }
-    else if (e.keyCode === 40) {
-        if (searchListState.getState() === true) downKey();
-    }
-    else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
-})
-
-searchInMap.addEventListener('input', e => {
-    
-    if (searchInMap.value === '') {
-        displaySearchList(true);
-        setHistory();
-        return;
-    }
-
-    Promise.all([getJsonAddr(searchInMap.value), getJsonData(searchInMap.value)]).then(data => {      
-        let result = data[0].concat(data[1]).slice(0, 10);
-
-        if (result.length !== 0) {
-            displaySearchList(true);
-            setAutoComplete(result);
-        }
-        else {
-            displaySearchList(false);
-        }
-    })
-})
-
-searchInMap.addEventListener('click', e => {
-    console.log("포커스");
-    displaySearchList(true);
-    if(searchInMap.value === "") setHistory();
-})
-
-body.addEventListener('click',e => {
-    const container = document.querySelector('.interaction-container .search-container');
-    
-    if(e.target === searchInMap) return;
-    if(e.target === container) return;
-    if(e.target.parentNode === container) return;
-    if(e.target.parentNode.parentNode === container) return;
-    if(e.target.parentNode.parentNode.parentNode === container) return;
-
-    displaySearchList(false);
-})
 
 /**
  * 카카오가 제공하는 주소 데이터로부터 -keyword-와 글자가 일치하는 데이터를 가져온다.
@@ -927,73 +873,10 @@ function downKey() {
     searchInMap.value = standardChild.innerText;
 }
 
-/** 곡선모양을 누르면 메뉴 컨텐츠를 닫는다. */
-curvePath.addEventListener('click', () => {
-    const menuContentContainer = document.querySelector('.menuContent-container');
-    const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
-
-    menuContentContainer.classList.remove("menuContent-container-active");
-    curve.style.transform = "translateX(5px)";
-    curve.style.opacity = "0";
-    setTimeout(() => {
-        curve.classList.add('hide');
-    }, 200);
-    for(let i = 0; i < contentContainers.length; i++) {
-        contentContainers[i].classList.add('hide');
-    }
-    changeSearchContentColor();
-});
-
-/** 곡선모양안의 화살표를 누르면 메뉴 컨텐츠를 닫는다. */
-curveI.addEventListener('click', () => {
-    const menuContentContainer = document.querySelector('.menuContent-container');
-    const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
-
-    menuContentContainer.classList.remove("menuContent-container-active");
-    curve.style.transform = "translateX(5px)";
-    curve.style.opacity = "0";
-    setTimeout(() => {
-        curve.classList.add('hide');
-    }, 200);
-
-    for (let i = 0; i < contentContainers.length; i++) {
-        contentContainers[i].classList.add('hide');
-    }
-    changeCssSearchContent();
-});
-
-/** 메뉴 아이콘을 누르면 곡선의 위치를 바꾼다. */
-menuIcons.forEach((icon, index) => {
-    icon.addEventListener('click', () => {
-        let height = 70;
-        curve.style.top = index * 100 + height + "px"
-    });
-});
-
-/** 메뉴 아이콘을 누르면 해당 메뉴컨텐츠가 보여진다.*/
-menuCircles.forEach(((circle, index) => {
-    circle.addEventListener('click', () => {
-        const menuContentContainer = document.querySelector('.menuContent-container');
-        const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
-
-        menuContentContainer.classList.add("menuContent-container-active");
-        curve.classList.remove('hide');
-
-        setTimeout(() => {
-            curve.style.opacity = "1";
-            curve.style.transform = "translateX(-5px)";
-        }, 0);
-
-        for (let i = 0; i < contentContainers.length; i++) {
-            if (i === index) contentContainers[i].classList.remove('hide');
-            else contentContainers[i].classList.add('hide');
-        }
-
-        changeCssSearchContent();        
-    });
-}));
-
-function changeCssSearchContent() {
+/**
+ * 검색컨테이너의 css를 조작하는 함수
+ */
+ function changeCssSearchContainer() {
     const searchContent = document.querySelector('.menuContent-container .content-container.searchContent');
     const searchContainer = document.querySelector('.map .interaction-container .search-container');
     const searchIcon = searchContainer.querySelector('i');
@@ -1026,6 +909,132 @@ function changeCssSearchContent() {
         }
     }
 }
+
+/** 카테고리를 클릭하면 카테고리검색함수를 실행 */
+categoryList.forEach(category => {
+    category.addEventListener('click', event => {
+       categorySearch(event);
+    });
+});
+
+/**  */
+searchInMap.addEventListener('keyup', e => {
+    if (e.keyCode === 13) enterKey();
+    else if (e.keyCode === 38) {
+        if (searchListState.getState() === true) upKey();
+    }
+    else if (e.keyCode === 40) {
+        if (searchListState.getState() === true) downKey();
+    }
+    else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
+});
+
+searchInMap.addEventListener('input', e => {
+    
+    if (searchInMap.value === '') {
+        displaySearchList(true);
+        setHistory();
+        return;
+    }
+
+    Promise.all([getJsonAddr(searchInMap.value), getJsonData(searchInMap.value)]).then(data => {      
+        let result = data[0].concat(data[1]).slice(0, 10);
+
+        if (result.length !== 0) {
+            displaySearchList(true);
+            setAutoComplete(result);
+        }
+        else {
+            displaySearchList(false);
+        }
+    })
+});
+
+searchInMap.addEventListener('click', e => {
+    console.log("포커스");
+    displaySearchList(true);
+    if(searchInMap.value === "") setHistory();
+});
+
+body.addEventListener('click',e => {
+    const container = document.querySelector('.interaction-container .search-container');
+    
+    if(e.target === searchInMap) return;
+    if(e.target === container) return;
+    if(e.target.parentNode === container) return;
+    if(e.target.parentNode.parentNode === container) return;
+    if(e.target.parentNode.parentNode.parentNode === container) return;
+
+    displaySearchList(false);
+});
+
+/** 곡선모양을 누르면 메뉴 컨텐츠를 닫는다. */
+curvePath.addEventListener('click', () => {
+    const menuContentContainer = document.querySelector('.menuContent-container');
+    const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
+
+    menuContentContainer.classList.remove("menuContent-container-active");
+    curve.style.transform = "translateX(5px)";
+    curve.style.opacity = "0";
+    setTimeout(() => {
+        curve.classList.add('hide');
+    }, 200);
+    for(let i = 0; i < contentContainers.length; i++) {
+        contentContainers[i].classList.add('hide');
+    }
+    changeCssSearchContent();
+});
+
+/** 곡선모양안의 화살표를 누르면 메뉴 컨텐츠를 닫는다. */
+curveI.addEventListener('click', () => {
+    const menuContentContainer = document.querySelector('.menuContent-container');
+    const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
+
+    menuContentContainer.classList.remove("menuContent-container-active");
+    curve.style.transform = "translateX(5px)";
+    curve.style.opacity = "0";
+    setTimeout(() => {
+        curve.classList.add('hide');
+    }, 200);
+
+    for (let i = 0; i < contentContainers.length; i++) {
+        contentContainers[i].classList.add('hide');
+    }
+    changeCssSearchContainer();
+});
+
+/** 메뉴 아이콘을 누르면 곡선의 위치를 바꾼다. */
+menuIcons.forEach((icon, index) => {
+    icon.addEventListener('click', () => {
+        let height = 70;
+        curve.style.top = index * 100 + height + "px"
+    });
+});
+
+/** 메뉴 아이콘을 누르면 해당 메뉴컨텐츠가 보여진다.*/
+menuCircles.forEach(((circle, index) => {
+    circle.addEventListener('click', () => {
+        const menuContentContainer = document.querySelector('.menuContent-container');
+        const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
+
+        menuContentContainer.classList.add("menuContent-container-active");
+        curve.classList.remove('hide');
+
+        setTimeout(() => {
+            curve.style.opacity = "1";
+            curve.style.transform = "translateX(-5px)";
+        }, 0);
+
+        for (let i = 0; i < contentContainers.length; i++) {
+            if (i === index) contentContainers[i].classList.remove('hide');
+            else contentContainers[i].classList.add('hide');
+        }
+
+        changeCssSearchContainer();        
+    });
+}));
+
+
 
 /** 카테고리의 기타버튼에 마우스가 들어오면 배경색을 바꾸고, 기타카테고리를 보여준다. */
 etcBtn.addEventListener('mouseenter', () => {
