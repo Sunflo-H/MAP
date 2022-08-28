@@ -1,5 +1,48 @@
 // 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
 
+// 즉시실행함수로 전역변수를 최소화
+/**
+ * true, false 상태를 변경하고 확인하는 함수 , 즉시실행함수로 사용된다.
+ * @returns getState(), setState(boolean)
+ */
+function stateCheck() {
+    let state;
+
+    function getState() {
+        return state;
+    }
+
+    function setState(boolean) {
+        state = boolean;
+    }
+
+    return {
+        getState: getState,
+        setState: setState
+    }
+}
+
+/**
+ * 값을 입력하고 불러오는 함수 , 즉시실행함수로 사용된다.
+ * @returns getValue(), setValue(param)
+ */
+function valueCheck() {
+    let value;
+
+    function getValue() {
+        return value;
+    }
+
+    function setValue(param) {
+        value = param;
+    }
+
+    return {
+        getValue: getValue,
+        setValue: setValue
+    }
+}
+
 const RADIUS = {
     LV1: 5000,
     LV2: 10000,
@@ -8,8 +51,8 @@ const RADIUS = {
 }
 const SEARCH_DATA_LENGTH = 15; // 15가 MAX
 
-const mapContainer = document.querySelector('.map-container');
 
+const mapContainer = document.querySelector('.map-container');
 //css 작업에 사용된 변수
 const curve = document.querySelector('.curve');
 const curvePath = document.querySelector('.curve path');
@@ -19,40 +62,22 @@ const menuCircles = document.querySelectorAll('.menu-category-container .menu-ci
 const menuI = document.querySelectorAll('.menu-circle span');
 const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
+// 검색 기능 변수
+const body = document.querySelector('body');
+const searchInMenu = document.querySelector('.searchContent .search-container input');
+const searchInMap = document.querySelector('.interaction-container .search-container input');
+const categoryList = document.querySelectorAll('.category');
+const searchListState = (stateCheck)();
+const autoCompleteState = (stateCheck)();
+const historyState = (stateCheck)();
+
 
 // 전역변수
 let map;
 let markers = [];
 let mapCenter;
 
-// 즉시실행함수로 전역변수를 최소화
-function stateCheck() {
-    let state;
 
-    return {
-        getState: function () {
-            return state;
-        },
-
-        setState: function (boolean) {
-            state = boolean;
-        }
-    }
-}
-
-function valueCheck() {
-    let value;
-
-    return {
-        getValue: function () {
-            return value;
-        },
-        setValue: function (param) {
-            value = param;
-        }
-
-    }
-}
 
 const cityIsChange = (stateCheck)(); 
 
@@ -342,15 +367,7 @@ function getUserLocation() {
 //길 찾기 기능
 
 // 검색 기능 모음
-const body = document.querySelector('body');
-const searchInMenu = document.querySelector('.searchContent .search-container input');
-const searchInMap = document.querySelector('.interaction-container .search-container input');
-const categoryList = document.querySelectorAll('.category');
 
-
-const searchListState = (stateCheck)();
-const autoCompleteState = (stateCheck)();
-const historyState = (stateCheck)();
 
 function categorySearch(event) {
     let places = new kakao.maps.services.Places();
@@ -910,28 +927,42 @@ function downKey() {
     searchInMap.value = standardChild.innerText;
 }
 
-// 메뉴 컨텐츠의 닫기버튼(곡선)
+/** 곡선모양을 누르면 메뉴 컨텐츠를 닫는다. */
 curvePath.addEventListener('click', () => {
     const menuContentContainer = document.querySelector('.menuContent-container');
+    const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
+
     menuContentContainer.classList.remove("menuContent-container-active");
     curve.style.transform = "translateX(5px)";
     curve.style.opacity = "0";
     setTimeout(() => {
         curve.classList.add('hide');
     }, 200);
+    for(let i = 0; i < contentContainers.length; i++) {
+        contentContainers[i].classList.add('hide');
+    }
+    changeSearchContentColor();
 });
 
+/** 곡선모양안의 화살표를 누르면 메뉴 컨텐츠를 닫는다. */
 curveI.addEventListener('click', () => {
     const menuContentContainer = document.querySelector('.menuContent-container');
+    const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
+
     menuContentContainer.classList.remove("menuContent-container-active");
     curve.style.transform = "translateX(5px)";
     curve.style.opacity = "0";
     setTimeout(() => {
         curve.classList.add('hide');
     }, 200);
+
+    for (let i = 0; i < contentContainers.length; i++) {
+        contentContainers[i].classList.add('hide');
+    }
+    changeCssSearchContent();
 });
 
-// 메뉴의 아이콘 관련 이벤트들
+/** 메뉴 아이콘을 누르면 곡선의 위치를 바꾼다. */
 menuIcons.forEach((icon, index) => {
     icon.addEventListener('click', () => {
         let height = 70;
@@ -939,34 +970,71 @@ menuIcons.forEach((icon, index) => {
     });
 });
 
+/** 메뉴 아이콘을 누르면 해당 메뉴컨텐츠가 보여진다.*/
 menuCircles.forEach(((circle, index) => {
     circle.addEventListener('click', () => {
         const menuContentContainer = document.querySelector('.menuContent-container');
-        let searchContainer = menuContentContainer.querySelector('.search-container');
-        let divs = document.querySelectorAll('.menuContent-container > div');
-        
+        const contentContainers = document.querySelectorAll('.menuContent-container > .content-container');
+
         menuContentContainer.classList.add("menuContent-container-active");
         curve.classList.remove('hide');
 
         setTimeout(() => {
             curve.style.opacity = "1";
             curve.style.transform = "translateX(-5px)";
-        }, 1);
+        }, 0);
 
-        for (let i = 0; i < divs.length; i++) {
-            if (i === index) divs[i].classList.remove('hide');
-            else divs[i].classList.add('hide');
+        for (let i = 0; i < contentContainers.length; i++) {
+            if (i === index) contentContainers[i].classList.remove('hide');
+            else contentContainers[i].classList.add('hide');
         }
+
+        changeCssSearchContent();        
     });
 }));
 
-// 지도상의 카테고리의 기타카테고리 관련 이벤트
+function changeCssSearchContent() {
+    const searchContent = document.querySelector('.menuContent-container .content-container.searchContent');
+    const searchContainer = document.querySelector('.map .interaction-container .search-container');
+    const searchIcon = searchContainer.querySelector('i');
+    const contentContainers = document.querySelectorAll('.menuContent-container .content-container');
+
+    // 검색컨텐츠가 활성화 중이면 검색컨테이너의 색을 바꾼다.
+    if(!searchContent.classList.contains('hide')) {
+        searchContainer.style.width = "231px";
+        searchContainer.style.height = "38px";
+        searchContainer.style.border = "2px solid #36ee48";
+        searchContainer.style.boxShadow = "none";
+        searchContainer.style.zIndex = 3;
+        searchIcon.style.color = "#36ee48";
+    }
+    // 검색컨텐츠가 활성화 중이 아니면 원래대로 되돌린다.
+    else {
+        searchContainer.style.width = "230px";
+        searchContainer.style.height = "36px";
+        searchContainer.style.border = "none";
+        searchContainer.style.boxShadow = "0px 1px 3px rgba(0, 0, 0, 0.4)";
+        
+        searchIcon.style.color = "#252f62";
+        searchContainer.style.zIndex = 3;        
+    }
+
+    //다른 컨텐츠가 활성화 되었을때 검색컨테이너를 안보이게 한다.
+    for (let i = 0; i < contentContainers.length; i++) {
+        if(i !== 0 && !contentContainers[i].classList.contains('hide')) {
+            searchContainer.style.zIndex = 1;
+        }
+    }
+}
+
+/** 카테고리의 기타버튼에 마우스가 들어오면 배경색을 바꾸고, 기타카테고리를 보여준다. */
 etcBtn.addEventListener('mouseenter', () => {
     etcContainer.classList.remove('hide');
     etcBtn.style.background = "rgba(0, 0, 0, 0.02)";
     etcBtn.style.color = "var(--cacaoBlue)";
 });
 
+/** 카테고리의 기타버튼에서 마우스가 나가면 배경색을 바꾸고, 기타카테고리를 감춘다. */
 etcContainer.addEventListener('mouseleave', () => {
     etcContainer.classList.add('hide');
     etcBtn.style.backgroundColor = "white";

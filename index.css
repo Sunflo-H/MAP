@@ -172,7 +172,7 @@ main {
 .menuContent-container .searchContent .location-container {
   height: 58px;
   padding: 5px 10px;
-  margin: 10px 10px 0px;
+  margin: 40px 10px 0px;
 }
 .menuContent-container .searchContent .location-container .address-container {
   font-family: "Noto Sans KR", sans-serif;
@@ -487,19 +487,20 @@ main {
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 1;
+  transition-duration: 1s;
   /* 상호작용 중 검색기능 */
   /* 상호작용 중 카테고리로 검색기능 */
 }
 .map-container .map .interaction-container .search-container {
   position: relative;
+  width: 230px;
+  height: 36px;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
   border-radius: 5px;
   background-color: white;
-  width: 230px;
-  height: 36px;
   padding: 6px 10px;
   box-sizing: border-box;
+  z-index: 3;
 }
 .map-container .map .interaction-container .search-container .label-container {
   display: inline-block;
@@ -569,6 +570,7 @@ main {
   border-radius: 5px;
   background-color: white;
   margin-left: 20px;
+  z-index: 1;
 }
 .map-container .map .interaction-container .category-container .category {
   padding: 6px 10px;
