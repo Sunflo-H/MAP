@@ -357,7 +357,7 @@ main {
             }
         }
 
-        /* 클릭한 장소의 상세한 정보 */
+        /* 클릭한 장소의 정보 */
         .placeInfo-container {
             position: absolute;
             top: 60px;
@@ -433,6 +433,10 @@ main {
                 .name {
                     font-size: 20px;
                     font-weight: bold;
+
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
 
                 .category {
@@ -491,6 +495,17 @@ main {
                         margin-top: 2px;
                         text-align: center;
                         font-size: 12px;
+                        font-weight: bold;
+                    }
+
+                    // 리뷰의 아이콘 위치만 따로 조정
+                    .review i {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-45%, -45%);
+
+                        font-size: 14px;
                     }
 
                 }
@@ -499,11 +514,27 @@ main {
 
             .detail-container {
                 width: 100%;
-                // height: 100%;
-                // border: 1px solid red;
                 box-sizing: border-box;
                 padding-top: 10px;
+                padding-left: 16px;
 
+                div {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    margin-top: 10px;
+                }
+
+                i {
+                    color: var(--naverBlue);
+                    font-size: 14px;
+                }
+
+                span {
+                    margin-left: 10px;
+                    font-size: 14px;
+                    font-weight: bold;
+                }
             }
         }
 

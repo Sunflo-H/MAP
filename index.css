@@ -139,7 +139,7 @@ main {
   /* 검색 컨텐츠 - 검색바  */
   /* 검색 컨텐츠 - 지역 정보  */
   /* 검색 컨텐츠 - 맛집, 검색한 정보 */
-  /* 클릭한 장소의 상세한 정보 */
+  /* 클릭한 장소의 정보 */
 }
 .menuContent-container .searchContent .search-container {
   height: 22px;
@@ -381,6 +381,9 @@ main {
 .menuContent-container .searchContent .placeInfo-container .nameAndCategory-container .name {
   font-size: 20px;
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .menuContent-container .searchContent .placeInfo-container .nameAndCategory-container .category {
   font-size: 12px;
@@ -430,11 +433,35 @@ main {
   margin-top: 2px;
   text-align: center;
   font-size: 12px;
+  font-weight: bold;
+}
+.menuContent-container .searchContent .placeInfo-container .interaction-container .icon-container .review i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-45%, -45%);
+  font-size: 14px;
 }
 .menuContent-container .searchContent .placeInfo-container .detail-container {
   width: 100%;
   box-sizing: border-box;
   padding-top: 10px;
+  padding-left: 16px;
+}
+.menuContent-container .searchContent .placeInfo-container .detail-container div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 10px;
+}
+.menuContent-container .searchContent .placeInfo-container .detail-container i {
+  color: var(--naverBlue);
+  font-size: 14px;
+}
+.menuContent-container .searchContent .placeInfo-container .detail-container span {
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 /* 지도 컨테이너*/

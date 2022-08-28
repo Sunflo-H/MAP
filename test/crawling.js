@@ -13,7 +13,7 @@ async function getHTML() {
 // getHTML 함수 실행 후 데이터에서
 // body > main > div > section > ul > li > article > h2 > a
 // 에 속하는 제목을 titleList에 저장
-getHTML()
+let h = getHTML()
   .then(html => {
 
     // console.log(html.data);
@@ -33,4 +33,10 @@ getHTML()
     });
     return titleList;
   })
-  .then(res => console.log(res)); // 저장된 결과를 출력
+  .then(res => {
+    console.log(res)
+    let name = "황병준";
+    return name;
+  }); // 저장된 결과를 출력
+
+export {h};

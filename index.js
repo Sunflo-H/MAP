@@ -1,3 +1,5 @@
+// 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
+
 const RADIUS = {
     LV1: 5000,
     LV2: 10000,
@@ -6,9 +8,7 @@ const RADIUS = {
 }
 const SEARCH_DATA_LENGTH = 15; // 15가 MAX
 
-
 const mapContainer = document.querySelector('.map-container');
-
 
 //css 작업에 사용된 변수
 const curve = document.querySelector('.curve');
@@ -339,6 +339,8 @@ function getUserLocation() {
     });
 }
 
+//길 찾기 기능
+
 // 검색 기능 모음
 const body = document.querySelector('body');
 const searchInMenu = document.querySelector('.searchContent .search-container input');
@@ -417,8 +419,8 @@ function setMarkerEvent() {
 const categoryValue = (valueCheck)();
 
 /**
- * 
- * @param {*} data 
+ * 장소의 정보를 인자로 받아 장소정보컨테이너의 내용을 보여준다.
+ * @param {*} data 장소의 정보(markers[i].info)
  */
 function setPlaceInfoContainer(data) {
     const placeInfoContainer = document.querySelector('.menuContent-container .searchContent .placeInfo-container');
@@ -426,18 +428,38 @@ function setPlaceInfoContainer(data) {
     const nameAndCategoryContainer = placeInfoContainer.querySelector('.nameAndCategory-container');
     const detailContainer = placeInfoContainer.querySelector('.detail-container');
 
-    console.log(nameAndCategoryContainer);
     let name = data.place_name,
         addressName = data.address_name,
         roadAddress = data.road_address_name,
         category = data.category_group_name,
+        phone = data.phone,
         id = data.id,
         url = data.place_url;
+    
 
     let imgSrc;
     let imgElement;
     let nameAndCategoryElement = `<div class="name">${name}</div>
                                   <div class="category">${category}</div>`;
+    let detailElement
+    if (phone === "") {
+        detailElement = `<div class="address"><i class="fa-solid fa-location-dot"></i><span>${addressName}</span></div>`
+    }
+    else detailElement = `<div class="address"><i class="fa-solid fa-location-dot"></i><span>${addressName}</span></div>
+                          <div class="phone"><i class="fa-solid fa-phone"></i></i><span>${phone}</span></div>`;
+    
+    
+
+    while(nameAndCategoryContainer.hasChildNodes()) {
+        nameAndCategoryContainer.removeChild(nameAndCategoryContainer.firstChild);
+    }
+    
+    while(detailContainer.hasChildNodes()) {
+        detailContainer.removeChild(detailContainer.firstChild);
+    }
+    
+    nameAndCategoryContainer.insertAdjacentHTML('beforeend', nameAndCategoryElement);
+    detailContainer.insertAdjacentHTML('beforeend', detailElement);
 
     // 카테고리별 이미지 src
     switch(category) {
@@ -504,14 +526,8 @@ function setPlaceInfoContainer(data) {
         placeInfoContainer.classList.add('hide');
     });
 
-
-    while(nameAndCategoryContainer.hasChildNodes()) nameAndCategoryContainer.removeChild(nameAndCategoryContainer.firstChild);
-
-    nameAndCategoryContainer.insertAdjacentHTML('beforeend', nameAndCategoryElement);
-
-    
+    console.log(data);
 }
-
 
 categoryList.forEach(category => {
     category.addEventListener('click', event => {
