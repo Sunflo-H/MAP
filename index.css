@@ -377,6 +377,7 @@ main {
 .menuContent-container .searchContent .placeInfo-container .nameAndCategory-container {
   padding-top: 10px;
   padding-left: 20px;
+  padding-right: 20px;
 }
 .menuContent-container .searchContent .placeInfo-container .nameAndCategory-container .name {
   font-size: 20px;

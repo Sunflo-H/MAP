@@ -173,7 +173,7 @@ function setRecommendList(region, city) {
 
     while(recommendList.hasChildNodes()) recommendList.removeChild(recommendList.firstChild);
             
-    fetch('/data/restaurant/seoul.json')
+    fetch('./data/restaurant/seoul.json')
     .then(res => res.json())
     .then(data => {
         let restaurantList = data.filter(data => (data.지역 === region) && (data.도시명 === city))
@@ -463,18 +463,18 @@ function setPlaceInfoContainer(data) {
 
     // 카테고리별 이미지 src
     switch(category) {
-        case "음식점" : imgSrc = "/assets/img/searchInfo/음식점(요리사)s.jpg"; break; 
-        case "카페" : imgSrc = "/assets/img/searchInfo/카페(사람)s.jpg"; break; 
-        case "편의점" : imgSrc = "/assets/img/searchInfo/편의점s.jpg"; break; 
-        case "대형마트" : imgSrc = "/assets/img/searchInfo/마트s.jpg"; break; 
-        case "숙박" : imgSrc = "/assets/img/searchInfo/숙박s.jpg"; break; 
-        case "주유소,충전소" : imgSrc = "/assets/img/searchInfo/주유소s.jpg"; break; 
-        case "주차장" : imgSrc = "/assets/img/searchInfo/주차장s.jpg"; break; 
-        case "문화시설" : imgSrc = "/assets/img/searchInfo/문화시설s.jpg"; break; 
-        case "관광명소" : imgSrc = "/assets/img/searchInfo/관광명소s.jpg"; break; 
-        case "병원" : imgSrc = "/assets/img/searchInfo/병원s.jpg"; break; 
-        case "은행" : imgSrc = "/assets/img/searchInfo/은행s.jpg"; break; 
-        case "약국" : imgSrc = "/assets/img/searchInfo/약국s.jpg"; break; 
+        case "음식점" : imgSrc = "./assets/img/searchInfo/음식점(요리사)s.jpg"; break; 
+        case "카페" : imgSrc = "./assets/img/searchInfo/카페(사람)s.jpg"; break; 
+        case "편의점" : imgSrc = "./assets/img/searchInfo/편의점s.jpg"; break; 
+        case "대형마트" : imgSrc = "./assets/img/searchInfo/마트s.jpg"; break; 
+        case "숙박" : imgSrc = "./assets/img/searchInfo/숙박s.jpg"; break; 
+        case "주유소,충전소" : imgSrc = "./assets/img/searchInfo/주유소s.jpg"; break; 
+        case "주차장" : imgSrc = "./assets/img/searchInfo/주차장s.jpg"; break; 
+        case "문화시설" : imgSrc = "./assets/img/searchInfo/문화시설s.jpg"; break; 
+        case "관광명소" : imgSrc = "./assets/img/searchInfo/관광명소s.jpg"; break; 
+        case "병원" : imgSrc = "./assets/img/searchInfo/병원s.jpg"; break; 
+        case "은행" : imgSrc = "./assets/img/searchInfo/은행s.jpg"; break; 
+        case "약국" : imgSrc = "./assets/img/searchInfo/약국s.jpg"; break; 
     }
 
     // 이미지의 높이, 스케일 조절
