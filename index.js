@@ -2,7 +2,7 @@
 
 // 즉시실행함수로 전역변수를 최소화
 /**
- * true, false 상태를 변경하고 확인하는 함수 , 즉시실행함수로 사용된다.
+ * true, false 상태를 변경하고 확인하는 함수, 즉시실행함수로 사용된다.
  * @returns getState(), setState(boolean)
  */
 function stateCheck() {
@@ -23,7 +23,7 @@ function stateCheck() {
 }
 
 /**
- * 값을 입력하고 불러오는 함수 , 즉시실행함수로 사용된다.
+ * 값을 입력하고 불러오는 함수, 즉시실행함수로 사용된다.
  * @returns getValue(), setValue(param)
  */
 function valueCheck() {
@@ -71,15 +71,50 @@ const searchListState = (stateCheck)();
 const autoCompleteState = (stateCheck)();
 const historyState = (stateCheck)();
 
+const cityIsChange = (stateCheck)(); 
 
 // 전역변수
 let map;
 let markers = [];
 let mapCenter;
 
+// 항상 체크되야되는 것들
+// 커브, 검색컨테이너
+// 커브는 어떤 메뉴가 활성화 중이냐에 따라 위치를 바꿔줘야해
+// 검색컨테이너는 어떤 메뉴가 활성화 중이냐에 따라 zindex를 바꾼다. 3 => 1
+
+// 어떤 메뉴가 활성화 중인지를 체크해야돼
+
+// 메뉴가 열릴때마다 실행되야돼
+function menuActive() {
+    const contentContainers = document.querySelectorAll('.menuContent-container .content-container');
+    const searchContainer = document.querySelector('.map .interaction-container .search-container');
+
+    let activeMenu ; // 0:검색, 1:길찾기, 2:즐겨찾기, 3:날씨
+    const height = 70;
+
+    //활성화중인 메뉴 체크
+    for(let i = 0; i < contentContainers.length; i++) {
+        if(!contentContainers[i].classList.contains('hide')) {
+            activeMenu = i;
+
+        }
+    }
+
+    // 검색컨텐츠가 활성화중이면 검색컨테이너를 보여줘라
+    activeMenu === 0 ? searchContainer.style.zIndex = 3 : searchContainer.style.zIndex = 1;
+    
+    curve.style.top = activeMenu * 100 + height + "px"
+}
 
 
-const cityIsChange = (stateCheck)(); 
+
+function init() {
+    navigator.geolocation.getCurrentPosition(pageSetting, error, {enableHighAccuracy: true});
+
+}
+
+init();
 
 function getWeather(lat, lng) {
     const locationContainer = document.querySelector('.location-container');
@@ -260,24 +295,24 @@ function createMap(lat, lng) {
 
 //! if promise가 아니라면?
 // navigator.geolocation.getCurrentPosition(pageSetting);
-let watchId = navigator.geolocation.watchPosition(pageSetting, error, {enableHighAccuracy: true});
-function error() {
 
+function error() {
+    alert('초기 좌표 정보를 불러오지 못했습니다.')
 }
 function pageSetting(result) {
-    navigator.geolocation.clearWatch(watchId)
     let lat = result.coords.latitude; // 위도 (남북)
     let lng = result.coords.longitude; // 경도 (동서)
+    
     getWeather(lat, lng);
+    
     createMap(lat, lng); // 지도 생성
-
+    
     displaySearchContent();
-
+    
     map.addListener('click', (event) => {
         let lat = event.latLng._lat;
         let lng = event.latLng._lng;
     });
-
     map.addListener('mouseup', (event) => {
         if(mapCenter._lat !== map.getCenter()._lat 
             || mapCenter._lng !== map.getCenter()._lng) {
@@ -343,12 +378,16 @@ function createMarker(data) {
     markers.push(marekrObj);
 }
 
+/**
+ * 마커를 모두 삭제한다.
+ */
 function removeMarker() {
     markers.forEach(data => {
         data.marker.setMap(null);
     });
     markers = [];
 }
+
 /**
  * 좌표로 지도가 부드럽게 이동한다.
  * @param {*} lat 위도 y
@@ -414,6 +453,7 @@ function setMarkerEvent() {
             displaySearchContent(lat, lng);
 
             const menuContentContainer = document.querySelector('.menuContent-container');
+            const contentContainers = menuContentContainer.querySelectorAll('.content-container');
             const searchContent = menuContentContainer.querySelector('.searchContent');
             const placeInfoContainer = searchContent.querySelector('.placeInfo-container');
            
@@ -425,9 +465,20 @@ function setMarkerEvent() {
                 curve.style.opacity = "1";
                 curve.style.transform = "translateX(-5px)";
             }, 1);
+            
+            // 모든 컨텐츠를 닫고 검색컨텐츠만 보여준다.
+            for(let i = 0; i < contentContainers.length; i++) {
+                if(i === 0) contentContainers[i].classList.remove('hide');
+                else contentContainers[i].classList.add('hide');
+            }
 
-            searchContent.classList.remove('hide');
+            // 장소정보 컨테이너를 보여준다.
             placeInfoContainer.classList.remove('hide');
+
+            // 메뉴 활성화 함수
+            menuActive();
+
+            // 클릭한 마커에 대한 장소정보 컨테이너를 연다.
             setPlaceInfoContainer(markers[i].info);
         })
     }
@@ -609,7 +660,6 @@ function searchByAddr(addr) {
             if (status === kakao.maps.services.Status.OK) {
                 console.log(result);
             }
-            console.log(status);
             resolve(result);
         };
 
@@ -745,6 +795,7 @@ function setAutoComplete(data) {
 
     autoCompleteList.forEach(autoComplete => {
         autoComplete.addEventListener('click', event => {
+            console.log("하이");
             const span = autoComplete.querySelector('span');
             search(span.innerText);
             displaySearchList(false);
@@ -772,7 +823,6 @@ function setAutoComplete(data) {
 function enterKey() {
     search(searchInMap.value)
     .then(data => {
-        console.log(data);
         const addressSearchData = data[0];
         const keywordSearchData = data[1];
 
@@ -873,43 +923,6 @@ function downKey() {
     searchInMap.value = standardChild.innerText;
 }
 
-/**
- * 검색컨테이너의 css를 조작하는 함수
- */
- function changeCssSearchContainer() {
-    const searchContent = document.querySelector('.menuContent-container .content-container.searchContent');
-    const searchContainer = document.querySelector('.map .interaction-container .search-container');
-    const searchIcon = searchContainer.querySelector('i');
-    const contentContainers = document.querySelectorAll('.menuContent-container .content-container');
-
-    // 검색컨텐츠가 활성화 중이면 검색컨테이너의 색을 바꾼다.
-    if(!searchContent.classList.contains('hide')) {
-        searchContainer.style.width = "231px";
-        searchContainer.style.height = "38px";
-        searchContainer.style.border = "2px solid #36ee48";
-        searchContainer.style.boxShadow = "none";
-        searchContainer.style.zIndex = 3;
-        searchIcon.style.color = "#36ee48";
-    }
-    // 검색컨텐츠가 활성화 중이 아니면 원래대로 되돌린다.
-    else {
-        searchContainer.style.width = "230px";
-        searchContainer.style.height = "36px";
-        searchContainer.style.border = "none";
-        searchContainer.style.boxShadow = "0px 1px 3px rgba(0, 0, 0, 0.4)";
-        
-        searchIcon.style.color = "#252f62";
-        searchContainer.style.zIndex = 3;        
-    }
-
-    //다른 컨텐츠가 활성화 되었을때 검색컨테이너를 안보이게 한다.
-    for (let i = 0; i < contentContainers.length; i++) {
-        if(i !== 0 && !contentContainers[i].classList.contains('hide')) {
-            searchContainer.style.zIndex = 1;
-        }
-    }
-}
-
 /** 카테고리를 클릭하면 카테고리검색함수를 실행 */
 categoryList.forEach(category => {
     category.addEventListener('click', event => {
@@ -917,14 +930,16 @@ categoryList.forEach(category => {
     });
 });
 
-/**  */
+
+
+/** 검색창에 위, 아래, 엔터 각각의 함수를 이벤트로 등록한다. */
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
-        if (searchListState.getState() === true) upKey();
+        if (searchListState.getState()) upKey();
     }
     else if (e.keyCode === 40) {
-        if (searchListState.getState() === true) downKey();
+        if (searchListState.getState()) downKey();
     }
     else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
 });
@@ -951,7 +966,6 @@ searchInMap.addEventListener('input', e => {
 });
 
 searchInMap.addEventListener('click', e => {
-    console.log("포커스");
     displaySearchList(true);
     if(searchInMap.value === "") setHistory();
 });
@@ -982,7 +996,8 @@ curvePath.addEventListener('click', () => {
     for(let i = 0; i < contentContainers.length; i++) {
         contentContainers[i].classList.add('hide');
     }
-    changeCssSearchContent();
+
+    menuActive();
 });
 
 /** 곡선모양안의 화살표를 누르면 메뉴 컨텐츠를 닫는다. */
@@ -1000,7 +1015,7 @@ curveI.addEventListener('click', () => {
     for (let i = 0; i < contentContainers.length; i++) {
         contentContainers[i].classList.add('hide');
     }
-    changeCssSearchContainer();
+    menuActive();
 });
 
 /** 메뉴 아이콘을 누르면 곡선의 위치를 바꾼다. */
@@ -1030,7 +1045,7 @@ menuCircles.forEach(((circle, index) => {
             else contentContainers[i].classList.add('hide');
         }
 
-        changeCssSearchContainer();        
+        menuActive();  
     });
 }));
 
