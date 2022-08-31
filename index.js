@@ -403,7 +403,89 @@ function getUserLocation() {
     });
 }
 
-//길 찾기 기능
+//길찾기 기능
+/**
+ * 필요한 정보들
+ * 시작 좌표, 끝 좌표, 경로탐색 api, 경로 라인, 경로 중 포인트들 점
+ */
+
+/**
+ * 순서
+ * 1 목적지를 입력한다.
+ * 1-1 목적를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 startData에 저장
+ * 1-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 startData에 값을 저장한다.
+ * 
+ * 2 도착지를 입력한다.
+ * 2-1 목적를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 endData에 저장
+ * 2-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 endData에 값을 저장한다.
+ * 
+ * 
+ * start와 end의 x,y좌표로 경로탐색 시작
+ * 
+ * 경로의 결과값들을 포인트 객체로 변환하고, 포인트 객체를 좌표값으로 변환
+ * 모여진 좌표값들을 이어주는 선을 그린다.
+ * 
+ *! 카카오 api 문제때문에 잠시 일시정지
+ *! 스타트포인트 검색창에 입력후, 자동완성이 나오는거 까지 성공
+ */
+const startPoint = document.querySelector('.startPoint-container input');
+const startPointListState = (stateCheck)();
+console.log(startPoint);
+startPoint.addEventListener('input', e => {
+    const type = "startPoint";
+    if (startPoint.value === '') {
+        displayStartPointList(true);
+        // setHistory();
+        return;
+    }
+
+    Promise.all([getJsonAddr(e.target.value), getJsonData(e.target.value)]).then(data => {      
+        let result = data[0].concat(data[1]).slice(0, 10);
+        console.log(result);
+        if (result.length !== 0) {
+            displayStartPointList(true);
+            setAutoComplete(result, type);
+        }
+        else {
+            displayStartPointList(false);
+        }
+    });
+});
+
+function displayStartPointList(isTrue) {
+    const startPointList = document.querySelector('.routeContent .searchList');
+    console.log(startPointList);
+    if(isTrue) {
+        startPointList.classList.remove('hide');
+        startPointListState.setState(true);
+    }
+    else {
+        startPointList.classList.add('hide');
+        startPointListState.setState(false);
+    }
+}
+
+function routeSearch(startPlace, endPlace) {
+    let data = Promise.all([search(startPlace), search(endPlace)]);
+    console.log(data);
+}
+
+function createRouteMarker(start, end) {
+
+}
+
+function drawLine() {
+
+}
+
+function drawComma() {
+
+}
+
+function getRoute() {
+
+}
+
 
 // 검색 기능 모음
 
@@ -622,7 +704,7 @@ function getJsonAddr(keyword) {
  * @returns [강남, 강남식당, 강남포차, ...]
  */
 function getJsonData(keyword) {
-    let result = fetch('/data/restaurant.json')
+    let result = fetch('./data/restaurant.json')
         .then(res => res.json())
         .then(data => {
             let list = [];
@@ -742,6 +824,7 @@ function searchDetailAddrFromCoords(lat, lng) {
     return detailAddr;
 }
 
+/** isTrue의 값에 따라 검색리스트를 보여준다. */
 function displaySearchList(isTrue) {
     const searchList = document.querySelector('.interaction-container .searchList');
     
@@ -780,8 +863,22 @@ function setHistory() {
     }
 }
 
-function setAutoComplete(data) {
-    const searchList = document.querySelector('.interaction-container .searchList');
+/**
+ * 검색데이터를 받아 자동완성단어를 세팅한다. 
+ * searchContainerType에 따라 어떤 검색창의 검색리스트를 다룰지 결정한다.
+ * @param {*} data 검색창에 입력한 단어와 조건이 일치하는 단어들의 리스트
+ * @param {*} searchType 검색컨테이너
+ */
+function setAutoComplete(data, searchContainerType) {
+    let container = ".interaction-container";
+
+    switch(searchContainerType) {
+        case "startPoint" : container = ".startPoint-container"; break;
+    }
+
+    const searchList = document.querySelector(`${container} .searchList`);
+
+    console.log(searchList);
 
     while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
     data.forEach(data => {
@@ -944,6 +1041,7 @@ searchInMap.addEventListener('keyup', e => {
     else if (e.isComposing === false) return; //엔터키 중복입력을 막는다.
 });
 
+/** 검색창에 값이 입력되면 검색창 아래에 리스트를 만들고 자동완성단어를 세팅한다. */
 searchInMap.addEventListener('input', e => {
     
     if (searchInMap.value === '') {
@@ -962,7 +1060,7 @@ searchInMap.addEventListener('input', e => {
         else {
             displaySearchList(false);
         }
-    })
+    });
 });
 
 searchInMap.addEventListener('click', e => {
