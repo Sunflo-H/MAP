@@ -512,6 +512,60 @@ main {
         }
 
     }
+
+    // 길찾기 컨텐츠
+    .routeContent {
+        border: 1px solid gray;
+        padding: 10px;
+
+        .routeType-container {
+            display: flex;
+            width: 100%;
+            height: 40px;
+            
+            color: black;
+
+            .routeType {
+                width: 40px;
+                height: 100%;
+                line-height: 42px;
+                text-align: center;
+                border-radius: 999px;
+                // border: 1px solid red;
+                margin-left: 10px;
+
+                i {
+                    font-size: 20px;
+                }
+
+                
+                &:hover {
+                    cursor: pointer;
+                    background-color: rgba(37, 47, 98, 0.1);
+                }
+            }
+
+            .active {
+                color: var(--naverBlue);
+                background-color: #e8f0fe !important;
+            }
+
+        }
+
+        .startPoint-container {
+            border: 1px solid red;
+        }
+
+        .change-btn {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border: 1px solid black;
+            border-radius: 999px;
+            transform: rotate(90deg);
+        }
+    }
 }
 
 

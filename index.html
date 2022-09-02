@@ -137,20 +137,22 @@
             <!-- 길찾기 컨텐츠 -->
             <div class="routeContent content-container hide ">
                 <div class="routeType-container">
-                    <!-- 길찾기 기능부터 만들고 확인 -->
-                    <div>도보</div>
-                    <div>자동차</div>
+                    <div class="routeType active"><i class="fa-solid fa-person-walking"></i></div>
+                    <div class="routeType"><i class="fa-solid fa-car"></i></div>
                 </div>
                 <div class="startPoint-container">
-                    <div>시작지점</div>
-                    <input type="text" placeholder="시작 지점을 입력하세요">
-                    <div class="searchList hide a "></div>
+                    <div class="search-container">
+                        <input type="text" placeholder="출발지를 입력하세요" autocomplete="off">
+                        <div class="searchList hide c"></div>
+                    </div>
                 </div>
                 <div class="endPoint-container">
-                    <div>도착지점</div>
-                    <input type="text" placeholder="도착 지점을 입력하세요">
-                    <div class="searchList hide b"></div>
+                    <div class="search-container">
+                        <input type="text" placeholder="도착지를 입력하세요" autocomplete="off">
+                        <div class="searchList hide c"></div>
+                    </div>
                 </div>
+                <div class="change-btn"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
             </div>
             <!-- 즐겨찾기 컨텐츠 -->
             <div class="hide content-container">c</div>
