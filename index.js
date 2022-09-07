@@ -1,47 +1,18 @@
+/**
+ * todo 검색 기능 모듈화 해보기
+ * todo 길찾기 css
+ * todo 길찾기 startPoint, endPoint, 검색결과(start, end, route)
+ * todo 검색리스트 (검색결과리스트) 이름 수정하기 및 만들기
+ * todo 검색리스트에 자동완성단어 아래에 주소도 표시하기
+ * todo 
+ */
+
 // 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
 
-// 즉시실행함수로 전역변수를 최소화
-/**
- * true, false 상태를 변경하고 확인하는 함수, 즉시실행함수로 사용된다.
- * @returns getState(), setState(boolean)
- */
-function stateCheck() {
-    let state;
+import * as kakaoSearch from './assets/js/kakaoSearchModule.js';
 
-    function getState() {
-        return state;
-    }
 
-    function setState(boolean) {
-        state = boolean;
-    }
 
-    return {
-        getState: getState,
-        setState: setState
-    }
-}
-
-/**
- * 값을 입력하고 불러오는 함수, 즉시실행함수로 사용된다.
- * @returns getValue(), setValue(param)
- */
-function valueCheck() {
-    let value;
-
-    function getValue() {
-        return value;
-    }
-
-    function setValue(param) {
-        value = param;
-    }
-
-    return {
-        getValue: getValue,
-        setValue: setValue
-    }
-}
 
 const RADIUS = {
     LV1: 5000,
@@ -73,20 +44,58 @@ const historyState = (stateCheck)();
 
 const cityIsChange = (stateCheck)(); 
 
+/**
+ * true, false 상태를 변경하고 확인하는 함수, 즉시실행함수로 사용된다.
+ * @returns getState(), setState(boolean)
+ */
+function stateCheck() {
+    let state;
+
+    function getState() {
+        return state;
+    }
+
+    function setState(boolean) {
+        state = boolean;
+    }
+
+    return {
+        getState: getState,
+        setState: setState
+    }
+}
+
+/**
+ * 값을 입력하고 불러오는 함수, 즉시실행함수로 사용된다.
+ * @returns getValue(), setValue(param)
+ */
+ function valueCheck() {
+    let value;
+
+    function getValue() {
+        return value;
+    }
+
+    function setValue(param) {
+        value = param;
+    }
+
+    return {
+        getValue: getValue,
+        setValue: setValue
+    }
+}
+
 // 전역변수
 let map;
 let markers = [];
 let mapCenter;
 
-// 항상 체크되야되는 것들
-// 커브, 검색컨테이너
-// 커브는 어떤 메뉴가 활성화 중이냐에 따라 위치를 바꿔줘야해
-// 검색컨테이너는 어떤 메뉴가 활성화 중이냐에 따라 zindex를 바꾼다. 3 => 1
-
-// 어떤 메뉴가 활성화 중인지를 체크해야돼
-
-// 메뉴가 열릴때마다 실행되야돼
-function menuActive() {
+/**
+ * menuCotent를 보여주는 함수
+ * 보여지는 컨텐츠에 따라 각각의 기능을 한다.
+ */
+function showMenuContent() {
     const contentContainers = document.querySelectorAll('.menuContent-container .content-container');
     const searchContainer = document.querySelector('.map .interaction-container .search-container');
 
@@ -97,11 +106,10 @@ function menuActive() {
     for(let i = 0; i < contentContainers.length; i++) {
         if(!contentContainers[i].classList.contains('hide')) {
             activeMenu = i;
-
         }
     }
 
-    // 검색컨텐츠가 활성화중이면 검색컨테이너를 보여줘라
+    // 검색컨텐츠가 활성화중이면 검색컨테이너(상호작용의 검색)를 보여준다.
     activeMenu === 0 ? searchContainer.style.zIndex = 3 : searchContainer.style.zIndex = 1;
     
     curve.style.top = activeMenu * 100 + height + "px"
@@ -254,7 +262,7 @@ function setRecommendList(region, city) {
  * @param {*} lng 경도 x
  */
 function displaySearchContent(lat = map.getCenter()._lat, lng = map.getCenter()._lng) {
-    searchAddrFromCoords(lat, lng)
+    kakaoSearch.searchAddrFromCoords(lat, lng)
     .then(data => {
         const citySpan = document.querySelector('.address-container .city');
 
@@ -412,60 +420,79 @@ function getUserLocation() {
 /**
  * 순서
  * 1 목적지를 입력한다.
- * 1-1 목적를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 startData에 저장
+ * 1-1 목적지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 startData에 저장
  * 1-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 startData에 값을 저장한다.
  * 
  * 2 도착지를 입력한다.
- * 2-1 목적를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 endData에 저장
+ * 2-1 도착지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 endData에 저장
  * 2-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 endData에 값을 저장한다.
  * 
  * 
- * start와 end의 x,y좌표로 경로탐색 시작
+ * 3 start와 end의 x,y좌표로 경로탐색 시작
  * 
  * 경로의 결과값들을 포인트 객체로 변환하고, 포인트 객체를 좌표값으로 변환
  * 모여진 좌표값들을 이어주는 선을 그린다.
  * 
- *! 카카오 api 문제때문에 잠시 일시정지
- *! 스타트포인트 검색창에 입력후, 자동완성이 나오는거 까지 성공
  */
-const startPoint = document.querySelector('.startPoint-container input');
-const startPointListState = (stateCheck)();
-console.log(startPoint);
-startPoint.addEventListener('input', e => {
-    const type = "startPoint";
-    if (startPoint.value === '') {
-        displayStartPointList(true);
-        // setHistory();
-        return;
-    }
+// const startPointInput = document.querySelector('.startPoint-container input');
+// startPointInput.addEventListener('input', e => {
+//     const keyword = e.target.value;
+//     const type = "startPoint";
 
-    Promise.all([getJsonAddr(e.target.value), getJsonData(e.target.value)]).then(data => {      
-        let result = data[0].concat(data[1]).slice(0, 10);
-        console.log(result);
-        if (result.length !== 0) {
-            displayStartPointList(true);
-            setAutoComplete(result, type);
-        }
-        else {
-            displayStartPointList(false);
-        }
-    });
-});
+//     if (startPointInput.value === '') {
+//         displayAutoCompleteList(false);
+//         return;
+//     }
 
-function displayStartPointList(isTrue) {
+//     Promise.all([getJsonAddr(keyword), getJsonData(keyword)]).then(data => {      
+//         let result = data[0].concat(data[1]).slice(0, 10);
+
+//         if (result.length !== 0) {
+//             console.log(result);
+//             displayAutoCompleteList(true);
+//             setAutoComplete(result, type);
+//         }
+//         else {
+//             displayAutoCompleteList(false);
+//         }
+//     });
+
+//     /**
+//      * 검색을 해서 검색결과 리스트를 보여준다.
+//      * 그중에 하나를 클릭하면 그 장소정보의 이름이 출발지가 된다.
+//      * 장소정보로 routeSearch를 실행
+//      * 클릭 하지 않는다면 제일 첫번째 검색결과로 실행
+//      * 
+//      * 
+//      */
+// });
+
+function displayAutoCompleteList(isTrue) {
     const startPointList = document.querySelector('.routeContent .searchList');
-    console.log(startPointList);
     if(isTrue) {
         startPointList.classList.remove('hide');
-        startPointListState.setState(true);
     }
     else {
         startPointList.classList.add('hide');
-        startPointListState.setState(false);
     }
 }
 
+function displayStartPointResultList() {
+
+}
+function displayEndPointResultList() {
+
+}
+function displayRouteSearchResultList() {
+
+}
+
 function routeSearch(startPlace, endPlace) {
+    console.log("startPlace : ", startPlace);
+    console.log("endPlace : ", endPlace);
+    
+    if(startPlace === "" || endPlace === "") return;
+
     let data = Promise.all([search(startPlace), search(endPlace)]);
     console.log(data);
 }
@@ -558,7 +585,7 @@ function setMarkerEvent() {
             placeInfoContainer.classList.remove('hide');
 
             // 메뉴 활성화 함수
-            menuActive();
+            showMenuContent();
 
             // 클릭한 마커에 대한 장소정보 컨테이너를 연다.
             setPlaceInfoContainer(markers[i].info);
@@ -721,63 +748,63 @@ function getJsonData(keyword) {
  * @param {*} keyword 입력한 단어
  * @returns 두 검색방법으로 찾은 데이터
  */
-function search(keyword) {
-    let data = Promise.all([searchByAddr(keyword), searchByKeyword(keyword)]).then(data => data);
-    console.log(data);
-    return data;
-}
+// function search(keyword) {
+//     let data = Promise.all([searchByAddr(keyword), searchByKeyword(keyword)]).then(data => data);
+//     console.log(data);
+//     return data;
+// }
 
 /**
  * 주소로 검색하여 장소(주소)에 대한 정보를 얻는다.
  * @param {*} addr 검색할 주소 ex)구의동
  * @returns promise [주소데이터1, 주소데이터2 ...]
  */
-function searchByAddr(addr) {
-    let placeList = new Promise((resolve, reject) => {
+// function searchByAddr(addr) {
+//     let placeList = new Promise((resolve, reject) => {
 
-        // 주소-좌표 변환 객체를 생성합니다
-        let geocoder = new kakao.maps.services.Geocoder();
+//         // 주소-좌표 변환 객체를 생성합니다
+//         let geocoder = new kakao.maps.services.Geocoder();
 
-        const callback = (result, status) => {
-            if (status === kakao.maps.services.Status.OK) {
-                console.log(result);
-            }
-            resolve(result);
-        };
+//         const callback = (result, status) => {
+//             if (status === kakao.maps.services.Status.OK) {
+//                 console.log(result);
+//             }
+//             resolve(result);
+//         };
 
-        geocoder.addressSearch(addr, callback, {size: SEARCH_DATA_LENGTH});
-    });
-    return placeList;
-}
+//         geocoder.addressSearch(addr, callback, {size: SEARCH_DATA_LENGTH});
+//     });
+//     return placeList;
+// }
 
 /**
  * 키워드로 검색하여 장소(주소)에 대한 정보를 얻는다.
  * @param {*} keyword 검색할 키워드 ex)롯데리아
  * @returns promise [장소데이터1, 장소데이터2, ...]
  */
-function searchByKeyword(keyword) {
-    const lat = map.getCenter()._lat;
-    const lng = map.getCenter()._lng;
+// function searchByKeyword(keyword) {
+//     const lat = map.getCenter()._lat;
+//     const lng = map.getCenter()._lng;
 
-    let placeList = new Promise((resolve, reject) => {
-        let places = new kakao.maps.services.Places();
+//     let placeList = new Promise((resolve, reject) => {
+//         let places = new kakao.maps.services.Places();
 
-        const getResult = (result, status) => {
-            if (status === kakao.maps.services.Status.OK) {
-                resolve(result);
-            }  
-        }
+//         const getResult = (result, status) => {
+//             if (status === kakao.maps.services.Status.OK) {
+//                 resolve(result);
+//             }  
+//         }
 
-        let option = {
-            x: lng,
-            y: lat,
-            radius: RADIUS.LV4,
-            size: SEARCH_DATA_LENGTH
-        }
-        places.keywordSearch(keyword, getResult, option);
-    });
-    return placeList;
-}
+//         let option = {
+//             x: lng,
+//             y: lat,
+//             radius: RADIUS.LV4,
+//             size: SEARCH_DATA_LENGTH
+//         }
+//         places.keywordSearch(keyword, getResult, option);
+//     });
+//     return placeList;
+// }
 
 
 /**
@@ -786,21 +813,21 @@ function searchByKeyword(keyword) {
  * @param {*} lng 경도 x
  * @returns promise [{기본주소(서울 광진구 구의동)}, {상세주소(서울 광진구 구의2동)}]
  */
-function searchAddrFromCoords(lat, lng) {
-    let addr = new Promise((resolve, reject) => {
-        var geocoder = new kakao.maps.services.Geocoder();
+// function searchAddrFromCoords(lat, lng) {
+//     let addr = new Promise((resolve, reject) => {
+//         var geocoder = new kakao.maps.services.Geocoder();
 
-        const getResult = (result, status) => {
-            if (status === kakao.maps.services.Status.OK) {
-                resolve(result);
-            }  
-        };
+//         const getResult = (result, status) => {
+//             if (status === kakao.maps.services.Status.OK) {
+//                 resolve(result);
+//             }  
+//         };
     
-        geocoder.coord2RegionCode(lng, lat, getResult);         
-    });
+//         geocoder.coord2RegionCode(lng, lat, getResult);         
+//     });
 
-    return addr;
-}
+//     return addr;
+// }
 
 /**
  * 좌표로 법정동 상세 주소 정보를 요청합니다
@@ -808,21 +835,21 @@ function searchAddrFromCoords(lat, lng) {
  * @param {*} lng 경도 x
  * @returns promise [{지번주소, 도로명주소}]
  */
-function searchDetailAddrFromCoords(lat, lng) {
-    let detailAddr = new Promise((resolve, reject) => {
-        var geocoder = new kakao.maps.services.Geocoder();
+// function searchDetailAddrFromCoords(lat, lng) {
+//     let detailAddr = new Promise((resolve, reject) => {
+//         var geocoder = new kakao.maps.services.Geocoder();
 
-        const getResult = (result, status) => {
-            if (status === kakao.maps.services.Status.OK) {
-                resolve(result);
-            }  
-        };
+//         const getResult = (result, status) => {
+//             if (status === kakao.maps.services.Status.OK) {
+//                 resolve(result);
+//             }  
+//         };
 
-        geocoder.coord2Address(lng, lat, getResult);        
-    });
+//         geocoder.coord2Address(lng, lat, getResult);        
+//     });
 
-    return detailAddr;
-}
+//     return detailAddr;
+// }
 
 /** isTrue의 값에 따라 검색리스트를 보여준다. */
 function displaySearchList(isTrue) {
@@ -878,8 +905,6 @@ function setAutoComplete(data, searchContainerType) {
 
     const searchList = document.querySelector(`${container} .searchList`);
 
-    console.log(searchList);
-
     while(searchList.hasChildNodes()) searchList.removeChild(searchList.firstChild);
     data.forEach(data => {
         let element = `<div class="autoComplete">
@@ -894,7 +919,7 @@ function setAutoComplete(data, searchContainerType) {
         autoComplete.addEventListener('click', event => {
             console.log("하이");
             const span = autoComplete.querySelector('span');
-            search(span.innerText);
+            kakaoSearch.search(span.innerText);
             displaySearchList(false);
         })
     });
@@ -918,7 +943,7 @@ function setAutoComplete(data, searchContainerType) {
  * search를 실행하여 검색 결과로 마커, 검색컨텐츠를 세팅한다.
  */
 function enterKey() {
-    search(searchInMap.value)
+    kakaoSearch.search(searchInMap.value)
     .then(data => {
         const addressSearchData = data[0];
         const keywordSearchData = data[1];
@@ -1030,6 +1055,7 @@ categoryList.forEach(category => {
 
 
 /** 검색창에 위, 아래, 엔터 각각의 함수를 이벤트로 등록한다. */
+console.log(searchInMap);
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
@@ -1095,7 +1121,7 @@ curvePath.addEventListener('click', () => {
         contentContainers[i].classList.add('hide');
     }
 
-    menuActive();
+    showMenuContent();
 });
 
 /** 곡선모양안의 화살표를 누르면 메뉴 컨텐츠를 닫는다. */
@@ -1113,7 +1139,7 @@ curveI.addEventListener('click', () => {
     for (let i = 0; i < contentContainers.length; i++) {
         contentContainers[i].classList.add('hide');
     }
-    menuActive();
+    showMenuContent();
 });
 
 /** 메뉴 아이콘을 누르면 곡선의 위치를 바꾼다. */
@@ -1143,7 +1169,7 @@ menuCircles.forEach(((circle, index) => {
             else contentContainers[i].classList.add('hide');
         }
 
-        menuActive();  
+        showMenuContent();  
     });
 }));
 

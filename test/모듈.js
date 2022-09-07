@@ -1,40 +1,11 @@
-// const axios = require('axios');
-// const cheerio = require('cheerio');
-
-// calc.js 파일에서
-function Add(num1, num2) {
-    return num1 + num2;
+function func() {
+    var private = 0;
+    return function() {
+        private++;
+        return private;
+    }
 }
-
-function Multiply(num1, num2) {
-    return num1 * num2;
-}
-
-define([], function () {
-    let a = 1;
-    let b = 10;
-
-
-    function add(a, b) {
-        return a + b;
-    }
-
-    function increase() {
-        a++;
-    }
-
-    function get() {
-        return a;
-    }
-
-    return {
-        increase: increase,
-        get: get
-    }
-});
-
-
-// export {
-//     Add,
-//     Multiply
-// };
+var val = func();
+console.log(val()); // 1
+console.log(val()); // 2
+console.log(val());

@@ -468,6 +468,15 @@ main {
 .menuContent-container .routeContent .startPoint-container {
   border: 1px solid red;
 }
+.menuContent-container .routeContent .startPoint-container .startPoint-icon {
+  color: var(--cacaoBlue);
+}
+.menuContent-container .routeContent .endPoint-container {
+  border: 1px solid;
+}
+.menuContent-container .routeContent .endPoint-container .endPoint-icon {
+  color: #fc6262;
+}
 .menuContent-container .routeContent .change-btn {
   width: 30px;
   height: 30px;
@@ -476,6 +485,10 @@ main {
   border: 1px solid black;
   border-radius: 999px;
   transform: rotate(90deg);
+}
+.menuContent-container .routeContent .result-container {
+  border: 1px solid red;
+  width: 100%;
 }
 
 /* 지도 컨테이너*/

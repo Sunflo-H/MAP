@@ -13,8 +13,8 @@
     <!-- NAVER 지도 API v3은 지도의 기능을 확장하는 서브 모듈 시스템을 지원합니다.-->
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju_ID&submodules=geocoder"></script>
     <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=es0epxrzju_ID&submodules=drawing"></script>
-    <!-- 카카오 검색 api -->
-    <script type="text/javascript"src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89c94138aac3b434362c7179cb6bc993&libraries=services"></script>
+    <!-- 카카오 검색 api, services와 clusterer, drawing 라이브러리 불러오기 -->
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=89c94138aac3b434362c7179cb6bc993&libraries=services,clusterer,drawing"></script>
     <!-- 폰트어썸 -->
     <script src="https://kit.fontawesome.com/edda6de607.js" crossorigin="anonymous"></script>
     <!-- 구글 폰트 -->
@@ -22,7 +22,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
     
-    <script type="text/javascript" src="./index.js" defer></script>
+    <!-- <script type="text/javascript" src="./index.js"></script> -->
+    <script type="module" src="./index.js" defer></script>
+    <!-- <script src="./assets/js/kakaoSearchModule.js" defer></script> -->
+    
 </head>
 <body>
     <!-- 메인 -->
@@ -142,17 +145,22 @@
                 </div>
                 <div class="startPoint-container">
                     <div class="search-container">
+                        <i class="fa-solid fa-circle-dot startPoint-icon"></i>
                         <input type="text" placeholder="출발지를 입력하세요" autocomplete="off">
                         <div class="searchList hide c"></div>
                     </div>
                 </div>
                 <div class="endPoint-container">
                     <div class="search-container">
+                        <i class="fa-solid fa-circle-dot endPoint-icon"></i>
                         <input type="text" placeholder="도착지를 입력하세요" autocomplete="off">
                         <div class="searchList hide c"></div>
                     </div>
                 </div>
                 <div class="change-btn"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+                <div class="result-container">
+                    <div class="result">검색 결과</div>
+                </div>
             </div>
             <!-- 즐겨찾기 컨텐츠 -->
             <div class="hide content-container">c</div>

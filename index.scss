@@ -537,7 +537,6 @@ main {
                 i {
                     font-size: 20px;
                 }
-
                 
                 &:hover {
                     cursor: pointer;
@@ -554,6 +553,18 @@ main {
 
         .startPoint-container {
             border: 1px solid red;
+
+            .startPoint-icon {
+                color: var(--cacaoBlue);
+            }
+        }
+
+        .endPoint-container {
+            border: 1px solid ;
+
+            .endPoint-icon {
+                color: #fc6262;
+            }
         }
 
         .change-btn {
@@ -564,6 +575,11 @@ main {
             border: 1px solid black;
             border-radius: 999px;
             transform: rotate(90deg);
+        }
+
+        .result-container {
+            border: 1px solid red;
+            width: 100%;
         }
     }
 }
