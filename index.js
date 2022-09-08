@@ -434,6 +434,7 @@ function getUserLocation() {
  * 모여진 좌표값들을 이어주는 선을 그린다.
  * 
  */
+
 // const startPointInput = document.querySelector('.startPoint-container input');
 // startPointInput.addEventListener('input', e => {
 //     const keyword = e.target.value;
