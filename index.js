@@ -11,9 +11,6 @@
 
 import * as kakaoSearch from './assets/js/kakaoSearchModule.js';
 
-
-
-
 const RADIUS = {
     LV1: 5000,
     LV2: 10000,
@@ -307,6 +304,7 @@ function createMap(lat, lng) {
 function error() {
     alert('초기 좌표 정보를 불러오지 못했습니다.')
 }
+
 function pageSetting(result) {
     let lat = result.coords.latitude; // 위도 (남북)
     let lng = result.coords.longitude; // 경도 (동서)
@@ -944,7 +942,7 @@ function setAutoComplete(data, searchContainerType) {
  * search를 실행하여 검색 결과로 마커, 검색컨텐츠를 세팅한다.
  */
 function enterKey() {
-    kakaoSearch.search(searchInMap.value)
+    kakaoSearch.search(searchInMap.value, map)
     .then(data => {
         const addressSearchData = data[0];
         const keywordSearchData = data[1];

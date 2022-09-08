@@ -1,11 +1,15 @@
+/**
+ * 필요한 변수
+ * map, SEARCH_DATA_LENGTH
+ */
 
 /**
  * 주소로검색, 키워드로검색 두 함수를 한번에 사용하여 검색한다.
  * @param {*} keyword 입력한 단어
  * @returns 두 검색방법으로 찾은 데이터
  */
- function search(keyword) {
-    let data = Promise.all([searchByAddr(keyword), searchByKeyword(keyword)])
+ function search(keyword, map) {
+    let data = Promise.all([searchByAddr(keyword), searchByKeyword(keyword, map)])
                 .then(data => data);
     console.log(data);
     return data;
@@ -107,4 +111,4 @@
     return detailAddr;
 }
 
-export {search, searchByAddr, searchByKeyword, searchAddrFromCoords, searchDetailAddrFromCoords }
+export {search, searchByAddr, searchByKeyword, searchAddrFromCoords, searchDetailAddrFromCoords } ;
