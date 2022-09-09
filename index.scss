@@ -74,17 +74,17 @@ main {
     height: 100%;
     box-sizing: border-box;
     background-color: var(--main);
-    z-index: 3;
+    z-index: 100;
     
     .menu-category-container {
         width: 100%;
         list-style-type: none;
         padding: 0px;
         margin-top: 100px;
+
     
         li {
             color: white;
-            // color: var(--sub1);
             margin-top: 30px;
     
             &:first-child {
@@ -145,7 +145,7 @@ main {
     width: 250px;
     height: 100vh;
     background-color: white;
-    z-index: 100;
+    z-index: 2;
     transition-duration: 0.2s;
 
     >.content-container {
@@ -525,47 +525,56 @@ main {
     .routeContent {
         padding: 10px;
 
-        .routeType-container {
+        .type-container {
             display: flex;
             width: 100%;
             height: 40px;
-            
             color: black;
+            justify-content: center;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            overflow: hidden;
 
-            .routeType {
-                width: 40px;
+            .routeType-container {
+                width: 50%;
                 height: 100%;
                 line-height: 42px;
                 text-align: center;
-                border-radius: 999px;
-                // border: 1px solid red;
-                margin-left: 10px;
+                border-right: 1px solid #eaeaea;
 
-                i {
-                    font-size: 20px;
+                &:last-child {
+                    border: none;
                 }
-                
+
                 &:hover {
                     cursor: pointer;
                     background-color: rgba(37, 47, 98, 0.1);
                 }
+
+                i {
+                    font-size: 20px;
+                    margin-right: 10px;
+                }
+                
+                
             }
 
             .active {
                 color: var(--naverBlue);
                 background-color: #e8f0fe !important;
+                font-weight: bold;
             }
 
         }
 
         .pointSearch-container {
             position: relative;
-            border: 1px solid black;
+            border: 1px solid rgba(0, 0, 0, 0.6);
             width: 100%;
             border-radius: 5px;
             color: var(--main);
             box-sizing: border-box;
-
+            margin-top: 10px;
 
             .search-container {
                 width: 100%;
@@ -589,36 +598,17 @@ main {
                         color: #a9a9a9;
                     }
                 }
-
-
             }
     
             .startPoint-container {
                 border-bottom: 1px solid #eaeaea;
-                // z-index: 1;
-
-                input {
-                    // border-radius: 5px 5px 0px 0px;
-
-                }
-                input:focus {
-  
-                }
             }
     
             .endPoint-container {
-                margin-top: 3px;
-                input {
-                    // border-radius: 0px 0px 5px 5px;
-                    
-                }
-                input:focus {
-                    
-                }
+                margin-top: 1px;
             }
     
             .change-btn {
-                z-index: 53;
                 position: absolute;
                 top: 27px;
                 left: 180px;
@@ -640,28 +630,6 @@ main {
                 }
             }
         }
-
-        .cover-container {
-            position: absolute;
-
-            width: 228px;
-            height: 40px;
-            border: 1px solid red;
-
-            input {
-                width: 228px;
-                height: 100%;
-            }
-        }
-
-        .startPoint-cover-container {
-            top: 50px;
-        }
-        .endPoint-cover-container {
-            top: 100px;
-        }
-
-        
 
         .result-container {
             border: 1px solid red;
@@ -981,7 +949,7 @@ main {
     top: 70px;
     transition-duration: 0.1s;
     transition-timing-function: ease-out;
-    z-index: 3;
+    z-index: 101;
     opacity: 0;
     
     path {
