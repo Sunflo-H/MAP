@@ -1,11 +1,32 @@
 /**
- * todo 검색 기능 모듈화 해보기
+ * *todo 검색 기능 모듈화 해보기
  * todo 길찾기 css
  * todo 길찾기 startPoint, endPoint, 검색결과(start, end, route)
  * todo 검색리스트 (검색결과리스트) 이름 수정하기 및 만들기
  * todo 검색리스트에 자동완성단어 아래에 주소도 표시하기
  * todo 
  */
+
+const sp = document.querySelector('.startPoint-container');
+const ep = document.querySelector('.endPoint-container');
+const spi = sp.querySelector('input');
+const epi = ep.querySelector('input');
+const scover = document.querySelector('.startPoint-cover-container');
+const ecover = document.querySelector('.endPoint-cover-container');
+console.log(spi);
+
+spi.addEventListener('focus', () => {
+    scover.classList.remove('hide');
+})
+spi.addEventListener('blur', () => {
+    scover.classList.add('hide');
+})
+epi.addEventListener('focus', () => {
+    ecover.classList.remove('hide');
+})
+epi.addEventListener('blur', () => {
+    ecover.classList.add('hide');
+})
 
 // 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
 
@@ -101,7 +122,7 @@ function showMenuContent() {
     // 검색컨텐츠가 활성화중이면 검색컨테이너(상호작용의 검색)를 보여준다.
     activeMenu === 0 ? searchContainer.style.zIndex = 3 : searchContainer.style.zIndex = 1;
     
-    curve.style.top = activeMenu * 100 + height + "px"
+    curve.style.top = activeMenu * 100 + height + "px";
 }
 
 
