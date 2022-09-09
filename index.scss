@@ -8,8 +8,14 @@
     --azure: #0099ff;
     --grayBlue: #eceef9;
 
+    // --main: rgb(0,32,74);
+    // --sub1: rgb(254,190,73);
+    // --sub2: rgb(129,99,74);
+
     --main: #252f62;
-    --sub: #1b2251;
+    --sub1: #3D56B2;
+    --sub2: #5C7AEA;
+
     --mainShadow: rgba(37, 47, 98, 0.4);
     
     --subFontColor: #70757A;
@@ -68,7 +74,6 @@ main {
     height: 100%;
     box-sizing: border-box;
     background-color: var(--main);
-    // background: linear-gradient( to bottom, var(--subBlue), var(--mainBlue) );
     z-index: 3;
     
     .menu-category-container {
@@ -79,6 +84,7 @@ main {
     
         li {
             color: white;
+            // color: var(--sub1);
             margin-top: 30px;
     
             &:first-child {
@@ -92,22 +98,24 @@ main {
         height: 50px;
         margin: 0px auto;
         box-sizing: border-box;
+        
     }
 
     .menu-circle {
         width: 40px;
         height: 40px;
         margin: 5px auto;
-        border-radius: 50px;
+        border-radius: 999px;
         text-align: center;
         font-size: 1.2rem;
         line-height: 40px;
         box-sizing: border-box;
-        background-color: var(--sub);
+        background-color: var(--sub1);
     }
 
     .menu-circle:hover {
-        background-color: var(--customGreen);
+        // background-color: var(--customGreen);
+        background-color: var(--sub2);
         cursor: pointer;
     }
 

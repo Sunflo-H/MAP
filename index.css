@@ -9,7 +9,8 @@
   --azure: #0099ff;
   --grayBlue: #eceef9;
   --main: #252f62;
-  --sub: #1b2251;
+  --sub1: #3D56B2;
+  --sub2: #5C7AEA;
   --mainShadow: rgba(37, 47, 98, 0.4);
   --subFontColor: #70757A;
 }
@@ -91,15 +92,15 @@ main {
   width: 40px;
   height: 40px;
   margin: 5px auto;
-  border-radius: 50px;
+  border-radius: 999px;
   text-align: center;
   font-size: 1.2rem;
   line-height: 40px;
   box-sizing: border-box;
-  background-color: var(--sub);
+  background-color: var(--sub1);
 }
 .menuBar .menu-circle:hover {
-  background-color: var(--customGreen);
+  background-color: var(--sub2);
   cursor: pointer;
 }
 .menuBar .menu-name {

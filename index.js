@@ -13,9 +13,6 @@ import kakaoSearchModule from './assets/js/kakaoSearchModule.js';
 
 const kakaoSearch = new kakaoSearchModule();
 
-const SEARCH_DATA_LENGTH = 15; // 15가 MAX
-
-
 const mapContainer = document.querySelector('.map-container');
 //css 작업에 사용된 변수
 const curve = document.querySelector('.curve');
@@ -28,7 +25,6 @@ const etcBtn = document.querySelector('.etc-btn');
 const etcContainer = document.querySelector('.etc-container');
 // 검색 기능 변수
 const body = document.querySelector('body');
-const searchInMenu = document.querySelector('.searchContent .search-container input');
 const searchInMap = document.querySelector('.interaction-container .search-container input');
 const categoryList = document.querySelectorAll('.category');
 const searchListState = (stateCheck)();
@@ -81,7 +77,7 @@ function stateCheck() {
 
 // 전역변수
 let map;
-let markers = [];
+let markers = []; // 생성된 마커들에 이벤트적용 및 삭제 할 때 사용할 배열
 let mapCenter;
 
 /**
@@ -112,7 +108,6 @@ function showMenuContent() {
 
 function init() {
     navigator.geolocation.getCurrentPosition(pageSetting, error, {enableHighAccuracy: true});
-
 }
 
 init();
@@ -322,9 +317,44 @@ function pageSetting(result) {
         }
     });
 }
+/**
+ * 카카오 카테고리 검색에서만 사용되는 callback함수
+ * @param {*} result 검색결과
+ * @param {*} status 검색결과 상태
+ * @param {*} pagination 검색결과 page에 관련된 정보
+ */
+function createCategoryMarker(result, status, pagination) {
+    if (status === kakao.maps.services.Status.OK) {
+        removeMarker();
+        result.forEach(data => createMarker(data));
+        setMarkerEvent();
+        let nextBtn = document.getElementById('nextBtn');
+        let prevBtn = document.getElementById('prevBtn');
 
+        nextBtn.click(function() {
+			// 속성 값으로 다음 페이지가 있는지 확인하고
+			if (pagination.hasNextPage) {
+				// 있으면 다음 페이지를 검색한다.
+				pagination.nextPage();
+			}
+		});
+
+        prevBtn.click(function() {
+			// 속성 값으로 다음 페이지가 있는지 확인하고
+			if (pagination.hasPrevPage) {
+				// 있으면 다음 페이지를 검색한다.
+				pagination.nextPage();
+			}
+		});
+    }
+}
+
+/**
+ * data를 받아 1개의 마커를 생성하는 함수
+ * @param {*} data 
+ */
 function createMarker(data) {
-    
+    console.log(data);
     let icon;
     let content;
     let type = data.category_group_name; //주소, 장소, 음식점-카페 등등
@@ -510,32 +540,11 @@ function getRoute() {
 
 
 // 검색 기능 모음
+const categoryValue = (valueCheck)();
 
-
-function categorySearch(event) {
-    let places = new kakao.maps.services.Places();
-    let categoryCode = event.currentTarget.getAttribute('data-categoryCode');
-    let lat = map.getCenter()._lat;
-    let lng = map.getCenter()._lng;
-    let location = new kakao.maps.LatLng(lat, lng);
-
-    // 카테고리 검색 결과를 받을 콜백 함수
-    let callback = function (result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-            removeMarker();
-            result.forEach(data => {
-                createMarker(data);
-            })
-            setMarkerEvent();
-        }
-    };
-    // 공공기관 코드 검색, 찾은 placeList는 callback으로 전달한다.
-    places.categorySearch(categoryCode, callback, {
-        location: location,
-        size: kakaoSearch.SEARCH_DATA_LENGTH
-    });
-}
-
+/**
+ * 현재 생성된 마커에 이벤트를 적용하는 함수
+ */
 function setMarkerEvent() {
     const markerDivs = document.querySelectorAll('.marker-container');
             
@@ -588,7 +597,7 @@ function setMarkerEvent() {
     }
 }
 
-const categoryValue = (valueCheck)();
+
 
 /**
  * 장소의 정보를 인자로 받아 장소정보컨테이너의 내용을 보여준다.
@@ -720,6 +729,7 @@ function getJsonAddr(keyword) {
         });
     return result;
 }
+
 /**
  * 자동완성 JSON파일에서 -keyword-와 글자가 일치하는 데이터들을 가져온다. 
  * @param {*} keyword 일치하는지 찾아볼 단어
@@ -938,14 +948,19 @@ function downKey() {
 /** 카테고리를 클릭하면 카테고리검색함수를 실행 */
 categoryList.forEach(category => {
     category.addEventListener('click', event => {
-       categorySearch(event);
+        let categoryCode = event.currentTarget.getAttribute('data-categoryCode');
+        let lat = map.getCenter()._lat;
+        let lng = map.getCenter()._lng;
+        let location = new kakao.maps.LatLng(lat, lng);
+        let page = 1;
+
+        kakaoSearch.categorySearch(categoryCode, location, page, createCategoryMarker);
     });
 });
 
 
 
 /** 검색창에 위, 아래, 엔터 각각의 함수를 이벤트로 등록한다. */
-console.log(searchInMap);
 searchInMap.addEventListener('keyup', e => {
     if (e.keyCode === 13) enterKey();
     else if (e.keyCode === 38) {
