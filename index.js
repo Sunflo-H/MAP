@@ -6,88 +6,88 @@
  * todo 검색리스트에 자동완성단어 아래에 주소도 표시하기
  * todo 지도 클릭해서 해당 좌표의 정보 받아오기
  */
-const startPointContainer = document.querySelector('.startPoint-container');
-const startPointSearchbar = document.querySelector('.startPoint-container .searchbar');
-const startPointInput = startPointSearchbar.querySelector('input');
-const autoCompleteListST = startPointSearchbar.querySelector('.autoCompleteList-container');
+// const startPointContainer = document.querySelector('.startPoint-container');
+// const startPointSearchbar = document.querySelector('.startPoint-container .searchbar');
+// const startPointInput = startPointSearchbar.querySelector('input');
+// const autoCompleteListST = startPointSearchbar.querySelector('.autoCompleteList-container');
 
-const endPointContainer = document.querySelector('.endPoint-container');
-const endPointSearchbar = document.querySelector('.endPoint-container .searchbar');
-const endPointInput = endPointSearchbar.querySelector('input');
+// const endPointContainer = document.querySelector('.endPoint-container');
+// const endPointSearchbar = document.querySelector('.endPoint-container .searchbar');
+// const endPointInput = endPointSearchbar.querySelector('input');
 
-startPointSearchbar.addEventListener('click', () => {
-    startPointSearchbar.classList.add('active');
-    startPointInput.focus();
-});
+// startPointContainer.addEventListener('click', () => {
+//     startPointContainer.classList.add('active');
+//     startPointInput.focus();
+// });
 
-startPointInput.addEventListener('blur', (e) => {
-    /**
-     * 클릭 - startPointInput , startPointSearchbar를 클릭하면 포커스 유지
-     *      - autoCompleteListSt 를 클릭하면 포커스는 해제 => 그후 다시 포커스 해줘야 한다.
-     *      - 그 외의 것들을 클릭하면 포커스 해제
-     * 
-     * 블러 후 클릭 이벤트가 적용된다.
-     * 
-     * if(포커스를 잃으면) 자동완성 닫아
-     * if(포커스를 잃었는데 자동완성이 열려있고, 시작지점 검색의 value와 자동완성값이 같은게 있으면 닫지마)
-     * if(포커스를 잃었는데 자동완성이 열려있고, 다른걸 클릭했다면(이 조건이 뭘까?) 닫아)
-     * 
-     * 포커스를 잃었는데 자동완성이 열려있다? 그럼 일단 닫지마
-     * 클릭 이벤트로 넘어가서
-     * 
-     * 
-     * 바디에 클릭이벤트 주고 클릭한게 startPointInput startPointSearchbar autoCompleteListSt 
-     * 이 3개면 포커스 해제하지마
-     * autoCompleteListST를 클릭했다면 포커스 해제하지 말고, 추가로 autoCompleteListST를 닫아.
-     * 
-     * 
-     * 포커스가 해제되었다면 포커스는 body로 간다. document.activeElement === body
-     */
+// startPointInput.addEventListener('blur', (e) => {
+//     /**
+//      * 클릭 - startPointInput , startPointSearchbar를 클릭하면 포커스 유지
+//      *      - autoCompleteListSt 를 클릭하면 포커스는 해제 => 그후 다시 포커스 해줘야 한다.
+//      *      - 그 외의 것들을 클릭하면 포커스 해제
+//      * 
+//      * 블러 후 클릭 이벤트가 적용된다.
+//      * 
+//      * if(포커스를 잃으면) 자동완성 닫아
+//      * if(포커스를 잃었는데 자동완성이 열려있고, 시작지점 검색의 value와 자동완성값이 같은게 있으면 닫지마)
+//      * if(포커스를 잃었는데 자동완성이 열려있고, 다른걸 클릭했다면(이 조건이 뭘까?) 닫아)
+//      * 
+//      * 포커스를 잃었는데 자동완성이 열려있다? 그럼 일단 닫지마
+//      * 클릭 이벤트로 넘어가서
+//      * 
+//      * 
+//      * 바디에 클릭이벤트 주고 클릭한게 startPointInput startPointSearchbar autoCompleteListSt 
+//      * 이 3개면 포커스 해제하지마
+//      * autoCompleteListST를 클릭했다면 포커스 해제하지 말고, 추가로 autoCompleteListST를 닫아.
+//      * 
+//      * 
+//      * 포커스가 해제되었다면 포커스는 body로 간다. document.activeElement === body
+//      */
     
-    // console.log(e);
-    // if(!autoCompleteListST.classList.contains('hide')) {
-    //     console.log("포커스 안사라져~");
-    //     console.log(document.hasFocus());
-    //     console.log(document.activeElement);
-    //     return;
-    // }
-    // startPointSearchbar.classList.remove('active');
-    // startPointSearchbar.style.height = "40px";
-    // endPointSearchbar.classList.remove('hide');
-    // autoCompleteListST.classList.add('hide');
-});
+//     // console.log(e);
+//     // if(!autoCompleteListST.classList.contains('hide')) {
+//     //     console.log("포커스 안사라져~");
+//     //     console.log(document.hasFocus());
+//     //     console.log(document.activeElement);
+//     //     return;
+//     // }
+//     // startPointSearchbar.classList.remove('active');
+//     // startPointSearchbar.style.height = "40px";
+//     // endPointSearchbar.classList.remove('hide');
+//     // autoCompleteListST.classList.add('hide');
+// });
 
-startPointInput.addEventListener('input', (e) => {
-    startPointSearchbar.style.height = "200px";
-    endPointContainer.classList.add('hide');
-    autoCompleteListST.classList.remove('hide');
+// startPointInput.addEventListener('input', (e) => {
+//     startPointSearchbar.style.height = "200px";
+//     endPointContainer.classList.add('hide');
+//     autoCompleteListST.classList.remove('hide');
 
-    if(startPointInput.value === '') {
-        startPointSearchbar.style.height = "40px";
-        endPointSearchbar.classList.remove('hide');
-        autoCompleteListST.classList.add('hide');
-    }
-});
+//     if(startPointInput.value === '') {
+//         startPointSearchbar.style.height = "40px";
+//         endPointSearchbar.classList.remove('hide');
+//         autoCompleteListST.classList.add('hide');
+//     }
+// });
 
-autoCompleteListST.addEventListener('click', (e) => {
-    console.log(e);
-    startPointInput.focus();
-    startPointSearchbar.style.height = "40px";
-    endPointSearchbar.classList.remove('hide');
-    autoCompleteListST.classList.add('hide');
-    console.log(e.target);
-    startPointInput.value = e.target.innerText;
-});
+// autoCompleteListST.addEventListener('click', (e) => {
+//     console.log(e);
+//     startPointInput.focus();
+//     startPointSearchbar.style.height = "40px";
+//     endPointSearchbar.classList.remove('hide');
+//     autoCompleteListST.classList.add('hide');
+//     console.log(e.target);
+//     startPointInput.value = e.target.innerText;
+// });
 
-endPointInput.addEventListener('focus', (e) => {
-    endPointSearchbar.style.border = "1px solid #7FB5FF";
-    endPointSearchbar.style.boxShadow = "2px 2px 4px #7FB5FF, -2px -2px 4px #7FB5FF";
-});
+// endPointInput.addEventListener('focus', (e) => {
+//     endPointSearchbar.style.border = "1px solid #7FB5FF";
+//     endPointSearchbar.style.boxShadow = "2px 2px 4px #7FB5FF, -2px -2px 4px #7FB5FF";
+// });
 
-endPointInput.addEventListener('blur', (e) => {
-    endPointSearchbar.style.border = "1px solid white";
-    endPointSearchbar.style.boxShadow = "none";
-});
+// endPointInput.addEventListener('blur', (e) => {
+//     endPointSearchbar.style.border = "1px solid white";
+//     endPointSearchbar.style.boxShadow = "none";
+// });
 
 
 
