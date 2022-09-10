@@ -136,6 +136,7 @@ main {
   height: 100vh;
   padding-top: 10px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .menuContent-container .searchContent {
   /* 검색 컨텐츠 - 지역 정보  */
@@ -438,21 +439,26 @@ main {
   font-weight: bold;
 }
 .menuContent-container .routeContent {
-  padding: 10px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0px 5px 0px;
 }
 .menuContent-container .routeContent .type-container {
   display: flex;
-  width: 100%;
+  width: 230px;
+  min-height: 40px;
   height: 40px;
-  color: black;
+  color: #333;
   justify-content: center;
   border: 1px solid #eaeaea;
   border-radius: 5px;
   overflow: hidden;
+  margin: auto;
 }
 .menuContent-container .routeContent .type-container .routeType-container {
   width: 50%;
-  height: 100%;
+  height: 40px;
   line-height: 42px;
   text-align: center;
   border-right: 1px solid #eaeaea;
@@ -475,15 +481,15 @@ main {
 }
 .menuContent-container .routeContent .pointSearch-container {
   position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.6);
-  width: 100%;
+  border: 1px solid #333;
+  width: 230px;
   border-radius: 5px;
   color: var(--main);
   box-sizing: border-box;
-  margin-top: 10px;
+  margin: 20px auto 0px;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container {
-  width: 100%;
+  width: 228px;
   height: 40px;
   border-radius: 5px;
 }
@@ -529,9 +535,95 @@ main {
   border: 1px solid #7FB5FF;
   color: #7FB5FF;
 }
+.menuContent-container .routeContent .btn-container {
+  width: 230px;
+  display: flex;
+  margin: 5px auto;
+  justify-content: space-between;
+}
+.menuContent-container .routeContent .btn-container .btn {
+  height: 30px;
+  background: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  text-align: center;
+  line-height: 30px;
+}
+.menuContent-container .routeContent .btn-container .btn:hover {
+  cursor: pointer;
+}
+.menuContent-container .routeContent .btn-container .btn.waypoint {
+  width: 70px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  transition-duration: 0.5s;
+}
+.menuContent-container .routeContent .btn-container .btn.waypoint i {
+  font-size: 14px;
+  margin-left: 3px;
+  color: var(--cacaoBlue);
+}
+.menuContent-container .routeContent .btn-container .btn.waypoint:hover i {
+  transform: rotate(360deg);
+}
+.menuContent-container .routeContent .btn-container .btn.routeSearch {
+  width: 90px;
+  font-size: 16px;
+  color: var(--cacaoBlue);
+  transition-duration: 0.5s;
+}
+.menuContent-container .routeContent .btn-container .btn.routeSearch i {
+  font-size: 14px;
+  margin-left: 5px;
+}
+.menuContent-container .routeContent .btn-container .btn.routeSearch:hover {
+  background-color: var(--cacaoBlue);
+  color: white !important;
+  font-weight: bold;
+}
+.menuContent-container .routeContent .history-container {
+  width: 230px;
+  flex-grow: 1;
+  margin-left: 10px;
+  margin-top: 20px;
+  color: #333;
+}
+.menuContent-container .routeContent .history-container .title {
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 10px;
+}
+.menuContent-container .routeContent .history-container .no-search {
+  margin-top: 10px;
+  margin-left: 10px;
+  color: #4e4e4e;
+  font-size: 14px;
+}
+.menuContent-container .routeContent .history-container .border {
+  width: 230px;
+  height: 2px;
+  background-color: #eaeaea;
+  margin-top: 3px;
+}
+.menuContent-container .routeContent .history-container ul {
+  list-style: none;
+  padding: 0px;
+  margin-top: 5px;
+  color: #4e4e4e;
+  font-size: 14px;
+}
+.menuContent-container .routeContent .history-container ul li {
+  padding: 5px 10px;
+}
+.menuContent-container .routeContent .history-container ul li:hover {
+  background-color: rgba(37, 47, 98, 0.1);
+  cursor: pointer;
+}
 .menuContent-container .routeContent .result-container {
-  border: 1px solid red;
   width: 100%;
+  flex-grow: 1;
+  margin-top: 10px;
+  border-radius: 5px;
 }
 
 /* 지도 컨테이너*/

@@ -4,7 +4,7 @@
  * todo 길찾기 startPoint, endPoint, 검색결과(start, end, route)
  * todo 검색리스트 (검색결과리스트) 이름 수정하기 및 만들기
  * todo 검색리스트에 자동완성단어 아래에 주소도 표시하기
- * todo 
+ * todo 지도 클릭해서 해당 좌표의 정보 받아오기
  */
 
 const sp = document.querySelector('.startPoint-container');

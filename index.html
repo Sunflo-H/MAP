@@ -148,13 +148,53 @@
                             <div class="searchList hide"></div>
                     </div>
                     <div class="endPoint-container search-container">
-                            <input type="text" placeholder="도착지 입력" autocomplete="off">
+                            <input type="text" placeholder="도착지 입력" autocomplete="off"> 
                             <div class="searchList hide"></div>
                     </div>
                     <div class="change-btn"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
                 </div>
-                <div class="result-container">
+                <div class="btn-container">
+                    <div class="btn waypoint">경유지<i class="fa-solid fa-plus"></i></div>
+                    <div class="btn routeSearch">길찾기<i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="history-container">
+                    <div class="title">최근 검색 기록</div>
+                    <div class="border"></div>
+                    <div class="no-search">최근 검색 기록이 없습니다.</div>
+                    <ul class="hide">
+                        <!-- 장소검색 기록이면 장소 아이콘 왼쪽에 -->
+                        <!-- 길찾기 검색 기록이면 길찾기 아이콘 왼쪽에 -->
+                        <!-- 지도  -->
+                        
+                        <li>
+                            <div class="history">
+                                <i class="fa-solid fa-location-dot"></i>아차산빌라
+                            </div>
+                        </li>
+                        <li>
+                            <div class="history">
+                                <i class="fa-solid fa-person-walking"></i>시작지점 -> 도착지점
+                            </div>
+                        </li>
+                        <li>
+                            <div class="history">
+                                <i class="fa-solid fa-car"></i>시작지점 -> 도착지점
+                            </div>
+                        </li>
+                        <li>
+                            <div class="history">
+                                시작지점 -> 도착지점
+                            </div>
+                        </li>
+                    </ul>
+
+                </div>
+                
+                <div class="result-container hide">
+
                     <div class="result">검색 결과</div>
+
                 </div>
             </div>
             <!-- 즐겨찾기 컨텐츠 -->
