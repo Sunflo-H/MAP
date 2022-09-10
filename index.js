@@ -90,8 +90,6 @@
 // });
 
 
-
-
 // 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
 
 import kakaoSearchModule from './assets/js/kakaoSearchModule.js';
@@ -117,16 +115,7 @@ const autoCompleteState = (stateCheck)();
 const historyState = (stateCheck)();
 
 const cityIsChange = (stateCheck)(); 
-body.addEventListener('click', e => {
-    if(e.target === startPointInput) return;
-    if(e.target === startPointSearchbar) return;
-    if(e.target === autoCompleteListST) return;
 
-    startPointSearchbar.classList.remove('active');
-    endPointContainer.classList.remove('hide');
-    autoCompleteListST.classList.add('hide');
-    startPointSearchbar.style.height = "40px";
-});
 /**
  * true, false 상태를 변경하고 확인하는 함수, 즉시실행함수로 사용된다.
  * @returns getState(), setState(boolean)
@@ -1093,7 +1082,7 @@ searchInMap.addEventListener('click', e => {
     if(searchInMap.value === "") setHistory();
 });
 
-body.addEventListener('click', e => {
+body.addEventListener('click',e => {
     const container = document.querySelector('.interaction-container .search-container');
     
     if(e.target === searchInMap) return;

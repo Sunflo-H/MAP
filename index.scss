@@ -590,40 +590,24 @@ main {
                 height: 40px;
                 border-radius: 5px;
     
-                .searchbar {
+                .search {
                     width: 228px;
                     height: 40px;
                     border: 1px solid white;
                     border-radius: 5px;
+                    padding: 0px 15px;
                     box-sizing: border-box;
                     font-size: 16px;
                     line-height: 36px;
-                    background-color: white;
-
-                    &:hover {
-                        cursor: pointer;
-                    }
 
                     input {
-                        width: 180px;
                         height: 20px;
                         border: none;
                         outline: none;
-                        margin-left: 10px;
                         
                         &::placeholder {
                             color: #a9a9a9;
                         }
-                    }
-
-                    .autoCompleteList-container {
-                        border-top: 1px solid #eaeaea;
-                    }
-
-                    &.active {
-                        border: 1px solid #7FB5FF;
-                        box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF,
-                                    0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;                        
                     }
                 }
             }

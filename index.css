@@ -551,12 +551,34 @@ main {
 .menuContent-container .routeContent .pointSearch-container .search-container:hover {
   cursor: pointer;
 }
+.menuContent-container .routeContent .pointSearch {
+  min-height: 40px;
+  height: 40px;
+  border-radius: 5px;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .search {
+  width: 228px;
+  height: 40px;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 0px 15px;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 36px;
+  background-color: white;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container.active {
+  border: 1px solid #7FB5FF;
+  box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF, 0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container:hover {
+  cursor: pointer;
+}
 .menuContent-container .routeContent .pointSearch-container .search-container input {
   width: 180px;
   height: 20px;
   border: none;
   outline: none;
-  margin-left: 10px;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container input::placeholder {
   color: #a9a9a9;
@@ -569,33 +591,7 @@ main {
   border: 1px solid #7FB5FF;
   box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF, 0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;
 }
-.menuContent-container .routeContent .pointSearch-container .startPoint-container {
-  border-bottom: 1px solid #eaeaea;
-}
-.menuContent-container .routeContent .pointSearch-container .endPoint-container {
-  margin-top: 1px;
-}
-.menuContent-container .routeContent .pointSearch-container .change-btn {
-  position: absolute;
-  top: 27px;
-  left: 180px;
-  width: 25px;
-  height: 25px;
-  text-align: center;
-  line-height: 25px;
-  font-size: 12px;
-  border: 1px solid #e6e6e6;
-  color: #e1e1e1;
-  background-color: white;
-  border-radius: 999px;
-  transform: rotate(90deg);
-}
-.menuContent-container .routeContent .pointSearch-container .change-btn:hover {
-  cursor: pointer;
-  border: 1px solid #7FB5FF;
-  color: #7FB5FF;
-}
-.menuContent-container .routeContent .btn-container {
+tn-container {
   width: 230px;
   display: flex;
   margin: 5px auto;
