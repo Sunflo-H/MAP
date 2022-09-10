@@ -587,21 +587,24 @@ main {
                 height: 40px;
                 border-radius: 5px;
     
-                input {
-                    width: 100%;
+                .search {
+                    width: 228px;
                     height: 40px;
-                    border: none;
+                    border: 1px solid white;
                     border-radius: 5px;
                     padding: 0px 15px;
                     box-sizing: border-box;
                     font-size: 16px;
+                    line-height: 36px;
 
-                    &:focus {
-                        outline: 2px solid #7FB5FF;
-                        box-shadow: 2px 2px 4px #7FB5FF, -2px -2px 4px #7FB5FF;
-                    }
-                    &::placeholder {
-                        color: #a9a9a9;
+                    input {
+                        height: 20px;
+                        border: none;
+                        outline: none;
+                        
+                        &::placeholder {
+                            color: #a9a9a9;
+                        }
                     }
                 }
             }

@@ -7,26 +7,33 @@
  * todo 지도 클릭해서 해당 좌표의 정보 받아오기
  */
 
-const sp = document.querySelector('.startPoint-container');
-const ep = document.querySelector('.endPoint-container');
-const spi = sp.querySelector('input');
-const epi = ep.querySelector('input');
-const scover = document.querySelector('.startPoint-cover-container');
-const ecover = document.querySelector('.endPoint-cover-container');
-console.log(spi);
+const searchST = document.querySelector('.startPoint-container .search');
+const searchSTInput = searchST.querySelector('input');
 
-spi.addEventListener('focus', () => {
-    scover.classList.remove('hide');
-})
-spi.addEventListener('blur', () => {
-    scover.classList.add('hide');
-})
-epi.addEventListener('focus', () => {
-    ecover.classList.remove('hide');
-})
-epi.addEventListener('blur', () => {
-    ecover.classList.add('hide');
-})
+const searchED = document.querySelector('.endPoint-container .search');
+const searchEDInput = searchED.querySelector('input');
+
+searchSTInput.addEventListener('focus', (e) => {
+    searchST.style.border = "1px solid #7FB5FF";
+    searchST.style.boxShadow = "2px 2px 4px #7FB5FF, -2px -2px 4px #7FB5FF";
+    searchSTInput.style.lineHeight = "20px";
+});
+
+searchSTInput.addEventListener('blur', (e) => {
+    searchST.style.border = "1px solid white";
+    searchST.style.boxShadow = "none";
+});
+searchEDInput.addEventListener('focus', (e) => {
+    searchED.style.border = "1px solid #7FB5FF";
+    searchED.style.boxShadow = "2px 2px 4px #7FB5FF, -2px -2px 4px #7FB5FF";
+    searchEDInput.style.lineHeight = "20px";
+});
+
+searchEDInput.addEventListener('blur', (e) => {
+    searchED.style.border = "none";
+    searchED.style.boxShadow = "none";
+});
+
 
 // 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
 
