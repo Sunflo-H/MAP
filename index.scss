@@ -615,10 +615,18 @@ main {
                     .autoCompleteList-container {
                         border-top: 1px solid #eaeaea;
                         z-index: 2;
-                        li {
-                          &:hover {
-                            cursor: pointer;
-                          }  
+                        ul {
+                            padding: 0;
+                            list-style-type: none;
+                            border: 1px solid red;
+                            li {
+                                border: 1px solid green;
+
+                                &:hover {
+                                  cursor: pointer;
+                                }  
+                            }
+                            
                         }
                     }
 

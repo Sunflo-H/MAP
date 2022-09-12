@@ -518,7 +518,15 @@ main {
   border-top: 1px solid #eaeaea;
   z-index: 2;
 }
-.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container li:hover {
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul {
+  padding: 0;
+  list-style-type: none;
+  border: 1px solid red;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li {
+  border: 1px solid green;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li:hover {
   cursor: pointer;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar.active {

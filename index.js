@@ -13,17 +13,15 @@ const startPointContainer = document.querySelector('.startPoint-container');
 const startPointSearchbar = document.querySelector('.startPoint-container .searchbar');
 const startPointInput = startPointSearchbar.querySelector('input');
 const autoCompleteListST = startPointSearchbar.querySelector('.autoCompleteList-container');
+const autoCompleteSpan = autoCompleteListST.querySelector('span');
 
 const endPointContainer = document.querySelector('.endPoint-container');
 const endPointSearchbar = document.querySelector('.endPoint-container .searchbar');
 const endPointInput = endPointSearchbar.querySelector('input');
 
-const psBorder = document.querySelector('.pointSearch-container .border')
-
 startPointSearchbar.addEventListener('click', (e) => {
     console.log(e.target);
     startPointSearchbar.classList.add('active');
-    psBorder.classList.add('hide');
     startPointInput.focus();
 });
 
@@ -41,7 +39,7 @@ startPointInput.addEventListener('input', (e) => {
 
 autoCompleteListST.addEventListener('click', (e) => {
     console.log(e);
-    // startPointInput.focus();
+    startPointInput.focus();
     // startPointSearchbar.style.height = "40px";
     // endPointSearchbar.classList.add('hide');
     // autoCompleteListST.classList.add('hide');
@@ -83,14 +81,20 @@ const historyState = (stateCheck)();
 
 const cityIsChange = (stateCheck)();
 body.addEventListener('click', e => {
+    if (e.target === startPointContainer) return;
     if (e.target === startPointInput) return;
     if (e.target === startPointSearchbar) return;
-    if (e.target === autoCompleteListST) return;
+    if (e.target === autoCompleteListST ||
+        e.target.parentNode === autoCompleteListST || 
+        e.target.parentNode.parentNode === autoCompleteListST ||
+        e.target.parentNode.parentNode.parentNode === autoCompleteListST ) return;
 
+    console.log(e.target);
+    console.log("바디를 클릭했습니다.");
     startPointSearchbar.classList.remove('active');
-    endPointContainer.classList.remove('hide');
-    autoCompleteListST.classList.add('hide');
-    startPointSearchbar.style.height = "40px";
+    // endPointContainer.classList.remove('hide');
+    // autoCompleteListST.classList.add('hide');
+    // startPointSearchbar.style.height = "40px";
 });
 /**
  * true, false 상태를 변경하고 확인하는 함수, 즉시실행함수로 사용된다.
