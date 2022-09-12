@@ -1,5 +1,7 @@
 /**
+ * todo 길찾기의 이벤트 및 기능 관련 목록
  * *todo 출발지 입력의 자동완성리스트 열렸을때 도착지 입력의 zindex가 더 커서 거슬려
+ * *todo 두 검색컨테이너 사이의 경계선 css 해결 
  * todo 자동완성리스트 클릭하는 대상 은 span으로 한정하기
  * todo 길찾기 startPoint, endPoint, 검색결과(start, end, route)
  * 
@@ -16,16 +18,18 @@ const endPointContainer = document.querySelector('.endPoint-container');
 const endPointSearchbar = document.querySelector('.endPoint-container .searchbar');
 const endPointInput = endPointSearchbar.querySelector('input');
 
-startPointContainer.addEventListener('click', (e) => {
+const psBorder = document.querySelector('.pointSearch-container .border')
+
+startPointSearchbar.addEventListener('click', (e) => {
     console.log(e.target);
     startPointSearchbar.classList.add('active');
-    
+    psBorder.classList.add('hide');
     startPointInput.focus();
 });
 
 startPointInput.addEventListener('input', (e) => {
     startPointSearchbar.style.height = "200px";
-    endPointSearchbar.classList.add('hide');
+    endPointContainer.classList.add('hide');
     autoCompleteListST.classList.remove('hide');
 
     if (startPointInput.value === '') {
@@ -37,12 +41,12 @@ startPointInput.addEventListener('input', (e) => {
 
 autoCompleteListST.addEventListener('click', (e) => {
     console.log(e);
-    startPointInput.focus();
-    startPointSearchbar.style.height = "40px";
-    endPointSearchbar.classList.add('hide');
-    autoCompleteListST.classList.add('hide');
-    console.log(e.target);
-    startPointInput.value = e.target.innerText;
+    // startPointInput.focus();
+    // startPointSearchbar.style.height = "40px";
+    // endPointSearchbar.classList.add('hide');
+    // autoCompleteListST.classList.add('hide');
+    // console.log(e.target);
+    // startPointInput.value = e.target.innerText;
 });
 
 endPointContainer.addEventListener('click', (e) => {
