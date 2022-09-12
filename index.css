@@ -504,6 +504,13 @@ main {
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar:hover {
   cursor: pointer;
 }
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar.focus {
+  border: 1px solid #7FB5FF;
+  box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF, 0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar.open {
+  height: 200px !important;
+}
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar input {
   width: 180px;
   height: 20px;
@@ -528,10 +535,7 @@ main {
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li:hover {
   cursor: pointer;
-}
-.menuContent-container .routeContent .pointSearch-container .search-container .searchbar.active {
-  border: 1px solid #7FB5FF;
-  box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF, 0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;
+  background-color: #eaeaea;
 }
 .menuContent-container .routeContent .pointSearch-container .startPoint-container {
   border-bottom: 1px solid #eaeaea;

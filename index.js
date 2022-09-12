@@ -21,35 +21,46 @@ const endPointInput = endPointSearchbar.querySelector('input');
 
 startPointSearchbar.addEventListener('click', (e) => {
     console.log(e.target);
-    startPointSearchbar.classList.add('active');
+    startPointSearchbar.classList.add('focus');
     startPointInput.focus();
 });
 
+//시작지점의 자동완성이 열리면 도착지점의 포인트컨테이너에 hide를 준다.
 startPointInput.addEventListener('input', (e) => {
-    startPointSearchbar.style.height = "200px";
-    endPointContainer.classList.add('hide');
+    // startPointSearchbar.style.height = "200px";
+    startPointSearchbar.classList.add('open');
     autoCompleteListST.classList.remove('hide');
+    endPointContainer.classList.add('hide');
 
     if (startPointInput.value === '') {
-        startPointSearchbar.style.height = "40px";
+        startPointSearchbar.classList.remove('open');
         endPointSearchbar.classList.add('hide');
         autoCompleteListST.classList.add('hide');
     }
 });
 
 autoCompleteListST.addEventListener('click', (e) => {
-    console.log(e);
+    // 타겟이 <li>더라도 innerText로 잘 나오게끔 html파일을 수정해놈
+
+    console.log(e.target);
+    console.log(e.target.innerText);
     startPointInput.focus();
-    // startPointSearchbar.style.height = "40px";
-    // endPointSearchbar.classList.add('hide');
-    // autoCompleteListST.classList.add('hide');
-    // console.log(e.target);
-    // startPointInput.value = e.target.innerText;
+
+    if(e.target === e.currentTarget) {
+        // 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
+        return;
+    }
+
+    startPointSearchbar.classList.remove('open');
+    autoCompleteListST.classList.add('hide');
+    startPointInput.value = e.target.innerText;
+
+    endPointContainer.classList.remove('hide');
 });
 
 endPointContainer.addEventListener('click', (e) => {
     console.log(e.target);
-    endPointSearchbar.classList.add('active');
+    endPointSearchbar.classList.add('focus');
     endPointInput.focus();
 });
 
@@ -89,12 +100,23 @@ body.addEventListener('click', e => {
         e.target.parentNode.parentNode === autoCompleteListST ||
         e.target.parentNode.parentNode.parentNode === autoCompleteListST ) return;
 
-    console.log(e.target);
     console.log("바디를 클릭했습니다.");
-    startPointSearchbar.classList.remove('active');
-    // endPointContainer.classList.remove('hide');
-    // autoCompleteListST.classList.add('hide');
-    // startPointSearchbar.style.height = "40px";
+    /**
+     * 바디를 클릭했을때 작동해야 하는 동작
+     * 시작지점
+     * 1. searchbar에 focus 제거
+     * 2. searchbar에 open 제거
+     * 3. autoComplete 숨기기
+     * 
+     * 도착지점
+     * 1. pointContainer hide 해제
+     *  
+     */ 
+    startPointSearchbar.classList.remove('focus');
+    startPointSearchbar.classList.remove('open');
+    autoCompleteListST.classList.add('hide');
+
+    endPointContainer.classList.remove('hide');
 });
 /**
  * true, false 상태를 변경하고 확인하는 함수, 즉시실행함수로 사용된다.

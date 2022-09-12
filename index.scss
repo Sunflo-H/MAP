@@ -599,6 +599,16 @@ main {
                     &:hover {
                         cursor: pointer;
                     }
+                    
+                    &.focus {
+                        border: 1px solid #7FB5FF;
+                        box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF,
+                                    0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;                        
+                    }
+
+                    &.open {
+                        height: 200px !important;
+                    }
 
                     input {
                         width: 180px;
@@ -624,17 +634,14 @@ main {
 
                                 &:hover {
                                   cursor: pointer;
+                                  background-color: #eaeaea;
                                 }  
                             }
                             
                         }
                     }
 
-                    &.active {
-                        border: 1px solid #7FB5FF;
-                        box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF,
-                                    0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;                        
-                    }
+
                 }
             }
     
