@@ -1,14 +1,13 @@
 /**
- * todo 길찾기의 이벤트 및 기능 관련 목록
- * *todo 출발지 입력의 자동완성리스트 열렸을때 도착지 입력의 zindex가 더 커서 거슬려
- * *todo 두 검색컨테이너 사이의 경계선 css 해결 
- * todo 자동완성리스트 클릭하는 대상 은 span으로 한정하기
+ * *todo 길찾기의 이벤트 및 기능 관련 목록
+ * *todo 자동완성리스트 클릭하는 대상 은 span으로 한정하기
  * todo 길찾기 startPoint, endPoint, 검색결과(start, end, route)
  * 
- * todo 검색리스트 (검색결과리스트) 이름 수정하기 및 만들기
  * todo 검색리스트에 자동완성단어 아래에 주소도 표시하기
  * todo 지도 클릭해서 해당 좌표의 정보 받아오기
  */
+
+// 길찾기 기능
 const startPointContainer = document.querySelector('.startPoint-container');
 const startPointSearchbar = document.querySelector('.startPoint-container .searchbar');
 const startPointInput = startPointSearchbar.querySelector('input');
@@ -28,16 +27,15 @@ startPointSearchbar.addEventListener('click', (e) => {
 
 //시작지점의 자동완성이 열리면 도착지점의 포인트컨테이너에 hide를 준다.
 startPointInput.addEventListener('input', (e) => {
-    // startPointSearchbar.style.height = "200px";
-    startPointSearchbar.classList.add('open');
-    startPointAutoCompleteList.classList.remove('hide');
-    endPointContainer.classList.add('hide');
+    // startPointSearchbar.classList.add('open');
+    // startPointAutoCompleteList.classList.remove('hide');
+    // endPointContainer.classList.add('hide');
 
-    if (startPointInput.value === '') {
-        startPointSearchbar.classList.remove('open');
-        endPointSearchbar.classList.add('hide');
-        startPointAutoCompleteList.classList.add('hide');
-    }
+    // if (startPointInput.value === '') {
+    //     startPointSearchbar.classList.remove('open');
+    //     endPointSearchbar.classList.add('hide');
+    //     startPointAutoCompleteList.classList.add('hide');
+    // }
 });
 
 startPointAutoCompleteList.addEventListener('click', (e) => {
@@ -93,6 +91,116 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
     endPointInput.value = e.target.innerText;
 
 });
+
+//길찾기 기능
+/**
+ * 필요한 정보들
+ * 시작 좌표, 끝 좌표, 경로탐색 api, 경로 라인, 경로 중 포인트들 점
+ */
+
+/**
+ * 순서
+ * 1 목적지를 입력한다.
+ * 1-1 목적지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 startData에 저장
+ * 1-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 startData에 값을 저장한다.
+ * 
+ * 2 도착지를 입력한다.
+ * 2-1 도착지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 endData에 저장
+ * 2-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 endData에 값을 저장한다.
+ * 
+ * 
+ * 3 start와 end의 x,y좌표로 경로탐색 시작
+ * 
+ * 경로의 결과값들을 포인트 객체로 변환하고, 포인트 객체를 좌표값으로 변환
+ * 모여진 좌표값들을 이어주는 선을 그린다.
+ * 
+ */
+
+ startPointInput.addEventListener('input', e => {
+    const keyword = e.target.value;
+
+    const active = () => {
+        startPointSearchbar.classList.add('open');
+        startPointAutoCompleteList.classList.remove('hide');
+        endPointContainer.classList.add('hide');
+    }
+
+    const disActive = () => {
+        startPointSearchbar.classList.remove('open');
+        startPointAutoCompleteList.classList.add('hide');
+        endPointContainer.classList.remove('hide');
+    }
+
+    if (startPointInput.value === '') {
+        console.log("밸류가 없다.");
+        disActive();
+        return;
+    }
+
+    Promise.all([getJsonAddr(keyword), getJsonData(keyword)]).then(data => {      
+        let result = data[0].concat(data[1]).slice(0, 10);
+
+        if (result.length !== 0) {
+            active();
+            setAutoCompleteList_start(result);
+        }
+        else {
+            disActive();
+
+            // setAutoCompleteList_start(result);
+            return;
+        }
+    });
+});
+
+function setAutoCompleteList_start(data) {
+    let ul = startPointAutoCompleteList.querySelector('ul');
+    console.log(data);
+
+    if(data.length === 0) return;
+
+    while(ul.hasChildNodes()) ul.removeChild(ul.firstChild);
+    data.forEach(autoComplete => {
+        let element = `<li><span>${autoComplete}</span></li>`;
+        ul.insertAdjacentHTML('beforeend', element);    
+    })
+}
+
+function displayStartPointResultList() {
+
+}
+function displayEndPointResultList() {
+
+}
+function displayRouteSearchResultList() {
+
+}
+
+function routeSearch(startPlace, endPlace) {
+    console.log("startPlace : ", startPlace);
+    console.log("endPlace : ", endPlace);
+
+    if (startPlace === "" || endPlace === "") return;
+
+    let data = Promise.all([search(startPlace), search(endPlace)]);
+    console.log(data);
+}
+
+function createRouteMarker(start, end) {
+
+}
+
+function drawLine() {
+
+}
+
+function drawComma() {
+
+}
+
+function getRoute() {
+
+}
 
 
 
@@ -574,108 +682,7 @@ function getUserLocation() {
     });
 }
 
-//길찾기 기능
-/**
- * 필요한 정보들
- * 시작 좌표, 끝 좌표, 경로탐색 api, 경로 라인, 경로 중 포인트들 점
- */
 
-/**
- * 순서
- * 1 목적지를 입력한다.
- * 1-1 목적지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 startData에 저장
- * 1-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 startData에 값을 저장한다.
- * 
- * 2 도착지를 입력한다.
- * 2-1 도착지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 endData에 저장
- * 2-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 endData에 값을 저장한다.
- * 
- * 
- * 3 start와 end의 x,y좌표로 경로탐색 시작
- * 
- * 경로의 결과값들을 포인트 객체로 변환하고, 포인트 객체를 좌표값으로 변환
- * 모여진 좌표값들을 이어주는 선을 그린다.
- * 
- */
-
-// const startPointInput = document.querySelector('.startPoint-container input');
-// startPointInput.addEventListener('input', e => {
-//     const keyword = e.target.value;
-//     const type = "startPoint";
-
-//     if (startPointInput.value === '') {
-//         displayAutoCompleteList(false);
-//         return;
-//     }
-
-//     Promise.all([getJsonAddr(keyword), getJsonData(keyword)]).then(data => {      
-//         let result = data[0].concat(data[1]).slice(0, 10);
-
-//         if (result.length !== 0) {
-//             console.log(result);
-//             displayAutoCompleteList(true);
-//             setAutoComplete(result, type);
-//         }
-//         else {
-//             displayAutoCompleteList(false);
-//         }
-//     });
-
-//     /**
-//      * 검색을 해서 검색결과 리스트를 보여준다.
-//      * 그중에 하나를 클릭하면 그 장소정보의 이름이 출발지가 된다.
-//      * 장소정보로 routeSearch를 실행
-//      * 클릭 하지 않는다면 제일 첫번째 검색결과로 실행
-//      * 
-//      * 
-//      */
-// });
-
-function displayAutoCompleteList(isTrue) {
-    const startPointList = document.querySelector('.routeContent .searchList');
-    if (isTrue) {
-        startPointList.classList.remove('hide');
-    }
-    else {
-        startPointList.classList.add('hide');
-    }
-}
-
-function displayStartPointResultList() {
-
-}
-function displayEndPointResultList() {
-
-}
-function displayRouteSearchResultList() {
-
-}
-
-function routeSearch(startPlace, endPlace) {
-    console.log("startPlace : ", startPlace);
-    console.log("endPlace : ", endPlace);
-
-    if (startPlace === "" || endPlace === "") return;
-
-    let data = Promise.all([search(startPlace), search(endPlace)]);
-    console.log(data);
-}
-
-function createRouteMarker(start, end) {
-
-}
-
-function drawLine() {
-
-}
-
-function drawComma() {
-
-}
-
-function getRoute() {
-
-}
 
 
 // 검색 기능 모음

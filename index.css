@@ -510,7 +510,7 @@ main {
   box-shadow: 2px 0px 2px #7FB5FF, -2px 0px 2px #7FB5FF, 0px 2px 2px #7FB5FF, 0px -2px 2px #7FB5FF;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar.open {
-  height: 200px !important;
+  height: 100% !important;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar input {
   width: 180px;
