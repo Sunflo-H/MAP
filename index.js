@@ -22,6 +22,7 @@ const endPointAutoCompleteList = endPointSearchbar.querySelector('.autoCompleteL
 startPointSearchbar.addEventListener('click', (e) => {
     console.log(e.target);
     startPointSearchbar.classList.add('focus');
+    endPointSearchbar.classList.remove('focus');
     startPointInput.focus();
 });
 
@@ -40,14 +41,12 @@ startPointInput.addEventListener('input', (e) => {
 });
 
 startPointAutoCompleteList.addEventListener('click', (e) => {
-    // 타겟이 <li>더라도 innerText로 잘 나오게끔 html파일을 수정해놈
-
     console.log(e.target);
     console.log(e.target.innerText);
     startPointInput.focus();
 
+    // 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
     if(e.target === e.currentTarget) {
-        // 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
         return;
     }
 
@@ -61,6 +60,7 @@ startPointAutoCompleteList.addEventListener('click', (e) => {
 endPointSearchbar.addEventListener('click', (e) => {
     console.log(e.target);
     endPointSearchbar.classList.add('focus');
+    startPointSearchbar.classList.remove('focus');
     endPointInput.focus();
 });
 
