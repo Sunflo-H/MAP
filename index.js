@@ -22,7 +22,7 @@ const endPointAutoCompleteList = endPointSearchbar.querySelector('.autoCompleteL
 startPointSearchbar.addEventListener('click', (e) => {
     console.log(e.target);
     startPointSearchbar.classList.add('focus');
-    endPointSearchbar.classList.remove('focus');
+    endPointSearchbar.classList.remove('focus', 'open');
     startPointInput.focus();
 });
 
