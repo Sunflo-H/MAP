@@ -39,8 +39,29 @@ startPointInput.addEventListener('input', (e) => {
 });
 
 startPointAutoCompleteList.addEventListener('click', (e) => {
+    // name-container와 address-container가 있어
+    // 클릭했을때 각 컨테이너의 span을 가져와야해
+    /**
+     * <li class="place">
+            <div class="name-container">
+                <i class="fa-solid fa-location-dot"></i>
+                <span>${address.place_name}</span>
+            </div>
+            <div class="address-container">
+                <span>${address.address_name}</span>
+            </div>
+       </li>
+     */
+    const ac = startPointAutoCompleteList.querySelector('.address-container');
     console.log(e.target);
     console.log(e.target.innerText);
+    console.log(ac.childNodes);
+    console.log(ac.children[0]);
+    let target;
+    if(e.target === ac || e.target === ac.children[0]) {
+        target = e.target.previousElementSibling;
+        console.log(target);
+    }
     startPointInput.focus();
 
     // 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
@@ -131,27 +152,52 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
         endPointContainer.classList.remove('hide');
     }
 
-    if (startPointInput.value === '') {
-        console.log("밸류가 없다.");
+    if (startPointInput.value === '') { // 입력값이 공백일때 검색하면 에러가 난다.
         disActive();
         return;
     }
-
-    Promise.all([getJsonAddr(keyword), getJsonData(keyword)]).then(data => {      
+    
+    kakaoSearch.search(keyword, map.getCenter()._lat, map.getCenter()._lng)
+    .then(data => {     
+        // 검색창 액티브면 스위치 버튼 안보이게 하기
+        // console.log(data);
+        if(data.length === 0) return;
+        // console.log(data[0]); // address_name
+        // console.log(data[1]); // place_name
         let result = data[0].concat(data[1]).slice(0, 10);
-
+        console.log(result);
         if (result.length !== 0) {
             active();
             setAutoCompleteList_start(result);
         }
         else {
             disActive();
+        }
+    })
+    // findAutoComplete(keyword, setAutoCompleteList_start, active, disActive);
+});
 
-            // setAutoCompleteList_start(result);
-            return;
+/**
+ * 키워드로 자동검색단어를 찾는 함수입니다.
+ * 콜백함수로 성공시 실행할 succes, 그외 active, disActive가 있습니다.
+ * @param {*} keyword 검색어
+ * @param {*} success 검색어를 찾았을때 실행할 함수
+ * @param {*} active css 조작
+ * @param {*} disActive css 조작 
+ */
+function findAutoComplete(keyword, success, active, disActive) {
+    Promise.all([getJsonAddr(keyword), getJsonData(keyword)]).then(data => {      
+        let result = data[0].concat(data[1]).slice(0, 15);
+
+        if (result.length !== 0) {
+            active();
+            success(result);
+        }
+        else {
+            disActive();
         }
     });
-});
+}
 
 function setAutoCompleteList_start(data) {
     let ul = startPointAutoCompleteList.querySelector('ul');
@@ -160,8 +206,27 @@ function setAutoCompleteList_start(data) {
     if(data.length === 0) return;
 
     while(ul.hasChildNodes()) ul.removeChild(ul.firstChild);
-    data.forEach(autoComplete => {
-        let element = `<li><span>${autoComplete}</span></li>`;
+    data.forEach(address => {
+        let element; 
+        if(address.place_name === undefined) {
+            element = `<li class="address">
+                        <div class="name-container">
+                            <i class="fa-solid fa-location-pin"></i>
+                            <span>${address.address_name}</span>
+                        </div>
+                       </li>`;
+        }
+        else {
+            element = `<li class="place">
+                        <div class="name-container">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>${address.place_name}</span>
+                        </div>
+                        <div class="address-container">
+                            <span>${address.address_name}</span>
+                        </div>
+                       </li>`;
+        }
         ul.insertAdjacentHTML('beforeend', element);    
     })
 }
