@@ -8,6 +8,7 @@
   --seoulBlue: #558BCF;
   --azure: #0099ff;
   --grayBlue: #eceef9;
+  --cacaoRed: #ff5d5d;
   --main: #252f62;
   --sub1: #3D56B2;
   --sub2: #5C7AEA;
@@ -44,6 +45,7 @@
 html {
   width: 100%;
   height: 100%;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 body {
@@ -146,7 +148,6 @@ main {
   margin: 50px 10px 0px;
 }
 .menuContent-container .searchContent .location-container .address-container {
-  font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
   font-size: 18px;
   color: #333;
@@ -157,7 +158,6 @@ main {
   overflow: hidden;
 }
 .menuContent-container .searchContent .location-container .weather-container .weatherAndTemp-container {
-  font-family: "Noto Sans KR", sans-serif;
   font-size: 14px;
   font-weight: bold;
 }
@@ -170,7 +170,6 @@ main {
   height: 40px;
   overflow: hidden;
   margin-left: 7px;
-  font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
   transition-duration: 1s;
 }
@@ -207,7 +206,6 @@ main {
 .menuContent-container .searchContent .recommendAndResult-container .recommend-container .border span {
   font-size: 14px;
   font-weight: bold;
-  font-family: "Noto Sans KR", sans-serif;
 }
 .menuContent-container .searchContent .recommendAndResult-container .recommend-container .border span span {
   font-size: 14px;
@@ -266,7 +264,6 @@ main {
 }
 .menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container .nameAndCategory {
   color: #0475f4;
-  font-family: "Noto Sans KR", sans-serif;
   font-weight: bold;
 }
 .menuContent-container .searchContent .recommendAndResult-container .recommend-container .itemList-container .item-container .nameAndCategory span {
@@ -497,7 +494,6 @@ main {
   border: 1px solid white;
   border-radius: 5px;
   box-sizing: border-box;
-  font-size: 16px;
   line-height: 36px;
   background-color: white;
   overflow: hidden;
@@ -515,6 +511,7 @@ main {
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar input {
   width: 180px;
   height: 20px;
+  font-size: 14px;
   border: none;
   outline: none;
   margin-left: 10px;
@@ -524,35 +521,61 @@ main {
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container {
   border-top: 1px solid #eaeaea;
-  z-index: 2;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul {
+  margin: 0;
   padding: 0;
   list-style-type: none;
-  border: 1px solid red;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li {
-  border: 1px solid green;
+  width: 100%;
+  padding: 10px 10px 0;
+  box-sizing: border-box;
+  color: #333;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li:hover {
   cursor: pointer;
   background-color: #eaeaea;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li.address {
+  padding-bottom: 10px;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li .name-container {
+  line-height: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li .name-container span {
+  margin-left: 5px;
+}
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li .address-container {
+  line-height: 12px;
+  font-size: 12px;
+  padding: 5px 18px;
+  color: #aaa;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .menuContent-container .routeContent .pointSearch-container .startPoint-container {
   border-bottom: 1px solid #eaeaea;
   border-radius: 5px 5px 0px 0px;
   box-sizing: border-box;
 }
+.menuContent-container .routeContent .pointSearch-container .startPoint-container i {
+  color: var(--cacaoBlue);
+}
 .menuContent-container .routeContent .pointSearch-container .endPoint-container {
   margin-top: 1px;
   z-index: 1;
 }
-.menuContent-container .routeContent .pointSearch-container .border {
-  width: 100%;
-  height: 1px;
-  background-color: #eaeaea;
+.menuContent-container .routeContent .pointSearch-container .endPoint-container i {
+  color: var(--cacaoRed);
 }
-.menuContent-container .routeContent .pointSearch-container .change-btn {
+.menuContent-container .routeContent .pointSearch-container .switch-btn {
   position: absolute;
   top: 27px;
   left: 180px;
@@ -567,7 +590,7 @@ main {
   border-radius: 999px;
   transform: rotate(90deg);
 }
-.menuContent-container .routeContent .pointSearch-container .change-btn:hover {
+.menuContent-container .routeContent .pointSearch-container .switch-btn:hover {
   cursor: pointer;
   border: 1px solid #7FB5FF;
   color: #7FB5FF;
@@ -750,7 +773,6 @@ main {
 .map-container .map .interaction-container .search-container .searchList .autoComplete span {
   padding-left: 5px;
   font-size: 14px;
-  font-family: "Noto Sans KR", sans-serif;
 }
 .map-container .map .interaction-container .search-container .searchList .history:hover,
 .map-container .map .interaction-container .search-container .searchList .autoComplete:hover {
@@ -776,7 +798,6 @@ main {
 .map-container .map .interaction-container .category-container .category {
   padding: 6px 10px;
   font-weight: bold;
-  font-family: "Noto Sans KR", sans-serif;
   font-weight: 600;
 }
 .map-container .map .interaction-container .category-container .category:hover {
@@ -884,7 +905,6 @@ main {
 .marker-container .markerInfo-container {
   padding: 0px 10px;
   font-weight: bold;
-  font-family: "Noto Sans KR", sans-serif;
   line-height: 15px;
 }
 .marker-container .addressName {

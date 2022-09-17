@@ -1,9 +1,5 @@
 /**
- * *todo 길찾기의 이벤트 및 기능 관련 목록
- * *todo 자동완성리스트 클릭하는 대상 은 span으로 한정하기
- * todo 길찾기 startPoint, endPoint, 검색결과(start, end, route)
- * 
- * todo 검색리스트에 자동완성단어 아래에 주소도 표시하기
+ * TODO 길찾기 자동완성 클릭하면 텍스트 제대로 가져오기
  * todo 지도 클릭해서 해당 좌표의 정보 받아오기
  */
 
@@ -19,7 +15,6 @@ const endPointInput = endPointSearchbar.querySelector('input');
 const endPointAutoCompleteList = endPointSearchbar.querySelector('.autoCompleteList-container');
 
 startPointSearchbar.addEventListener('click', (e) => {
-    console.log(e.target);
     startPointSearchbar.classList.add('focus');
     endPointSearchbar.classList.remove('focus', 'open');
     startPointInput.focus();
@@ -159,13 +154,11 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
     
     kakaoSearch.search(keyword, map.getCenter()._lat, map.getCenter()._lng)
     .then(data => {     
-        // 검색창 액티브면 스위치 버튼 안보이게 하기
         // console.log(data);
         if(data.length === 0) return;
         // console.log(data[0]); // address_name
         // console.log(data[1]); // place_name
         let result = data[0].concat(data[1]).slice(0, 10);
-        console.log(result);
         if (result.length !== 0) {
             active();
             setAutoCompleteList_start(result);
@@ -201,7 +194,6 @@ function findAutoComplete(keyword, success, active, disActive) {
 
 function setAutoCompleteList_start(data) {
     let ul = startPointAutoCompleteList.querySelector('ul');
-    console.log(data);
 
     if(data.length === 0) return;
 
@@ -311,7 +303,6 @@ body.addEventListener('click', e => {
         e.target.parentNode.parentNode === endPointAutoCompleteList ||
         e.target.parentNode.parentNode.parentNode === endPointAutoCompleteList ) return;
 
-    console.log("바디를 클릭했습니다.");
     /**
      * 바디를 클릭했을때 작동해야 하는 동작
      * 시작지점 기준

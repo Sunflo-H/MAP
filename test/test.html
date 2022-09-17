@@ -8,11 +8,22 @@
   </head>
 
   <body>
-    <input type="radio" name="chk_info" value="HTML">HTML
-    <input type="radio" name="chk_info" value="CSS">CSS
-    <input type="radio" name="chk_info" value="웹디자인">웹디자인
-    <div>
-      <input type="radio">테스트
-    </div>
+    <div class="one" style="width:10%; border: 1px solid black; padding:5px ">one
+			<div class="two" style="border: 1px solid black; padding:5px;  margin:10px">two
+				<div class="three" style="border: 1px solid black; padding:5px;  margin:10px">three</div>
+			</div>
+		</div>
+    <script>
+      let one = document.querySelector('.one');
+      let two = document.querySelector('.two');
+      let three = document.querySelector('.three');
+      one.addEventListener('click', logEvent);
+      two.addEventListener('click', logEvent);
+      three.addEventListener('click', logEvent);
+      window.addEventListener('click', logEvent);
+      function logEvent(event) {
+          console.log(event.currentTarget.className);
+      }
+    </script>
   </body>
 </html>

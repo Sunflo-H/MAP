@@ -7,6 +7,7 @@
     --seoulBlue: #558BCF;
     --azure: #0099ff;
     --grayBlue: #eceef9;
+    --cacaoRed: #ff5d5d;
 
     // --main: rgb(0,32,74);
     // --sub1: rgb(254,190,73);
@@ -50,6 +51,7 @@
 html {
     width: 100%;
     height: 100%;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 body {
@@ -165,7 +167,7 @@ main {
             margin: 50px 10px 0px;
 
             .address-container {
-                font-family: 'Noto Sans KR', sans-serif;
+                // font-family: 'Noto Sans KR', sans-serif;
                 font-weight: bold;
                 font-size: 18px;
                 color: #333;
@@ -177,7 +179,7 @@ main {
                 overflow: hidden;
 
                 .weatherAndTemp-container {
-                    font-family: 'Noto Sans KR', sans-serif;
+                    // font-family: 'Noto Sans KR', sans-serif;
                     font-size: 14px;
                     font-weight: bold;
         
@@ -192,7 +194,7 @@ main {
                     height: 40px;
                     overflow: hidden;
                     margin-left: 7px;
-                    font-family: 'Noto Sans KR', sans-serif;
+                    // font-family: 'Noto Sans KR', sans-serif;
                     font-weight: bold;
                     transition-duration: 1s;
         
@@ -236,7 +238,7 @@ main {
                     span {
                         font-size: 14px;
                         font-weight: bold;
-                        font-family: 'Noto Sans KR', sans-serif;
+                        // font-family: 'Noto Sans KR', sans-serif;
     
                         span {
                             font-size: 14px;
@@ -308,7 +310,7 @@ main {
             
                         .nameAndCategory {
                             color: #0475f4;
-                            font-family: 'Noto Sans KR', sans-serif;
+                            // font-family: 'Noto Sans KR', sans-serif;
                             font-weight: bold;
         
                             span {
@@ -592,7 +594,7 @@ main {
                     border: 1px solid white;
                     border-radius: 5px;
                     box-sizing: border-box;
-                    font-size: 16px;
+                    // font-size: 16px;
                     line-height: 36px;
                     background-color: white;
                     overflow: hidden;
@@ -614,6 +616,8 @@ main {
                     input {
                         width: 180px;
                         height: 20px;
+                        font-size: 14px;
+
                         border: none;
                         outline: none;
                         margin-left: 10px;
@@ -625,24 +629,58 @@ main {
 
                     .autoCompleteList-container {
                         border-top: 1px solid #eaeaea;
-                        z-index: 2;
+                        // z-index: 2;
                         ul {
+                            margin: 0;
                             padding: 0;
                             list-style-type: none;
-                            border: 1px solid red;
+
                             li {
-                                border: 1px solid green;
+                                width: 100%;
+                                padding: 10px 10px 0;
+                                box-sizing: border-box;
+                                color: #333;
+
 
                                 &:hover {
                                   cursor: pointer;
                                   background-color: #eaeaea;
-                                }  
-                            }
-                            
+                                } 
+
+                                &.address {
+                                    padding-bottom: 10px;
+                                }
+
+                                .name-container {
+                                    // border: 1px solid blue;
+                                    line-height: 20px;
+                                    font-size: 14px;
+                                    font-weight: bold;
+
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+
+                                    span {
+                                        margin-left: 5px
+                                    }
+                                }
+
+                                .address-container {
+                                    // border: 1px solid red;
+                                    line-height: 12px;
+                                    font-size: 12px;
+                                    padding: 5px 18px;
+                                    color: #aaa;
+
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    white-space: nowrap;
+                                    
+                                }
+                            }       
                         }
                     }
-
-
                 }
             }
     
@@ -650,20 +688,22 @@ main {
                 border-bottom: 1px solid #eaeaea;
                 border-radius: 5px 5px 0px 0px;
                 box-sizing: border-box;
+
+                i {
+                    color: var(--cacaoBlue);
+                }
             }
     
             .endPoint-container {
                 margin-top: 1px;
                 z-index: 1;
-            }
 
-            .border {
-                width: 100%;
-                height: 1px;
-                background-color: #eaeaea;
+                i {
+                    color: var(--cacaoRed);
+                }
             }
     
-            .change-btn {
+            .switch-btn {
                 position: absolute;
                 top: 27px;
                 left: 180px;
@@ -892,7 +932,7 @@ main {
                         span {
                             padding-left: 5px;
                             font-size: 14px;
-                            font-family: 'Noto Sans KR', sans-serif;
+                            // font-family: 'Noto Sans KR', sans-serif;
                         }
 
                         &:hover {
@@ -926,7 +966,7 @@ main {
                 .category {
                     padding: 6px 10px;
                     font-weight: bold;
-                    font-family: 'Noto Sans KR', sans-serif;
+                    // font-family: 'Noto Sans KR', sans-serif;
                     font-weight: 600;
                 
                     &:hover {
@@ -1062,7 +1102,7 @@ main {
     .markerInfo-container {
         padding: 0px 10px;
         font-weight: bold;
-        font-family: 'Noto Sans KR', sans-serif;
+        // font-family: 'Noto Sans KR', sans-serif;
         line-height: 15px;
     }
     

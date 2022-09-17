@@ -17,7 +17,6 @@ export default class kakaoSearch {
     search(keyword, lat, lng) {
         let data = Promise.all([this.searchByAddr(keyword), this.searchByKeyword(keyword, lat, lng)])
             .then(data => data);
-        console.log(data);
         return data;
     }
 
@@ -28,15 +27,11 @@ export default class kakaoSearch {
      */
     searchByAddr(addr) {
         let placeList = new Promise(resolve => {
-
             // 주소-좌표 변환 객체를 생성합니다
             let geocoder = new kakao.maps.services.Geocoder();
 
             const callback = (result, status) => {
-                if (status === kakao.maps.services.Status.OK) {
-                    console.log(result);
-                }
-                resolve(result);
+                    resolve(result);
             };
 
             geocoder.addressSearch(addr, callback, { size: this.SEARCH_DATA_LENGTH });
