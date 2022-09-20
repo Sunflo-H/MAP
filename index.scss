@@ -1157,6 +1157,7 @@ main {
     transition-timing-function: ease-out;
     z-index: 101;
     opacity: 0;
+    border: 1px solid red;
     
     path {
         fill: #fbfdff;

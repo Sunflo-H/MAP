@@ -12,42 +12,26 @@
 const startPointContainer = document.querySelector('.startPoint-container');
 const startPointSearchbar = document.querySelector('.startPoint-container .searchbar');
 const startPointInput = startPointSearchbar.querySelector('input');
-const startPointAutoCompleteList = startPointSearchbar.querySelector('.autoCompleteList-container');
-
+const startPointAutoCompleteListContainer = startPointSearchbar.querySelector('.autoCompleteList-container');
+const startPointAutoCompleteList = startPointSearchbar.querySelectorAll('.autoCompleteList-container li');
+console.log(startPointAutoCompleteList);
 const endPointContainer = document.querySelector('.endPoint-container');
 const endPointSearchbar = document.querySelector('.endPoint-container .searchbar');
 const endPointInput = endPointSearchbar.querySelector('input');
 const endPointAutoCompleteList = endPointSearchbar.querySelector('.autoCompleteList-container');
 
+let route = {
+    start: '',
+    middle: [],
+    end: ''
+};
+
+// let placeData = []
+
 startPointSearchbar.addEventListener('click', (e) => {
     startPointSearchbar.classList.add('focus');
     endPointSearchbar.classList.remove('focus', 'open');
     startPointInput.focus();
-});
-
-startPointAutoCompleteList.addEventListener('click', (e) => {
-    let click;
-    let text;
-
-    if(e.target.classList.contains('name')) click = 'name'
-    else if(e.target.classList.contains('address')) click = 'address'
-    else if(e.target.classList.contains('fa-solid')) click = 'icon'
-
-    switch(click) {
-        case 'name': text = e.target.innerText; break;
-        case 'address' : text = e.target.previousElementSibling.lastElementChild.innerText; console.log(text);;break;
-        case 'icon' : text = e.target.parentNode.nextElementSibling.innerText; break;
-        default : return; // 위 3경우가 아니라면 이 이벤트를 실행하지 않는다.
-    }
-
-    startPointInput.value = text;
-    
-    startPointInput.focus();
-
-    startPointSearchbar.classList.remove('open');
-    startPointAutoCompleteList.classList.add('hide');
-    
-    endPointContainer.classList.remove('hide');
 });
 
 endPointSearchbar.addEventListener('click', (e) => {
@@ -81,7 +65,6 @@ endPointInput.addEventListener('input', (e) => {
 
 endPointAutoCompleteList.addEventListener('click', (e) => {
     // 타겟이 <li>더라도 innerText로 잘 나오게끔 html파일을 수정해놈
-
     console.log(e.target);
     console.log(e.target.innerText);
     endPointInput.focus();
@@ -94,7 +77,6 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
     endPointSearchbar.classList.remove('open');
     endPointAutoCompleteList.classList.add('hide');
     endPointInput.value = e.target.innerText;
-
 });
 
 //길찾기 기능
@@ -126,13 +108,13 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
 
     const active = () => {
         startPointSearchbar.classList.add('open');
-        startPointAutoCompleteList.classList.remove('hide');
+        startPointAutoCompleteListContainer.classList.remove('hide');
         endPointContainer.classList.add('hide');
     }
 
     const disActive = () => {
         startPointSearchbar.classList.remove('open');
-        startPointAutoCompleteList.classList.add('hide');
+        startPointAutoCompleteListContainer.classList.add('hide');
         endPointContainer.classList.remove('hide');
     }
 
@@ -185,13 +167,17 @@ function findAutoCompleteBySearch(keyword, success, active, disActive) {
 }
 
 function setAutoCompleteList_start(data) {
-    let ul = startPointAutoCompleteList.querySelector('ul');
+    let ul = startPointAutoCompleteListContainer.querySelector('ul');
 
     if(data.length === 0) return;
 
+    // placeData = data;
+
     while(ul.hasChildNodes()) ul.removeChild(ul.firstChild);
+
     data.forEach(address => {
-        let element; 
+        let element;
+
         if(address.place_name === undefined) {
             element = `<li class="address">
                         <div class="name-container">
@@ -209,7 +195,37 @@ function setAutoCompleteList_start(data) {
                         <div class="address-container address">${address.address_name}</div>
                        </li>`;
         }
-        ul.insertAdjacentHTML('beforeend', element);    
+        ul.insertAdjacentHTML('beforeend', element);
+    });
+
+    const autoCompleteList = startPointSearchbar.querySelectorAll('.autoCompleteList-container li');
+    console.log(autoCompleteList);
+
+    autoCompleteList.forEach((li,i) => {
+        li.addEventListener('click', (e) => {
+            // 리스트를 클릭하면 그 장소의 이름, 주소를 알아야해
+            // 시작지점의 이름과주소, 도착지점의 이름과주소 => 길찾기에 사용
+            /**
+             * 장소정보는 placeData에 있어
+             * 클릭한 li가 몇번째 인덱스인지 확인후 
+             * 그 인덱스의 정보를 input에 입력한다.
+             * 그리고 인덱스를 기억해서 루트찾을때 사용한다.    
+             */
+            route.start = data[i];
+            if(data[i].place_name === undefined) {
+                startPointInput.value = data[i].address_name;
+            }
+            else {
+                startPointInput.value = data[i].place_name;
+            }
+
+            startPointInput.focus();
+        
+            startPointSearchbar.classList.remove('open');
+            startPointAutoCompleteListContainer.classList.add('hide');
+            
+            endPointContainer.classList.remove('hide');
+        });
     })
 }
 
@@ -345,7 +361,7 @@ body.addEventListener('click', e => {
      */ 
     startPointSearchbar.classList.remove('focus');
     startPointSearchbar.classList.remove('open');
-    startPointAutoCompleteList.classList.add('hide');
+    startPointAutoCompleteListContainer.classList.add('hide');
 
     endPointContainer.classList.remove('hide');
 

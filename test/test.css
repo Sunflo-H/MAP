@@ -1,0 +1,26 @@
+.curve {
+    position: absolute;
+    left: 86px;
+    top: 70px;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-out;
+    z-index: 101;
+    opacity: 0;
+    border: 1px solid red;   
+}
+
+path {
+    fill: red;
+    stroke-width: "1";
+    stroke-linecap: "round";
+
+    
+}
+span {
+    position: absolute;
+    top: 40px;
+    left: 5px;
+    font-size: 14px;
+    color: gray;
+
+}
