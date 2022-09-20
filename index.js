@@ -26,37 +26,36 @@ startPointSearchbar.addEventListener('click', (e) => {
 });
 
 startPointAutoCompleteList.addEventListener('click', (e) => {
-
-    //todo 이름부분 클릭했을때 , 
-    //todo 주소부분 클릭했을때, 
-    //todo 아이콘 클릭했을때 3가지 경우가 있고
-    //todo 둘다 이름이 클릭되는 효과가 나타나야한다.
-    //todo 이름을 클릭후 이름의 text가 input에 정확히 입력되야한다.
+    //* todo 이름부분 클릭했을때 , 
+    //* todo 주소부분 클릭했을때, 
+    //* todo 아이콘 클릭했을때 3가지 경우가 있고
+    //* todo 둘다 이름이 클릭되는 효과가 나타나야한다.
+    //* todo 이름을 클릭후 이름의 text가 input에 정확히 입력되야한다.
 
     //todo 위 3가지 경우가 아니라면 기능을 멈춘다(return)
 
-    // 
+    let click;
+    let text;
+    if(e.target.classList.contains('name')) click = 'name'
+    else if(e.target.classList.contains('address')) click = 'address'
+    else if(e.target.classList.contains('fa-solid')) click = 'icon'
 
-
-    //이름 클릭했을때 완성
-    
-
-    //주소부분 클릭했을때
-    console.log(e.target);
+    switch(click) {
+        case 'name': text = e.target.innerText; break;
+        case 'address' : text = e.target.previousElementSibling.lastElementChild.innerText; console.log(text);;break;
+        case 'icon' : text = e.target.parentNode.nextElementSibling.innerText; break;
+        default : return; // 위 3경우가 아니라면 이 이벤트를 실행하지 않는다.
+    }
+    startPointInput.value = text;
     
     startPointInput.focus();
-    
-    // 리스트가 아닌 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
-    if(e.target === e.currentTarget) {
-        return;
-    }
 
     startPointSearchbar.classList.remove('open');
     startPointAutoCompleteList.classList.add('hide');
     
     endPointContainer.classList.remove('hide');
 
-    startPointInput.value = e.target.innerText;
+    
 });
 
 endPointSearchbar.addEventListener('click', (e) => {
@@ -202,12 +201,10 @@ function setAutoCompleteList_start(data) {
         else {
             element = `<li class="place">
                         <div class="name-container">
-                            <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class=""><i class="fa-solid fa-location-dot"></i></div>
                             <div class="name">${address.place_name}</div>
                         </div>
-                        <div class="address-container">
-                            <span>${address.address_name}</span>
-                        </div>
+                        <div class="address-container address">${address.address_name}</div>
                        </li>`;
         }
         ul.insertAdjacentHTML('beforeend', element);    
