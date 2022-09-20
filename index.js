@@ -26,16 +26,9 @@ startPointSearchbar.addEventListener('click', (e) => {
 });
 
 startPointAutoCompleteList.addEventListener('click', (e) => {
-    //* todo 이름부분 클릭했을때 , 
-    //* todo 주소부분 클릭했을때, 
-    //* todo 아이콘 클릭했을때 3가지 경우가 있고
-    //* todo 둘다 이름이 클릭되는 효과가 나타나야한다.
-    //* todo 이름을 클릭후 이름의 text가 input에 정확히 입력되야한다.
-
-    //todo 위 3가지 경우가 아니라면 기능을 멈춘다(return)
-
     let click;
     let text;
+
     if(e.target.classList.contains('name')) click = 'name'
     else if(e.target.classList.contains('address')) click = 'address'
     else if(e.target.classList.contains('fa-solid')) click = 'icon'
@@ -46,6 +39,7 @@ startPointAutoCompleteList.addEventListener('click', (e) => {
         case 'icon' : text = e.target.parentNode.nextElementSibling.innerText; break;
         default : return; // 위 3경우가 아니라면 이 이벤트를 실행하지 않는다.
     }
+
     startPointInput.value = text;
     
     startPointInput.focus();
@@ -54,8 +48,6 @@ startPointAutoCompleteList.addEventListener('click', (e) => {
     startPointAutoCompleteList.classList.add('hide');
     
     endPointContainer.classList.remove('hide');
-
-    
 });
 
 endPointSearchbar.addEventListener('click', (e) => {
@@ -67,14 +59,24 @@ endPointSearchbar.addEventListener('click', (e) => {
 
 //시작지점의 자동완성이 열리면 도착지점의 포인트컨테이너에 hide를 준다.
 endPointInput.addEventListener('input', (e) => {
-    // startPointSearchbar.style.height = "200px";
-    endPointSearchbar.classList.add('open');
-    endPointAutoCompleteList.classList.remove('hide');
+    const keyword = e.target.value;
 
-    if (endPointInput.value === '') {
+    const active = () => {
+        endPointSearchbar.classList.add('open');
+        endPointAutoCompleteList.classList.remove('hide');
+    }
+
+    const disActive = () => {
         endPointSearchbar.classList.remove('open');
         endPointAutoCompleteList.classList.add('hide');
     }
+
+    if (endPointInput.value === '') {
+        disActive();
+        return;
+    }
+
+    findAutoCompleteBySearch(keyword, setAutoCompleteList_end, active, disActive);
 });
 
 endPointAutoCompleteList.addEventListener('click', (e) => {
@@ -185,6 +187,35 @@ function findAutoCompleteBySearch(keyword, success, active, disActive) {
 function setAutoCompleteList_start(data) {
     let ul = startPointAutoCompleteList.querySelector('ul');
 
+    if(data.length === 0) return;
+
+    while(ul.hasChildNodes()) ul.removeChild(ul.firstChild);
+    data.forEach(address => {
+        let element; 
+        if(address.place_name === undefined) {
+            element = `<li class="address">
+                        <div class="name-container">
+                            <i class="fa-solid fa-location-pin"></i>
+                            <span>${address.address_name}</span>
+                        </div>
+                       </li>`;
+        }
+        else {
+            element = `<li class="place">
+                        <div class="name-container">
+                            <div class=""><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="name">${address.place_name}</div>
+                        </div>
+                        <div class="address-container address">${address.address_name}</div>
+                       </li>`;
+        }
+        ul.insertAdjacentHTML('beforeend', element);    
+    })
+}
+
+function setAutoCompleteList_end(data) {
+    let ul = endPointAutoCompleteList.querySelector('ul');
+console.log(1);
     if(data.length === 0) return;
 
     while(ul.hasChildNodes()) ul.removeChild(ul.firstChild);
