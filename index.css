@@ -541,6 +541,7 @@ main {
   padding-bottom: 10px;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li .name-container {
+  display: flex;
   line-height: 20px;
   font-size: 14px;
   font-weight: bold;
@@ -548,8 +549,9 @@ main {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li .name-container span {
-  margin-left: 5px;
+.menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li .name-container .name {
+  flex-grow: 1;
+  padding-left: 5px;
 }
 .menuContent-container .routeContent .pointSearch-container .search-container .searchbar .autoCompleteList-container ul li .address-container {
   line-height: 12px;

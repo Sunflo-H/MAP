@@ -652,6 +652,7 @@ main {
                                 }
 
                                 .name-container {
+                                    display: flex;
                                     // border: 1px solid blue;
                                     line-height: 20px;
                                     font-size: 14px;
@@ -661,8 +662,10 @@ main {
                                     text-overflow: ellipsis;
                                     white-space: nowrap;
 
-                                    span {
-                                        margin-left: 5px
+                                    .name {
+                                        // border: 1px solid red;
+                                        flex-grow: 1;
+                                        padding-left: 5px;
                                     }
                                 }
 
@@ -676,7 +679,6 @@ main {
                                     overflow: hidden;
                                     text-overflow: ellipsis;
                                     white-space: nowrap;
-                                    
                                 }
                             }       
                         }

@@ -1,4 +1,9 @@
 /**
+ * todo 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
+ * todo 다 만들고 자동완성을 네이버 클라우드플랫폼으로 해보자
+ * */ 
+
+/**
  * TODO 길찾기 자동완성 클릭하면 텍스트 제대로 가져오기
  * todo 지도 클릭해서 해당 좌표의 정보 받아오기
  */
@@ -20,55 +25,38 @@ startPointSearchbar.addEventListener('click', (e) => {
     startPointInput.focus();
 });
 
-//시작지점의 자동완성이 열리면 도착지점의 포인트컨테이너에 hide를 준다.
-startPointInput.addEventListener('input', (e) => {
-    // startPointSearchbar.classList.add('open');
-    // startPointAutoCompleteList.classList.remove('hide');
-    // endPointContainer.classList.add('hide');
-
-    // if (startPointInput.value === '') {
-    //     startPointSearchbar.classList.remove('open');
-    //     endPointSearchbar.classList.add('hide');
-    //     startPointAutoCompleteList.classList.add('hide');
-    // }
-});
-
 startPointAutoCompleteList.addEventListener('click', (e) => {
-    // name-container와 address-container가 있어
-    // 클릭했을때 각 컨테이너의 span을 가져와야해
-    /**
-     * <li class="place">
-            <div class="name-container">
-                <i class="fa-solid fa-location-dot"></i>
-                <span>${address.place_name}</span>
-            </div>
-            <div class="address-container">
-                <span>${address.address_name}</span>
-            </div>
-       </li>
-     */
-    const ac = startPointAutoCompleteList.querySelector('.address-container');
-    console.log(e.target);
-    console.log(e.target.innerText);
-    console.log(ac.childNodes);
-    console.log(ac.children[0]);
-    let target;
-    if(e.target === ac || e.target === ac.children[0]) {
-        target = e.target.previousElementSibling;
-        console.log(target);
-    }
-    startPointInput.focus();
 
-    // 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
+    //todo 이름부분 클릭했을때 , 
+    //todo 주소부분 클릭했을때, 
+    //todo 아이콘 클릭했을때 3가지 경우가 있고
+    //todo 둘다 이름이 클릭되는 효과가 나타나야한다.
+    //todo 이름을 클릭후 이름의 text가 input에 정확히 입력되야한다.
+
+    //todo 위 3가지 경우가 아니라면 기능을 멈춘다(return)
+
+    // 
+
+
+    //이름 클릭했을때 완성
+    
+
+    //주소부분 클릭했을때
+    console.log(e.target);
+    
+    startPointInput.focus();
+    
+    // 리스트가 아닌 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
     if(e.target === e.currentTarget) {
         return;
     }
 
     startPointSearchbar.classList.remove('open');
     startPointAutoCompleteList.classList.add('hide');
-    startPointInput.value = e.target.innerText;
-
+    
     endPointContainer.classList.remove('hide');
+
+    startPointInput.value = e.target.innerText;
 });
 
 endPointSearchbar.addEventListener('click', (e) => {
@@ -152,22 +140,8 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
         return;
     }
     
-    kakaoSearch.search(keyword, map.getCenter()._lat, map.getCenter()._lng)
-    .then(data => {     
-        // console.log(data);
-        if(data.length === 0) return;
-        // console.log(data[0]); // address_name
-        // console.log(data[1]); // place_name
-        let result = data[0].concat(data[1]).slice(0, 10);
-        if (result.length !== 0) {
-            active();
-            setAutoCompleteList_start(result);
-        }
-        else {
-            disActive();
-        }
-    })
     // findAutoComplete(keyword, setAutoCompleteList_start, active, disActive);
+    findAutoCompleteBySearch(keyword, setAutoCompleteList_start, active, disActive);
 });
 
 /**
@@ -192,6 +166,23 @@ function findAutoComplete(keyword, success, active, disActive) {
     });
 }
 
+function findAutoCompleteBySearch(keyword, success, active, disActive) {
+    kakaoSearch.search(keyword, map.getCenter()._lat, map.getCenter()._lng)
+    .then(data => {
+        if(data.length === 0) return;
+
+        let result = data[0].concat(data[1]).slice(0, 10);
+
+        if (result.length !== 0) {
+            active();
+            success(result);
+        }
+        else {
+            disActive();
+        }
+    })
+}
+
 function setAutoCompleteList_start(data) {
     let ul = startPointAutoCompleteList.querySelector('ul');
 
@@ -211,8 +202,8 @@ function setAutoCompleteList_start(data) {
         else {
             element = `<li class="place">
                         <div class="name-container">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <span>${address.place_name}</span>
+                            <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="name">${address.place_name}</div>
                         </div>
                         <div class="address-container">
                             <span>${address.address_name}</span>
@@ -261,7 +252,7 @@ function getRoute() {
 
 
 
-// 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
+
 
 import kakaoSearchModule from './assets/js/kakaoSearchModule.js';
 
