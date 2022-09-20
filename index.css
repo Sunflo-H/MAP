@@ -943,13 +943,12 @@ main {
 /* 메뉴 컨텐츠의 닫기버튼 */
 .curve {
   position: absolute;
-  left: 86px;
+  left: 85px;
   top: 70px;
   transition-duration: 0.1s;
   transition-timing-function: ease-out;
   z-index: 101;
   opacity: 0;
-  border: 1px solid red;
 }
 .curve path {
   fill: #fbfdff;
