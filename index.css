@@ -935,6 +935,15 @@ main {
   border-bottom: 1px solid #0475f4;
   transform: rotate(45deg);
 }
+.marker-container .start {
+  background-color: var(--cacaoBlue);
+}
+.marker-container .end {
+  background-color: var(--cacaoRed);
+}
+.marker-container .middle {
+  color: green;
+}
 .marker-container:hover {
   color: #0475f4;
   cursor: pointer;

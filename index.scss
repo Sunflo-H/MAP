@@ -1105,7 +1105,6 @@ main {
     .markerInfo-container {
         padding: 0px 10px;
         font-weight: bold;
-        // font-family: 'Noto Sans KR', sans-serif;
         line-height: 15px;
     }
     
@@ -1137,6 +1136,18 @@ main {
         border-right: 1px solid #0475f4;
         border-bottom: 1px solid #0475f4;
         transform: rotate(45deg);
+    }
+
+    .start {
+        background-color: var(--cacaoBlue);
+    }
+
+    .end {
+        background-color: var(--cacaoRed);
+    }
+
+    .middle {
+        color: green;
     }
     
     &:hover {

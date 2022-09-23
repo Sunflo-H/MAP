@@ -1,7 +1,7 @@
 /**
  * todo 다 만든다음에 크롤링이니, php, mysql이니 생각을 해보자고
  * todo 다 만들고 자동완성을 네이버 클라우드플랫폼으로 해보자
- * */ 
+ * */
 
 /**
  * TODO 길찾기 자동완성 클릭하면 텍스트 제대로 가져오기
@@ -13,12 +13,13 @@ const startPointContainer = document.querySelector('.startPoint-container');
 const startPointSearchbar = document.querySelector('.startPoint-container .searchbar');
 const startPointInput = startPointSearchbar.querySelector('input');
 const startPointAutoCompleteListContainer = startPointSearchbar.querySelector('.autoCompleteList-container');
-const startPointAutoCompleteList = startPointSearchbar.querySelectorAll('.autoCompleteList-container li');
-console.log(startPointAutoCompleteList);
+
 const endPointContainer = document.querySelector('.endPoint-container');
 const endPointSearchbar = document.querySelector('.endPoint-container .searchbar');
 const endPointInput = endPointSearchbar.querySelector('input');
-const endPointAutoCompleteList = endPointSearchbar.querySelector('.autoCompleteList-container');
+const endPointAutoCompleteListContainer = endPointSearchbar.querySelector('.autoCompleteList-container');
+
+const routeSearchBtn = document.querySelector('.btn.routeSearch');
 
 let route = {
     start: '',
@@ -26,8 +27,13 @@ let route = {
     end: ''
 };
 
-// let placeData = []
+routeSearchBtn.addEventListener('click', () => {
+    console.log("길찾기");
+    console.log(route.start, route.end);
+    routeSearch(route.start, route.end);
+})
 
+// 시작포인트 만든거를 고대로 도착지점도 만들어조
 startPointSearchbar.addEventListener('click', (e) => {
     startPointSearchbar.classList.add('focus');
     endPointSearchbar.classList.remove('focus', 'open');
@@ -47,12 +53,12 @@ endPointInput.addEventListener('input', (e) => {
 
     const active = () => {
         endPointSearchbar.classList.add('open');
-        endPointAutoCompleteList.classList.remove('hide');
+        endPointAutoCompleteListContainer.classList.remove('hide');
     }
 
     const disActive = () => {
         endPointSearchbar.classList.remove('open');
-        endPointAutoCompleteList.classList.add('hide');
+        endPointAutoCompleteListContainer.classList.add('hide');
     }
 
     if (endPointInput.value === '') {
@@ -63,47 +69,7 @@ endPointInput.addEventListener('input', (e) => {
     findAutoCompleteBySearch(keyword, setAutoCompleteList_end, active, disActive);
 });
 
-endPointAutoCompleteList.addEventListener('click', (e) => {
-    // 타겟이 <li>더라도 innerText로 잘 나오게끔 html파일을 수정해놈
-    console.log(e.target);
-    console.log(e.target.innerText);
-    endPointInput.focus();
-
-    if(e.target === e.currentTarget) {
-        // 자동완성 컨테이너를 클릭하면 아무것도 실행되지 않게 한다.
-        return;
-    }
-
-    endPointSearchbar.classList.remove('open');
-    endPointAutoCompleteList.classList.add('hide');
-    endPointInput.value = e.target.innerText;
-});
-
-//길찾기 기능
-/**
- * 필요한 정보들
- * 시작 좌표, 끝 좌표, 경로탐색 api, 경로 라인, 경로 중 포인트들 점
- */
-
-/**
- * 순서
- * 1 목적지를 입력한다.
- * 1-1 목적지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 startData에 저장
- * 1-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 startData에 값을 저장한다.
- * 
- * 2 도착지를 입력한다.
- * 2-1 도착지를 찾고 리스트를 보여준다. 리스트의 첫번째 값을 endData에 저장
- * 2-2 리스트를 클릭하면 목적지검색창의 text를 바꾸고 endData에 값을 저장한다.
- * 
- * 
- * 3 start와 end의 x,y좌표로 경로탐색 시작
- * 
- * 경로의 결과값들을 포인트 객체로 변환하고, 포인트 객체를 좌표값으로 변환
- * 모여진 좌표값들을 이어주는 선을 그린다.
- * 
- */
-
- startPointInput.addEventListener('input', e => {
+startPointInput.addEventListener('input', e => {
     const keyword = e.target.value;
 
     const active = () => {
@@ -122,7 +88,7 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
         disActive();
         return;
     }
-    
+
     // findAutoComplete(keyword, setAutoCompleteList_start, active, disActive);
     findAutoCompleteBySearch(keyword, setAutoCompleteList_start, active, disActive);
 });
@@ -136,7 +102,7 @@ endPointAutoCompleteList.addEventListener('click', (e) => {
  * @param {*} disActive css 조작 
  */
 function findAutoComplete(keyword, success, active, disActive) {
-    Promise.all([getJsonAddr(keyword), getJsonData(keyword)]).then(data => {      
+    Promise.all([getJsonAddr(keyword), getJsonData(keyword)]).then(data => {
         let result = data[0].concat(data[1]).slice(0, 15);
 
         if (result.length !== 0) {
@@ -151,34 +117,32 @@ function findAutoComplete(keyword, success, active, disActive) {
 
 function findAutoCompleteBySearch(keyword, success, active, disActive) {
     kakaoSearch.search(keyword, map.getCenter()._lat, map.getCenter()._lng)
-    .then(data => {
-        if(data.length === 0) return;
+        .then(data => {
+            if (data.length === 0) return;
 
-        let result = data[0].concat(data[1]).slice(0, 10);
+            let result = data[0].concat(data[1]).slice(0, 10);
 
-        if (result.length !== 0) {
-            active();
-            success(result);
-        }
-        else {
-            disActive();
-        }
-    })
+            if (result.length !== 0) {
+                active();
+                success(result);
+            }
+            else {
+                disActive();
+            }
+        })
 }
 
 function setAutoCompleteList_start(data) {
     let ul = startPointAutoCompleteListContainer.querySelector('ul');
 
-    if(data.length === 0) return;
+    if (data.length === 0) return;
 
-    // placeData = data;
-
-    while(ul.hasChildNodes()) ul.removeChild(ul.firstChild);
+    while (ul.hasChildNodes()) ul.removeChild(ul.firstChild);
 
     data.forEach(address => {
         let element;
 
-        if(address.place_name === undefined) {
+        if (address.place_name === undefined) {
             element = `<li class="address">
                         <div class="name-container">
                             <i class="fa-solid fa-location-pin"></i>
@@ -199,20 +163,11 @@ function setAutoCompleteList_start(data) {
     });
 
     const autoCompleteList = startPointSearchbar.querySelectorAll('.autoCompleteList-container li');
-    console.log(autoCompleteList);
 
-    autoCompleteList.forEach((li,i) => {
+    autoCompleteList.forEach((li, i) => {
         li.addEventListener('click', (e) => {
-            // 리스트를 클릭하면 그 장소의 이름, 주소를 알아야해
-            // 시작지점의 이름과주소, 도착지점의 이름과주소 => 길찾기에 사용
-            /**
-             * 장소정보는 placeData에 있어
-             * 클릭한 li가 몇번째 인덱스인지 확인후 
-             * 그 인덱스의 정보를 input에 입력한다.
-             * 그리고 인덱스를 기억해서 루트찾을때 사용한다.    
-             */
             route.start = data[i];
-            if(data[i].place_name === undefined) {
+            if (data[i].place_name === undefined) {
                 startPointInput.value = data[i].address_name;
             }
             else {
@@ -220,24 +175,29 @@ function setAutoCompleteList_start(data) {
             }
 
             startPointInput.focus();
-        
+            createMarker(data[i], 'start');
+            panTo(data[i].y, data[i].x)
+
+
             startPointSearchbar.classList.remove('open');
             startPointAutoCompleteListContainer.classList.add('hide');
-            
+
             endPointContainer.classList.remove('hide');
         });
     })
 }
 
 function setAutoCompleteList_end(data) {
-    let ul = endPointAutoCompleteList.querySelector('ul');
-console.log(1);
-    if(data.length === 0) return;
+    let ul = endPointAutoCompleteListContainer.querySelector('ul');
 
-    while(ul.hasChildNodes()) ul.removeChild(ul.firstChild);
+    if (data.length === 0) return;
+
+    while (ul.hasChildNodes()) ul.removeChild(ul.firstChild);
+
     data.forEach(address => {
-        let element; 
-        if(address.place_name === undefined) {
+        let element;
+
+        if (address.place_name === undefined) {
             element = `<li class="address">
                         <div class="name-container">
                             <i class="fa-solid fa-location-pin"></i>
@@ -254,36 +214,196 @@ console.log(1);
                         <div class="address-container address">${address.address_name}</div>
                        </li>`;
         }
-        ul.insertAdjacentHTML('beforeend', element);    
-    })
-}
+        ul.insertAdjacentHTML('beforeend', element);
+    });
 
-function displayStartPointResultList() {
+    const autoCompleteList = endPointSearchbar.querySelectorAll('.autoCompleteList-container li');
+    console.log(autoCompleteList);
+    autoCompleteList.forEach((li, i) => {
+        li.addEventListener('click', (e) => {
 
-}
-function displayEndPointResultList() {
+            route.end = data[i];
+            if (data[i].place_name === undefined) {
+                endPointInput.value = data[i].address_name;
+            }
+            else {
+                endPointInput.value = data[i].place_name;
+            }
 
-}
-function displayRouteSearchResultList() {
+            endPointInput.focus();
+            createMarker(data[i], 'end');
+            panTo(data[i].y, data[i].x)
 
+            endPointSearchbar.classList.remove('open');
+            endPointAutoCompleteListContainer.classList.add('hide');
+        });
+    });
 }
+// 길찾기 api
+
+let geoData;
+let pointArray = [];
+let markerList = [];
+let new_polyLine = [];
+let new_Click_polyLine = [];
 
 function routeSearch(startPlace, endPlace) {
     console.log("startPlace : ", startPlace);
     console.log("endPlace : ", endPlace);
 
-    if (startPlace === "" || endPlace === "") return;
+    if (startPlace === "" || endPlace === "") {
+        alert('모두 입력해주세요');
+        return;
+    }
 
-    let data = Promise.all([search(startPlace), search(endPlace)]);
-    console.log(data);
+    let startX = startPlace.x;
+    let startY = startPlace.y;
+    let endX = endPlace.x;
+    let endY = endPlace.y;
+    let passList = "127.07389565460413,37.5591696189164_127.13346617572014,37.52127761904626";
+    let headers = {};
+    headers["appKey"] = 'l7xx68845a4aa2724d0ebbead38642364a0f';
+    $.ajax({
+        method: "POST",
+        headers: headers,
+        url: "https://apis.openapi.sk.com/tmap/routes?version=1&format=json",//
+        async: false,
+        data: {
+            startX: startX,
+            startY: startY,
+            endX: endX,
+            endY: endY,
+            // passList: passList,
+            reqCoordType: "WGS84GEO",
+            resCoordType: "WGS84GEO",
+            angle: "172",
+            searchOption: "0",
+            trafficInfo: "Y"
+        },
+        success: function (response) {
+            console.log("성공");
+            console.log(response);
+            // 5. 경로탐색 결과 Line 그리기 
+            let trafficColors = {
+                extractStyles: true,
+                /* 실제 교통정보가 표출되면 아래와 같은 Color로 Line이 생성됩니다. */
+                trafficDefaultColor: "#636f63", //Default
+                trafficType1Color: "#19b95f", //원할
+                trafficType2Color: "#f15426", //지체
+                trafficType3Color: "#ff970e"  //정체		
+            };
+            let style_red = {
+                fillColor: "#FF0000",
+                fillOpacity: 0.2,
+                strokeColor: "#FF0000",
+                strokeWidth: 3,
+                strokeDashstyle: "solid",
+                pointRadius: 2,
+                title: "this is a red line"
+            };
+            drawLine(response);
+
+            // 6. 경로탐색 결과 반경만큼 지도 레벨 조정
+            let newData = geoData[0];
+            console.log(newData);
+            let PTbounds = new Tmapv2.LatLngBounds();
+            for (let i = 0; i < newData.length; i++) {
+                let mData = newData[i];
+                let type = mData.geometry.type;
+                let pointType = mData.properties.pointType;
+                if (type == "Point") {
+                    let linePt = new Tmapv2.LatLng(mData.geometry.coordinates[1], mData.geometry.coordinates[0]);
+                    // console.log(linePt);
+                    PTbounds.extend(linePt);
+                }
+                else {
+                    let startPt, endPt;
+                    for (let j = 0; j < mData.geometry.coordinates.length; j++) {
+                        let linePt = new Tmapv2.LatLng(mData.geometry.coordinates[j][1], mData.geometry.coordinates[j][0]);
+                        PTbounds.extend(linePt);
+                    }
+                }
+            }
+            map.fitBounds(PTbounds);
+
+        },
+        error: function (request, status, error) {
+            console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+        }
+    })
 }
 
-function createRouteMarker(start, end) {
 
-}
 
-function drawLine() {
+function drawLine(data) {
+    let resultStr = "";
+    let distance = 0;
+    let idx = 1;
+    let newData = [];
+    let equalData = [];
+    let pointId1 = "-1234567";
+    let latlngList = [];
 
+    for (let i = 0; i < data.features.length; i++) {
+        let feature = data.features[i];
+        //배열에 경로 좌표 저잘
+        if (feature.geometry.type == "LineString") {
+            //길찾기로 찾은 포인트들의 지리타입은 점(point), 선(lineString) 이다.
+            latlngList = [];
+            for (let j = 0; j < feature.geometry.coordinates.length; j++) {
+                //지리타입 '선'들의 좌표를 찾아 ar_line에 push
+                let latlng = new Tmapv2.LatLng(feature.geometry.coordinates[j][1], feature.geometry.coordinates[j][0]);
+                latlngList.push(latlng); //latlng로 변환한 값 저장
+                pointArray.push(feature.geometry.coordinates[j]); //좌표값 그대로 저장
+            }
+
+            let polyline = new Tmapv2.Polyline({
+                path: latlngList,
+                strokeColor: "#0475f4",
+                strokeWeight: 6,
+                map: map
+            });
+            new_polyLine.push(polyline);
+        }
+
+        let pointId2 = feature.properties.viaPointId;
+
+        // 길찾기 결과를 equalData에 저장, equalData를 newData에 저장
+        // id가 다르다는것은 새 길찾기가 실행되었음을 의미?
+        if (pointId1 != pointId2) {
+            equalData = [];
+            equalData.push(feature);
+            newData.push(equalData);
+            pointId1 = pointId2;
+        }
+        else {
+            equalData.push(feature);
+        }
+    }
+    geoData = newData;
+    // let markerCnt = 1;
+    // for (let i = 0; i < newData.length; i++) {
+    //     let mData = newData[i];
+    //     let type = mData[0].geometry.type;
+    //     let pointType = mData[0].properties.pointType;
+    //     let pointTypeCheck = false; // 경유지 일때만 true
+
+    //     if (pointType == "S") {
+    //         let img = 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png';
+    //         let lon = mData[0].geometry.coordinates[0];
+    //         let lat = mData[0].geometry.coordinates[1];
+    //     }
+    //     else if (pointType == "E") {
+    //         let img = 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png';
+    //         let lon = mData[0].geometry.coordinates[0];
+    //         let lat = mData[0].geometry.coordinates[1];
+    //     }
+    //     else {
+    //         markerCnt = i;
+    //         let lon = mData[0].geometry.coordinates[0];
+    //         let lat = mData[0].geometry.coordinates[1];
+    //     }
+    // }
 }
 
 function drawComma() {
@@ -293,11 +413,6 @@ function drawComma() {
 function getRoute() {
 
 }
-
-
-
-
-
 import kakaoSearchModule from './assets/js/kakaoSearchModule.js';
 
 const kakaoSearch = new kakaoSearchModule();
@@ -325,18 +440,18 @@ body.addEventListener('click', e => {
     if (e.target === startPointContainer) return;
     if (e.target === startPointInput) return;
     if (e.target === startPointSearchbar) return;
-    if (e.target === startPointAutoCompleteList ||
-        e.target.parentNode === startPointAutoCompleteList || 
-        e.target.parentNode.parentNode === startPointAutoCompleteList ||
-        e.target.parentNode.parentNode.parentNode === startPointAutoCompleteList ) return;
+    if (e.target === startPointAutoCompleteListContainer ||
+        e.target.parentNode === startPointAutoCompleteListContainer ||
+        e.target.parentNode.parentNode === startPointAutoCompleteListContainer ||
+        e.target.parentNode.parentNode.parentNode === startPointAutoCompleteListContainer) return;
 
     if (e.target === endPointContainer) return;
     if (e.target === endPointInput) return;
     if (e.target === endPointSearchbar) return;
-    if (e.target === endPointAutoCompleteList ||
-        e.target.parentNode === endPointAutoCompleteList || 
-        e.target.parentNode.parentNode === endPointAutoCompleteList ||
-        e.target.parentNode.parentNode.parentNode === endPointAutoCompleteList ) return;
+    if (e.target === endPointAutoCompleteListContainer ||
+        e.target.parentNode === endPointAutoCompleteListContainer ||
+        e.target.parentNode.parentNode === endPointAutoCompleteListContainer ||
+        e.target.parentNode.parentNode.parentNode === endPointAutoCompleteListContainer) return;
 
     /**
      * 바디를 클릭했을때 작동해야 하는 동작
@@ -358,7 +473,7 @@ body.addEventListener('click', e => {
      * 시작지점
      * 1. pointContainer hide 해제
      *  
-     */ 
+     */
     startPointSearchbar.classList.remove('focus');
     startPointSearchbar.classList.remove('open');
     startPointAutoCompleteListContainer.classList.add('hide');
@@ -367,7 +482,7 @@ body.addEventListener('click', e => {
 
     endPointSearchbar.classList.remove('focus');
     endPointSearchbar.classList.remove('open');
-    endPointAutoCompleteList.classList.add('hide');
+    endPointAutoCompleteListContainer.classList.add('hide');
 
     startPointContainer.classList.remove('hide');
 });
@@ -664,7 +779,8 @@ function pageSetting(result) {
 function createCategoryMarker(result, status, pagination) {
     if (status === kakao.maps.services.Status.OK) {
         removeMarker();
-        result.forEach(data => createMarker(data));
+        console.log(result);
+        result.forEach(data => createMarker(data, 'search'));
         setMarkerEvent();
         let nextBtn = document.getElementById('nextBtn');
         let prevBtn = document.getElementById('prevBtn');
@@ -691,43 +807,58 @@ function createCategoryMarker(result, status, pagination) {
  * data를 받아 1개의 마커를 생성하는 함수
  * @param {*} data 
  */
-function createMarker(data) {
+function createMarker(data, type) {
     console.log(data);
     let icon;
     let content;
-    let type = data.category_group_name; //주소, 장소, 음식점-카페 등등
+    let color;
+    let category = data.category_group_name; //주소, 장소, 음식점-카페 등등
+    //마커의 타입 = 주소,장소,카테고리 등과 같이 검색결과
+    //            = 길찾기의 포인트 (시작,도착, 경유지): 시작, 경유, 도착의 아이콘 색
+    //            = 날씨: 날씨별 아이콘 모양
+    //            = 즐겨찾기: ?
+    // 1차로 타입(파라미터)에서 한번 걸러주고, 2차로 그룹에서 걸러주자
+    switch (type) {
+        case 'search':
+        case 'start':
+        case 'end':
+        case 'middle': if (category === undefined) { // 주소일때
+            icon = `<i class="fa-solid fa-location-dot ${type}"></i>`;
+            content = `<div class="marker-container ">
+                                        <div class="icon ${type}">${icon}</i></div>
+                                        <div class="markerInfo-container">
+                                            <div class="addressName">${data.address_name}</div>
+                                        </div>
+                                        <div class="marker-point"></div>
+                                    </div>`;
+        }
+        else if (category === "") { // 장소일때
+            icon = `<i class="fa-solid fa-location-dot ${type}"></i>`;
+            content = `<div class="marker-container">
+                                        <div class="icon ${type}">${icon}</i></div>
+                                        <div class="markerInfo-container">
+                                            <div class="addressName">${data.place_name}</div>
+                                        </div>
+                                        <div class="marker-point"></div>
+                                    </div>`;
+        }
+        else { // 음식점, 카페, 마트 등등
+            icon = `<i class="fa fa-location-dot ${type}">`; // 음식점일때
+            content = `<div class="marker-container">
+                                        <div class="icon ${type}">${icon}</i></div>
+                                        <div class="markerInfo-container">
+                                            <div class="placeName">${data.place_name}</div>
+                                            <div class="placeCategory">${category}</div>
+                                        </div>
+                                        <div class="marker-point"></div>
+                                    </div>`;
+        }
+            break;
 
-    if (type === undefined) { // 주소일때
-        icon = `<i class="fa-solid fa-location-dot"></i>`;
-        content = `<div class="marker-container">
-                         <div class="icon">${icon}</i></div>
-                         <div class="markerInfo-container">
-                             <div class="addressName">${data.address_name}</div>
-                         </div>
-                         <div class="marker-point"></div>
-                     </div>`;
+        case 'weather':
+        case 'bookmark':
     }
-    else if (type === "") { // 장소일때
-        icon = `<i class="fa-solid fa-location-dot"></i>`;
-        content = `<div class="marker-container">
-                         <div class="icon">${icon}</i></div>
-                         <div class="markerInfo-container">
-                             <div class="addressName">${data.place_name}</div>
-                         </div>
-                         <div class="marker-point"></div>
-                     </div>`;
-    }
-    else { // 음식점, 카페, 마트 등등
-        icon = `<i class="fa fa-cutlery">`; // 음식점일때
-        content = `<div class="marker-container">
-                         <div class="icon">${icon}</i></div>
-                         <div class="markerInfo-container">
-                             <div class="placeName">${data.place_name}</div>
-                             <div class="placeCategory">${type}</div>
-                         </div>
-                         <div class="marker-point"></div>
-                     </div>`;
-    }
+
 
     let marker = new Tmapv2.InfoWindow({
         position: new Tmapv2.LatLng(data.y, data.x), //Popup 이 표출될 맵 좌표
@@ -1091,7 +1222,7 @@ function enterKey() {
                 displaySearchContent(addressSearchData[0].y, addressSearchData[0].x);
                 removeMarker();
                 addressSearchData.forEach(data => {
-                    createMarker(data);
+                    createMarker(data, 'search');
                 });
                 setMarkerEvent();
                 return data;
@@ -1102,7 +1233,7 @@ function enterKey() {
                 displaySearchContent(keywordSearchData[0].y, keywordSearchData[0].x);
                 removeMarker();
                 keywordSearchData.forEach(data => {
-                    createMarker(data);
+                    createMarker(data, 'search');
                 });
                 setMarkerEvent();
             }
@@ -1321,7 +1452,7 @@ menuCircles.forEach(((circle, index) => {
 etcBtn.addEventListener('mouseenter', () => {
     etcContainer.classList.remove('hide');
     etcBtn.style.background = "rgba(0, 0, 0, 0.02)";
-    etcBtn.style.color = "var(--cacaoBlue)";
+    etcBtn.style.color = "let(--cacaoBlue)";
 });
 
 /** 카테고리의 기타버튼에서 마우스가 나가면 배경색을 바꾸고, 기타카테고리를 감춘다. */
