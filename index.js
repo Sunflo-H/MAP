@@ -305,7 +305,6 @@ function routeSearch(startPlace, endPlace) {
 
             // 6. 경로탐색 결과 반경만큼 지도 레벨 조정
             let newData = geoData[0];
-            console.log(newData);
             let PTbounds = new Tmapv2.LatLngBounds();
             for (let i = 0; i < newData.length; i++) {
                 let mData = newData[i];
@@ -381,29 +380,6 @@ function drawLine(data) {
         }
     }
     geoData = newData;
-    // let markerCnt = 1;
-    // for (let i = 0; i < newData.length; i++) {
-    //     let mData = newData[i];
-    //     let type = mData[0].geometry.type;
-    //     let pointType = mData[0].properties.pointType;
-    //     let pointTypeCheck = false; // 경유지 일때만 true
-
-    //     if (pointType == "S") {
-    //         let img = 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_s.png';
-    //         let lon = mData[0].geometry.coordinates[0];
-    //         let lat = mData[0].geometry.coordinates[1];
-    //     }
-    //     else if (pointType == "E") {
-    //         let img = 'http://tmapapi.sktelecom.com/upload/tmap/marker/pin_r_m_e.png';
-    //         let lon = mData[0].geometry.coordinates[0];
-    //         let lat = mData[0].geometry.coordinates[1];
-    //     }
-    //     else {
-    //         markerCnt = i;
-    //         let lon = mData[0].geometry.coordinates[0];
-    //         let lat = mData[0].geometry.coordinates[1];
-    //     }
-    // }
 }
 
 function drawComma() {
